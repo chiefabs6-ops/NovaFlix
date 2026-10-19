@@ -32,6 +32,8 @@ _SUBTITLE_INFO = re.compile(
     r"|\bsub(?:s|titles?)?\b[ :]*(?:[a-z-]{2,6}[ ,/+&]*)*", re.I)
 _EXTRA = re.compile(r"\b(NC ?OP\d*|NC ?ED\d*|OP\d*|ED\d*|PV\d*|CM\d*|Preview|Trailer|Teaser|Menu|Recap|"
                     r"Specials?|SP\d*|OVA|OAD|ONA|Extras?|Bonus|Creditless)\b", re.I)
+# Sample clips inside scene releases: a "Sample" folder or the word in the file name.
+_SAMPLE = re.compile(r"(?:^|[\\/])sample[\\/]|\bsample\b", re.I)
 
 
 @dataclass
@@ -115,19 +117,28 @@ def parse(name):
     if m:
         rel.season, rel.episode_range, rel.is_batch = int(m.group(1)), (int(m.group(2)), int(m.group(3))), True
     else:
+        m = re.search(r"\bS(\d{1,2})\s?E(\d{1,4})\s?E(\d{1,4})\b", core, re.I)  # double episode "S01E01E02"
+        if m:
+            rel.season, rel.episode_range = int(m.group(1)), (int(m.group(2)), int(m.group(3)))
+    if rel.season is None:
         m = re.search(r"\bS(\d{1,2})\s?E(\d{1,4})(?:v(\d))?\b", core, re.I)
         if m:
             rel.season, rel.episode = int(m.group(1)), int(m.group(2))
             rel.version = int(m.group(3)) if m.group(3) else None
 
     season_words = r"\bS(\d{1,2})\b|\bSeason[ .]?(\d{1,2})\b|\b(\d{1,2})(?:st|nd|rd|th) Season\b"
-    if rel.season is None:
+    multi_season = rel.season is None and re.search(r"\bS\d{1,2}\s?[-~]\s?S\d{1,2}\b", core, re.I)
+    if multi_season:
+        # "S01-S05": several seasons in one pack; no single season, the file inside decides.
+        core = (core[:multi_season.start()] + " " + core[multi_season.end():]).strip()
+        rel.is_batch = True
+    elif rel.season is None:
         m = re.search(season_words, core, re.I)
         if m:
             rel.season = int(next(g for g in m.groups() if g))
             # Drop the season words so "Season 2" is not read as episode 2.
             core = (core[:m.start()] + " " + core[m.end():]).strip()
-    if rel.season is None:
+    if rel.season is None and not multi_season:
         # Season stated only inside brackets: "[Season 2]", "(Batch S02 S2)".
         m = re.search(season_words, " ".join(re.findall(r"[\[(]([^\])]*)[\])]", base)), re.I)
         if m:
@@ -152,8 +163,8 @@ def parse(name):
             rel.episode = int(m.group(1))
 
     if rel.episode is None and rel.episode_range is None:
-        rel.is_batch = bool(re.search(r"batch|complete|season|\bS\d{1,2}\b", base, re.I))
-    rel.is_extra = bool(_EXTRA.search(core)) and rel.episode_range is None
+        rel.is_batch = rel.is_batch or bool(re.search(r"batch|complete|season|\bS\d{1,2}\b", base, re.I))
+    rel.is_extra = (bool(_EXTRA.search(core)) and rel.episode_range is None) or bool(_SAMPLE.search(name))
     return rel
 
 

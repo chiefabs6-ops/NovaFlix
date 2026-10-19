@@ -3,6 +3,7 @@ common fansub/scene conventions. Each row: name -> expected parsed fields."""
 
 import pytest
 
+from resources.lib.sources import matcher
 from resources.lib.sources.matcher import matches, parse
 
 # (name, expected subset of Release fields)
@@ -163,3 +164,29 @@ def test_matches(name, number, absolute, tvdb, expected):
 
 def test_table_size():
     assert len(PARSE_CASES) + len(MATCH_CASES) >= 100 - 15  # plus provider tests below 100 total
+
+
+# -- mainstream names (NovaFlix, Plan 3) -------------------------------------------------
+
+def test_double_episode_file_matches_both():
+    rel = matcher.parse("Show.Name.S01E01E02.1080p.WEB-DL.mkv")
+    assert rel.season == 1 and rel.episode_range == (1, 2)
+    assert matcher.matches(rel, 2, None, (1, 2)) is True and matcher.matches(rel, 3, None, (1, 3)) is False
+
+
+@pytest.mark.parametrize("path", ["Sample/breaking.bad.s02e03.sample.mkv", "Breaking.Bad.S02E03.1080p-sample.mkv",
+                                  "Breaking.Bad.S02E03.1080p.WEB/Sample/sample-bb.s02e03.mkv"])
+def test_sample_is_extra(path):
+    rel = matcher.parse(path)
+    assert rel.is_extra and matcher.matches(rel, 3, None, (2, 3)) is False
+
+
+def test_season_pack_name_is_batch():
+    rel = matcher.parse("Breaking.Bad.S02.1080p.BluRay.x265-RARBG")
+    assert (rel.season, rel.episode, rel.is_batch) == (2, None, True)
+
+
+def test_complete_series_range_is_batch():
+    rel = matcher.parse("Breaking Bad COMPLETE S01-S05 2160p WEB-DL")
+    assert rel.is_batch and rel.episode is None and rel.season is None
+    assert matcher.matches(rel, 3, None, (2, 3)) is None  # best guess: the file inside is chosen later
