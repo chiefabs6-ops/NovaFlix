@@ -67,4 +67,32 @@ USER_MIGRATIONS = [
         queued_at  REAL    NOT NULL
     );
     """,
+    # v5 — NovaFlix (Plan 3): history and preferences for TMDB movies and episodes. Movies use season 0, episode 0.
+    """
+    CREATE TABLE watch_history (
+        media_type  TEXT    NOT NULL,
+        tmdb_id     INTEGER NOT NULL,
+        season      INTEGER NOT NULL,
+        episode     INTEGER NOT NULL,
+        position_s  REAL    NOT NULL DEFAULT 0,
+        duration_s  REAL    NOT NULL DEFAULT 0,
+        watched     INTEGER NOT NULL DEFAULT 0,
+        updated_at  REAL    NOT NULL,
+        PRIMARY KEY (media_type, tmdb_id, season, episode)
+    );
+    CREATE INDEX watch_history_updated ON watch_history (updated_at);
+
+    CREATE TABLE title_prefs (
+        media_type          TEXT    NOT NULL,
+        tmdb_id             INTEGER NOT NULL,
+        title               TEXT,
+        poster              TEXT,
+        backdrop            TEXT,
+        year                INTEGER,
+        last_release_group  TEXT,
+        last_resolution     TEXT,
+        updated_at          REAL    NOT NULL,
+        PRIMARY KEY (media_type, tmdb_id)
+    );
+    """,
 ]
