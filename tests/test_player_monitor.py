@@ -285,11 +285,18 @@ def test_up_next_at_the_last_chapter_near_the_end():
     assert ("upnext", (1, 4)) in s.tick(2500, 1)
 
 
-def test_last_chapter_far_from_the_end_waits_for_the_usual_time():
+def test_last_chapter_far_from_the_end_offers_up_next_ten_minutes_before_the_end():
     s = Session("tv", 1, 1, 3)
     s.prepare(LENGTH, [], (1, 4))
     s.chapter(3, 3, "Chapter 3", 1200)  # 26 minutes left: still the episode itself
-    assert s.tick(1200, 1) == [] and s.upnext_at == LENGTH - 90
+    assert s.tick(1200, 1) == [] and s.upnext_at == LENGTH - 600
+    assert ("upnext", (1, 4)) in s.tick(LENGTH - 599, 2)
+
+
+def test_no_chapters_keeps_the_ninety_second_fallback():
+    s = Session("tv", 1, 1, 3)
+    s.prepare(LENGTH, [], (1, 4))
+    assert s.upnext_at == LENGTH - 90
 
 
 def test_single_chapter_or_no_next_episode_changes_nothing():

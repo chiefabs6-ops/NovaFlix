@@ -14,7 +14,7 @@ SAVE_EVERY_S = 30
 UPNEXT_FALLBACK_S = 90
 MIN_UPNEXT_DURATION_S = 5 * 60    # no Up next on very short clips
 SKIP_LEAD_S = 3                   # don't offer a skip in its last seconds
-LAST_CHAPTER_WINDOW_S = 10 * 60   # a last chapter starting earlier than this is still the episode itself
+LAST_CHAPTER_WINDOW_S = 10 * 60   # last chapter: at its start when it begins within this of the end, else this long before the end
 CREDITS = re.compile(r"\b(?:end\s*)?credits?\b|\bending\b|\boutro\b", re.I)
 
 
@@ -57,9 +57,12 @@ class Session:
         if self.next_episode is None or "upnext" in self._offered or self.upnext_at is None:
             return
         credits = bool(CREDITS.search(name or ""))
-        last = count >= 2 and current == count and self.duration - position <= LAST_CHAPTER_WINDOW_S
-        if credits or last:
+        last = count >= 2 and current == count
+        if credits or (last and self.duration - position <= LAST_CHAPTER_WINDOW_S):
             self.upnext_at = min(self.upnext_at, float(position))
+        elif last:
+            # A long last chapter is still the episode: offer Up next 10 minutes before the end (owner, 2026-10-19).
+            self.upnext_at = min(self.upnext_at, self.duration - LAST_CHAPTER_WINDOW_S)
 
     def tick(self, position, now):
         """Events due at this moment: ("save",), ("skip", interval), ("upnext", episode)."""
