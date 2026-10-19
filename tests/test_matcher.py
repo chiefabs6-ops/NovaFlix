@@ -190,3 +190,23 @@ def test_complete_series_range_is_batch():
     rel = matcher.parse("Breaking Bad COMPLETE S01-S05 2160p WEB-DL")
     assert rel.is_batch and rel.episode is None and rel.season is None
     assert matcher.matches(rel, 3, None, (2, 3)) is None  # best guess: the file inside is chosen later
+
+
+@pytest.mark.parametrize("name,titles", [("Ed.Wood.1994.1080p.BluRay.x264.mkv", ["Ed Wood"]),
+                                         ("Trailer.Park.Boys.S01E01.720p.mkv", ["Trailer Park Boys"]),
+                                         ("Extras.S01E02.1080p.mkv", ["Extras"]),
+                                         ("Show.S01E05.The.Recap.1080p.mkv", ["Show", "The Recap"])])
+def test_title_words_are_not_extras(name, titles):
+    assert not matcher.parse(name, titles).is_extra and matcher.parse(name).is_extra
+
+
+def test_pick_file_keeps_files_named_like_extras():
+    from resources.lib import media
+    from resources.lib.debrid import resolver
+    from resources.lib.models import Candidate
+    from resources.lib.sources import discovery
+    title = media.Title(media_type="movie", tmdb_id=1, title="Ed Wood")
+    files = [{"id": 1, "path": "/Ed.Wood.1994.1080p.BluRay.x264.mkv", "bytes": 9},
+             {"id": 2, "path": "/Sample/ed.wood.sample.mkv", "bytes": 1}]
+    picked = resolver.pick_file(files, Candidate(origin="torrentio", release_name="x"), discovery.for_title(title))
+    assert picked == 1

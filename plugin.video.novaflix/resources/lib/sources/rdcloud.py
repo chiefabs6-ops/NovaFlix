@@ -36,15 +36,15 @@ def matching_torrents(torrents, show):
     return hits[:MAX_INSPECT]
 
 
-def candidates_from_info(info, number, absolute=None, tvdb=None, is_movie=False):
+def candidates_from_info(info, number, absolute=None, tvdb=None, is_movie=False, titles=None):
     """Episode files inside one downloaded torrent. Only selected files have links."""
     out = []
-    pack_rel = matcher.parse(info.get("filename") or "")
+    pack_rel = matcher.parse(info.get("filename") or "", titles)
     for f in info.get("files") or []:
         path = f.get("path") or ""
         if not f.get("selected") or not matcher.is_video(path):
             continue
-        rel = matcher.parse(path)
+        rel = matcher.parse(path, titles)
         verdict = None if is_movie else matcher.matches(rel, number, absolute, tvdb)
         if verdict is False or (verdict is None and not is_movie):
             continue

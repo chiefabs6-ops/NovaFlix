@@ -68,7 +68,8 @@ def _basename(path):
 
 def pick_file(files, candidate, wanted):
     """RD file id for the episode, or raise AmbiguousFile/BadSource."""
-    videos = [f for f in files if matcher.is_video(f.get("path", "")) and not matcher.parse(f["path"]).is_extra]
+    titles = getattr(wanted, "titles", None) if wanted is not None else None
+    videos = [f for f in files if matcher.is_video(f.get("path", "")) and not matcher.parse(f["path"], titles).is_extra]
     if not videos:
         raise BadSource("no video files in this torrent")
     if candidate.file_name:
@@ -80,7 +81,8 @@ def pick_file(files, candidate, wanted):
         return videos[0]["id"]
     if wanted.is_movie:
         return max(videos, key=lambda f: f.get("bytes") or 0)["id"]
-    hits = [f for f in videos if matcher.matches(matcher.parse(f["path"]), wanted.number, wanted.absolute, wanted.tvdb)]
+    hits = [f for f in videos
+            if matcher.matches(matcher.parse(f["path"], titles), wanted.number, wanted.absolute, wanted.tvdb)]
     if len(hits) == 1:
         return hits[0]["id"]
     if candidate.file_idx is not None:

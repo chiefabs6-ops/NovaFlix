@@ -29,6 +29,7 @@ class Wanted:
     kitsu_id: Optional[int] = None
     imdb_id: Optional[str] = None     # NovaFlix titles (TMDB); anime entries use kitsu_id
     season: Optional[int] = None
+    titles: Optional[list] = None     # title (and episode name): their words are never extras or languages
 
     @property
     def is_movie(self):
@@ -39,12 +40,12 @@ class Wanted:
         return hasattr(self.show, "tmdb_id")
 
 
-def for_title(title, season=None, episode=None):
+def for_title(title, season=None, episode=None, episode_name=None):
     """What to look for: a TMDB movie, or one episode of a TMDB show (TMDB season/episode numbers)."""
     if title.is_movie:
-        return Wanted(show=title, number=1, imdb_id=title.imdb_id)
+        return Wanted(show=title, number=1, imdb_id=title.imdb_id, titles=[title.title])
     return Wanted(show=title, number=int(episode), tvdb=(int(season), int(episode)), imdb_id=title.imdb_id,
-                  season=int(season))
+                  season=int(season), titles=[title.title] + ([episode_name] if episode_name else []))
 
 
 @dataclass
@@ -64,7 +65,8 @@ def from_torrentio(wanted, settings):
     else:
         return SKIPPED, []
     resp = http.get(url, timeout=PROVIDER_TIMEOUT)
-    return OK, torrentio.parse_streams(resp.json(), wanted.number, wanted.absolute, wanted.tvdb, wanted.is_movie)
+    return OK, torrentio.parse_streams(resp.json(), wanted.number, wanted.absolute, wanted.tvdb, wanted.is_movie,
+                                       wanted.titles)
 
 
 def from_nyaa(wanted, settings):
@@ -83,7 +85,8 @@ def from_rdcloud(wanted, client):
     out = []
     for t in rdcloud.matching_torrents(torrents, wanted.show):
         info = client.torrent_info(t["id"])
-        out.extend(rdcloud.candidates_from_info(info, wanted.number, wanted.absolute, wanted.tvdb, wanted.is_movie))
+        out.extend(rdcloud.candidates_from_info(info, wanted.number, wanted.absolute, wanted.tvdb, wanted.is_movie,
+                                                wanted.titles))
     return OK, out
 
 

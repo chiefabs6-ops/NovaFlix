@@ -93,11 +93,12 @@ def _choose(request):
     if not title.imdb_id:
         ui.ok(heading_base, ui.string(30405))
         return False
-    wanted = discovery.for_title(title, season, episode)
+    episode_name = None if title.is_movie else _episode_name(library, title, season, episode)
+    wanted = discovery.for_title(title, season, episode, episode_name)
     filters, found_settings, _ = sources._settings()
     candidates, outcomes = _find(wanted, title, season, episode, found_settings, params.get("refresh") == "1")
     sources._report(outcomes)
-    kept, hidden = language.split(candidates, title=title.title)
+    kept, hidden = language.split(candidates, title=wanted.titles)
     if candidates and not kept:
         ui.ok(heading_base, ui.string(30406))
         return False

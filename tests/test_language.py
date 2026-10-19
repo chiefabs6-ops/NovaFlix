@@ -58,3 +58,18 @@ def test_language_words_in_titles_are_not_audio(name):
     # Words of the film's own title are never audio evidence.
     assert language.allowed(cand(name), title="The Italian Job" if "Italian" in name else
                             "The Spanish Prisoner" if "Spanish" in name else "Cast Away")
+
+
+# -- review fixes ------------------------------------------------------------------------
+
+def test_episode_name_words_are_not_audio():
+    seinfeld = cand("Seinfeld.S02E11.1080p.WEB-DL", file_name="Seinfeld.S02E11.The.Chinese.Restaurant.1080p.WEB-DL.mkv")
+    assert language.allowed(seinfeld, title=["Seinfeld", "The Chinese Restaurant"])
+    friends = cand("Friends.S01E05.1080p", file_name="Friends.S01E05.The.One.with.the.East.German.Laundry.Detergent.mkv")
+    assert language.allowed(friends, title=["Friends", "The One with the East German Laundry Detergent"])
+
+
+@pytest.mark.parametrize("name", ["Movie.2021.1080p.WEB.H264-GER", "Movie.2021.1080p.WEB.x264-HUN",
+                                  "Some.Movie.Spa.Weekend.2020.1080p", "Show.S01E02.Ita.Story.1080p"])
+def test_group_tags_and_title_case_words_are_not_audio(name):
+    assert language.allowed(cand(name))

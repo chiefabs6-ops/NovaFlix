@@ -24,10 +24,12 @@ def test_series_streams_match_episode_and_carry_languages():
     found = torrentio.parse_streams(raw, 3, None, (2, 3), False)
     assert found and all(c.match in ("exact", "best_guess") for c in found)
     by_hash = {s["infoHash"].lower(): s for s in raw["streams"]}
-    with_uk = [c for c in found if "🇬🇧" in _flag_line(by_hash[c.info_hash])]
+    audio = [c for c in found if "sub" not in _flag_line(by_hash[c.info_hash]).lower()]  # "Subs" lines: subtitles
+    with_uk = [c for c in audio if "🇬🇧" in _flag_line(by_hash[c.info_hash])]
     assert with_uk and all("en" in c.languages for c in with_uk)
-    other = [c for c in found if _flag_line(by_hash[c.info_hash]) and "🇬🇧" not in _flag_line(by_hash[c.info_hash])]
+    other = [c for c in audio if _flag_line(by_hash[c.info_hash]) and "🇬🇧" not in _flag_line(by_hash[c.info_hash])]
     assert all(c.languages and "en" not in c.languages for c in other)
+    assert all(c.languages == [] for c in found if c not in audio)
 
 
 def test_languages_are_unique_and_known_codes_only():
@@ -45,3 +47,16 @@ def test_movie_streams_skip_extras():
 def test_streams_without_flags_have_no_languages():
     raw = {"streams": [{"infoHash": "a" * 40, "title": "Show.S02E03.1080p.WEB.h264-GRP\n👤 5 💾 1.2 GB ⚙️ 1337x"}]}
     assert torrentio.parse_streams(raw, 3, None, (2, 3), False)[0].languages == []
+
+
+def test_subtitle_flags_are_not_audio_languages():
+    raw = {"streams": [{"infoHash": "a" * 40,
+                        "title": "Show.S02E03.1080p.WEB.h264-GRP\n👤 5 💾 1.2 GB ⚙️ 1337x\nMulti Subs / 🇫🇷 / 🇪🇸"}]}
+    assert torrentio.parse_streams(raw, 3, None, (2, 3), False)[0].languages == []
+
+
+def test_title_words_do_not_make_a_film_an_extra():
+    raw = {"streams": [{"infoHash": "a" * 40, "title": "The.Menu.2022.1080p.WEB-DL.x264-GRP\n👤 5 💾 1.2 GB ⚙️ 1337x",
+                        "behaviorHints": {"filename": "The.Menu.2022.1080p.WEB-DL.x264-GRP.mkv"}}]}
+    assert torrentio.parse_streams(raw, 1, None, None, True, titles=["The Menu"])
+    assert torrentio.parse_streams(raw, 1, None, None, True) == []  # without the title it looks like a menu extra

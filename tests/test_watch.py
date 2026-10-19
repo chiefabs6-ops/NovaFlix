@@ -136,3 +136,20 @@ def test_watch_url():
     from resources.lib.views import watch
     assert watch.watch_url("tv", 1396, 2, 3) == BASE + "watch?type=tv&id=1396&s=2&e=3"
     assert watch.watch_url("movie", 438631, resume=120) == BASE + "watch?type=movie&id=438631&resume=120"
+
+
+def test_episode_name_is_passed_to_the_language_filter(monkeypatch):
+    # "Bit by a Dead Bee": no language words, so check the hook with a spy on language.split.
+    from resources.lib.sources import language
+    seen = {}
+    real = language.split
+
+    def spy(candidates, wanted=language.RELEASE_LANGUAGES, title=None):
+        seen["title"] = title
+        return real(candidates, wanted, title)
+
+    monkeypatch.setattr(language, "split", spy)
+    Net(FakeTorBox(), [stream(HASH, "Breaking.Bad.S02.1080p.BluRay.x264-GRP", EPISODE_FILE)])
+    router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
+    episode = fixture("tmdb/tv_1396_season_2.json")["episodes"][2]["name"]
+    assert seen["title"] == ["Breaking Bad", episode]

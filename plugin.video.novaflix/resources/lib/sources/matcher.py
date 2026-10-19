@@ -51,6 +51,31 @@ class Release:
     is_extra: bool = False
 
 
+SUBTITLE_INFO = _SUBTITLE_INFO
+
+
+def without_titles(text, titles):
+    """The name with the given titles' words removed: a movie, show or episode title is never a
+    language, an extra ("The Menu", "Ed Wood") or anything else. A leading article is optional,
+    because release names often drop it."""
+    if isinstance(titles, str):
+        titles = [titles]
+    for title in titles or []:
+        words = re.findall(r"\w+", title or "")
+        article = ""
+        if len(words) > 1 and words[0].lower() in ("the", "a", "an"):
+            article = rf"(?:{re.escape(words.pop(0))}[ ._-]+)?"
+        if words:
+            text = re.sub(rf"(?<![^\W_]){article}" + r"[ ._-]+".join(map(re.escape, words)) + r"(?![^\W_])",
+                          " ", text, flags=re.I)
+    return text
+
+
+def without_group(name):
+    """The name without a trailing scene group tag ("...H264-GER" -> "...H264")."""
+    return re.sub(r"-[A-Za-z0-9]{2,20}\s*$", "", _strip_extension(name or ""))
+
+
 def _strip_extension(name):
     lower = name.lower()
     for ext in VIDEO_EXTENSIONS:
@@ -96,8 +121,9 @@ def audio_of(text):
     return None
 
 
-def parse(name):
-    """Parse a release or file name. Path components are allowed; the last one wins."""
+def parse(name, titles=None):
+    """Parse a release or file name. Path components are allowed; the last one wins.
+    titles: the movie/show (and episode) titles, whose words never make a file an extra."""
     base = _strip_extension(re.split(r"[\\/]", name)[-1]).replace("_", " ")
     rel = Release(name=name, group=_group(base))
     rel.resolution = _first(_RESOLUTIONS, base)
@@ -164,7 +190,8 @@ def parse(name):
 
     if rel.episode is None and rel.episode_range is None:
         rel.is_batch = rel.is_batch or bool(re.search(r"batch|complete|season|\bS\d{1,2}\b", base, re.I))
-    rel.is_extra = (bool(_EXTRA.search(core)) and rel.episode_range is None) or bool(_SAMPLE.search(name))
+    extra_text = without_titles(core, titles)
+    rel.is_extra = (bool(_EXTRA.search(extra_text)) and rel.episode_range is None) or bool(_SAMPLE.search(name))
     return rel
 
 

@@ -19,8 +19,8 @@ NAME_LANGUAGES = {
     "pl": re.compile(r"(?i:\b(?:pol(?:ish)?|lektor|dubbing[ ._-]?pl)\b)|\bPL\b"),
     "ru": re.compile(r"(?i:\brus(?:sian)?\b)"),
     "uk": re.compile(r"(?i:\b(?:ukr|ukrainian)\b)"),
-    "it": re.compile(r"(?i:\bital(?:ian|iano)\b)|\bITA\b|\bIta\b"),
-    "es": re.compile(r"(?i:\b(?:spanish|espa[nñ]ol|latino|castellano)\b)|\bSPA\b|\bSpa\b"),
+    "it": re.compile(r"(?i:\bital(?:ian|iano)\b)|\bITA\b"),
+    "es": re.compile(r"(?i:\b(?:spanish|espa[nñ]ol|latino|castellano)\b)|\bSPA\b"),
     "fr": re.compile(r"(?i:\b(?:french|fran[cç]ais|truefrench|vff?|vf2)\b)"),
     "de": re.compile(r"(?i:\b(?:german|deutsch)\b)|\bGER\b"),
     "pt": re.compile(r"(?i:\b(?:portuguese|portugu[eê]s|pt[ -]?br|brazilian|dublado)\b)"),
@@ -38,20 +38,11 @@ NAME_LANGUAGES = {
 _MULTI = re.compile(r"\bmulti\b|multi[ ._-]?audio|dual[ ._-]?audio|\bdual\b", re.I)
 
 
-def _without_title(text, title):
-    """The name with the title's own words removed ("The.Italian.Job" is not Italian audio)."""
-    words = re.findall(r"\w+", title or "")
-    article = ""
-    if len(words) > 1 and words[0].lower() in ("the", "a", "an"):
-        article = rf"(?:{re.escape(words.pop(0))}[ ._-]+)?"  # release names often drop it
-    if not words:
-        return text
-    return re.sub(article + r"[ ._-]+".join(map(re.escape, words)), " ", text, flags=re.I)
-
-
 def _name_languages(text, title=None):
-    text = _without_title((text or "").replace("_", " "), title)
-    text = matcher._SUBTITLE_INFO.sub(" ", text)
+    # The scene group tag ("-GER", "-HUN") and the title / episode name ("The.Italian.Job",
+    # "The.Chinese.Restaurant") are never audio evidence.
+    text = matcher.without_titles(matcher.without_group(text).replace("_", " "), title)
+    text = matcher.SUBTITLE_INFO.sub(" ", text)
     found = {code for code, pattern in NAME_LANGUAGES.items() if pattern.search(text)}
     if _MULTI.search(text):
         found.add(MULTI)
@@ -60,7 +51,7 @@ def _name_languages(text, title=None):
 
 def languages_of(candidate, title=None):
     """Language codes (and MULTI) the release states, from its flags and names. `title` is the
-    movie or show title; its own words are never language evidence."""
+    title (or titles: show and episode name); their words are never language evidence."""
     found = set(candidate.languages or [])
     found |= _name_languages(candidate.release_name, title)
     found |= _name_languages(candidate.file_name, title)

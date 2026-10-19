@@ -76,7 +76,7 @@ def _audio(release, file_name, languages):
     return None
 
 
-def parse_streams(data, number, absolute=None, tvdb=None, is_movie=False):
+def parse_streams(data, number, absolute=None, tvdb=None, is_movie=False, titles=None):
     out = []
     for stream in (data or {}).get("streams") or []:
         info_hash = (stream.get("infoHash") or "").lower()
@@ -91,8 +91,8 @@ def parse_streams(data, number, absolute=None, tvdb=None, is_movie=False):
         # Languages follow the stats line; file names (which may contain "/") come before it.
         languages = " ".join(lines[stats_index + 1:]) if stats_index is not None else ""
 
-        file_rel = matcher.parse(file_name or release)
-        pack_rel = matcher.parse(release)
+        file_rel = matcher.parse(file_name or release, titles)
+        pack_rel = matcher.parse(release, titles)
         if is_movie:
             verdict = not file_rel.is_extra  # the film itself, never its extras
         else:
@@ -116,7 +116,8 @@ def parse_streams(data, number, absolute=None, tvdb=None, is_movie=False):
             codec=file_rel.codec or pack_rel.codec,
             release_group=pack_rel.group or file_rel.group,
             audio=_audio(release, file_name, languages),
-            languages=flag_languages(languages),
+            # A "Subs" line lists subtitle languages: its flags say nothing about the audio.
+            languages=[] if re.search(r"\bsubs?\b", languages, re.I) else flag_languages(languages),
             match="exact" if verdict else "best_guess",
         ))
     return out
