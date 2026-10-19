@@ -5,10 +5,15 @@
 Missing data stays missing (DEC-004): no invented titles or art.
 """
 
+import datetime
 from dataclasses import dataclass
 from typing import Optional
 
 PLOT_MAX = 300
+AVAIL_TEXT = {"available": 30443, "sub_only": 30444, "unavailable": 30447, "unknown": 30448}
+# Title page status line: room for the longer wording; unknown is never shown as "no streams".
+TITLE_PAGE_TEXT = dict(AVAIL_TEXT, unavailable=30449, unknown=30450)
+PLAYABLE_STATES = ("available", "sub_only")
 
 
 @dataclass
@@ -24,7 +29,8 @@ class Card:
     status: str = ""
     kind: str = "show"
     action: tuple = ()
-    avail: str = ""        # availability state shown by the layouts (not filled yet: deferred)
+    avail: str = ""        # availability state shown by the layouts (sources/availability.py)
+    check: tuple = ()      # (media_type, tmdb_id, season, episode) whose availability is still to be checked
 
 
 def clock(seconds):
@@ -140,3 +146,42 @@ def title_hero(title, text=None):
     alt = title.original_title if title.original_title and title.original_title != title.title else ""
     return {"title": title.title, "alt": alt, "plot": plot, "art": title.backdrop or title.poster or "",
             "dark": not title.backdrop, "meta": title_meta(title, text) if text else ""}
+
+
+# -- availability (sources/availability.py) ------------------------------------------------------------
+
+def _day(date):
+    """"2026-10-24" -> "Sat 24 Oct"; the text itself when it is not a date."""
+    try:
+        day = datetime.date.fromisoformat(date)
+    except (TypeError, ValueError):
+        return date or ""
+    return f"{day:%a} {day.day} {day:%b}"
+
+
+def availability_text(result, season, episode, text, title_page=False):
+    """One line for an episode's availability; a movie (season 0, episode 0) has no "S0 E0" prefix."""
+    if result.state == "upcoming":
+        line = text(30445) % (season, episode, _day(result.air_date)) if result.air_date             else text(30446) % (season, episode)
+    else:
+        strings = TITLE_PAGE_TEXT if title_page else AVAIL_TEXT
+        line = text(strings.get(result.state, strings["unknown"])) % (season, episode)
+    if not season and not episode:
+        line = line.split(" · ", 1)[-1]
+    return line
+
+
+def apply_availability(card, result, text):
+    """Label and action of a card once its next episode's state is known: playable states play,
+    upcoming opens the title page, not available / unknown search again."""
+    media_type, tmdb_id, season, episode = card.check
+    card.avail = result.state
+    card.label2 = availability_text(result, season, episode, text)
+    if result.state == "upcoming":
+        card.action = ("title", media_type, tmdb_id)
+    elif result.state in PLAYABLE_STATES:
+        if not card.action or card.action[0] != "watch":
+            card.action = ("watch", media_type, tmdb_id, season, episode, 0)
+    else:
+        card.action = ("search", media_type, tmdb_id, season, episode)
+    return card
