@@ -52,7 +52,7 @@ def test_page_needs_the_pairing_code(kb):
     assert kb.url == f"http://127.0.0.1:{kb.port}/p/abcdefgh"
 
 
-def test_bookmark_and_home_screen_get_the_aniverse_icon(kb):
+def test_bookmark_and_home_screen_get_the_novaflix_icon(kb):
     conn = http.client.HTTPConnection("127.0.0.1", kb.port, timeout=5)
     for path in ("/icon.png", "/apple-touch-icon.png", "/favicon.ico"):
         conn.request("GET", path)
@@ -67,7 +67,7 @@ def test_bookmark_and_home_screen_get_the_aniverse_icon(kb):
     assert 'rel="manifest" href="/p/abcdefgh/manifest.webmanifest"' in page
     status, text = call(kb.port, "GET", "/p/abcdefgh/manifest.webmanifest")
     data = json.loads(text)
-    assert status == 200 and data["short_name"] == "AniVerse" and data["start_url"] == "/p/abcdefgh"
+    assert status == 200 and data["short_name"] == "NovaFlix" and data["start_url"] == "/p/abcdefgh"
     assert data["icons"][0]["src"] == "/icon.png"
     assert call(kb.port, "GET", "/p/wrongcod/manifest.webmanifest")[0] == 410  # the address needs the code
 
@@ -127,9 +127,9 @@ def test_pairing_is_saved_and_reused_with_the_same_address():
     first = pk.start(directory, "127.0.0.1", pair=True)
     url = first.url
     assert pk.load_pairing(directory) == {"code": first.code, "port": first.port}
-    pk.stop()                                         # AniVerse closed
+    pk.stop()                                         # NovaFlix closed
     assert pk.active() is None
-    again = pk.start(directory, "127.0.0.1")          # AniVerse opened again
+    again = pk.start(directory, "127.0.0.1")          # NovaFlix opened again
     assert again.url == url and call(again.port, "GET", f"/p/{again.code}")[0] == 200
 
 
@@ -266,8 +266,8 @@ def test_app_start_runs_the_server_only_for_a_paired_phone(monkeypatch):
     assert pk.active() is not None
 
 
-def test_home_screen_name_is_aniverse_not_the_address(kb):
+def test_home_screen_name_is_novaflix_not_the_address(kb):
     page = call(kb.port, "GET", "/p/abcdefgh")[1]
-    assert "<title>AniVerse</title>" in page and 'name="apple-mobile-web-app-title" content="AniVerse"' in page
+    assert "<title>NovaFlix</title>" in page and 'name="apple-mobile-web-app-title" content="NovaFlix"' in page
     data = json.loads(call(kb.port, "GET", "/p/abcdefgh/manifest.webmanifest")[1])
-    assert data["name"] == data["short_name"] == "AniVerse"
+    assert data["name"] == data["short_name"] == "NovaFlix"

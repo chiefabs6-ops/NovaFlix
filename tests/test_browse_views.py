@@ -9,7 +9,7 @@ from resources.lib import errors, router
 from resources.lib.kodi import paths
 from resources.lib.metadata import dubs
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 TRENDING = fixture("anilist_trending.json")
 FRIEREN = fixture("anilist_media_154587.json")
 ANIZIP = fixture("anizip_154587.json")

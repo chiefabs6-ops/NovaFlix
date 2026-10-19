@@ -5,7 +5,7 @@ import pytest
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.join(ROOT, "tests", "fakes"))
-sys.path.insert(0, os.path.join(ROOT, "plugin.video.aniverse"))
+sys.path.insert(0, os.path.join(ROOT, "plugin.video.novaflix"))
 sys.path.insert(0, ROOT)
 
 import xbmc  # noqa: E402  (fake)

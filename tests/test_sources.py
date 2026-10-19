@@ -18,7 +18,7 @@ from resources.lib.metadata.anilist import to_show
 from resources.lib.models import Candidate
 from resources.lib.sources import discovery, matcher, nyaa, ranking, rdcloud, torrentio
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 
 
 @pytest.fixture(autouse=True)

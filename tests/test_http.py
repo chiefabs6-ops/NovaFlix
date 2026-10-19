@@ -44,7 +44,7 @@ def test_get_returns_json_and_sends_user_agent(sleeps):
     resp = http.get("https://api.example.com/x", params={"q": "frieren"})
     assert resp.json() == {"a": 1}
     assert t.calls[0]["url"] == "https://api.example.com/x?q=frieren"
-    assert t.calls[0]["headers"]["User-Agent"].startswith("AniVerse/")
+    assert t.calls[0]["headers"]["User-Agent"].startswith("NovaFlix/")
     assert t.calls[0]["timeout"] == http.DEFAULT_TIMEOUT
 
 

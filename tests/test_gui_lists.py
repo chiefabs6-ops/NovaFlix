@@ -155,9 +155,9 @@ def test_related_empty_and_partial(monkeypatch):
 
 def test_play_episode_builds_play_url():
     actions.play_episode(7, 3, 754)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=7&ep=3&resume=754)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=7&ep=3&resume=754)"
     actions.play_episode(7, 4)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=7&ep=4)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=7&ep=4)"
 
 
 def test_play_next_picks_started_episode(monkeypatch):
@@ -165,7 +165,7 @@ def test_play_next_picks_started_episode(monkeypatch):
     monkeypatch.setattr(catalog.Catalog, "episodes", lambda self, x: [Episode(anilist_id=7, number=n) for n in (1, 2, 3)])
     History(paths.profile_dir()).save_position(7, 2, 107, 500, 1440)
     actions.play_next(s)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=7&ep=2&resume=500)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=7&ep=2&resume=500)"
 
 
 def test_episode_choice_resume_or_start(monkeypatch):

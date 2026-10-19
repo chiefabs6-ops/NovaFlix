@@ -11,7 +11,7 @@ from resources.lib.kodi import ui
 
 @pytest.fixture(autouse=True)
 def look_on():
-    xbmcaddon.settings["aniverse_look"] = True
+    xbmcaddon.settings["novaflix_look"] = True
 
 
 def click(control_id):
@@ -36,7 +36,7 @@ def test_confirm_yes_no_and_back():
     assert ui.confirm("TorBox", "Download it?") is False
     assert ui.confirm("TorBox", "Download it?") is False
     window = xbmcgui.xml_dialogs[-1]
-    assert window.xml_file == "aniverse-confirm.xml" and window.properties["message"] == "Download it?"
+    assert window.xml_file == "novaflix-confirm.xml" and window.properties["message"] == "Download it?"
 
 
 def test_source_dialog_returns_position_like_kodi():
@@ -69,7 +69,7 @@ def test_progress_contract():
     progress = ui.Progress("Downloading", "Starting")
     progress.update(42, "42% downloaded")
     window = xbmcgui.xml_dialogs[-1]
-    assert window.xml_file == "aniverse-progress.xml" and window.shown
+    assert window.xml_file == "novaflix-progress.xml" and window.shown
     assert window.getControl(ids.PROGRESS_BAR).percent == 42 and window.properties["message"] == "42% downloaded"
     assert progress.cancelled() is False
     window.onClick(ids.PROGRESS_CANCEL)
@@ -79,8 +79,8 @@ def test_progress_contract():
 
 
 def test_look_off_keeps_kodi_dialogs():
-    xbmcaddon.settings["aniverse_look"] = False
+    xbmcaddon.settings["novaflix_look"] = False
     xbmcgui.select_answers.append(0)
     assert ui.select_details("x", [("a", "b")]) == 0
     assert ui.confirm("h", "m") is True  # Kodi fake yesno default
-    assert not any(d.xml_file.startswith("aniverse-confirm") for d in xbmcgui.xml_dialogs)
+    assert not any(d.xml_file.startswith("novaflix-confirm") for d in xbmcgui.xml_dialogs)

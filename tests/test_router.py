@@ -3,7 +3,7 @@ import xbmcplugin
 
 from resources.lib import router
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 
 
 def test_parse_root():

@@ -26,7 +26,7 @@ from resources.lib.sources import precheck
 from resources.lib.storage.added import AddedTorrents
 from resources.lib.storage.cache import Cache
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 KEY = "TORBOXKEY-0000-1111-2222-333344445555"
 HASH = "a" * 40
 FILE_NAME = "Show - S01E03.mkv"
@@ -165,7 +165,7 @@ def test_play_through_torbox_cached_source():
     assert "Ready to play" in xbmcgui.select_calls[-1][1][0][1]
     handle, ok, item = xbmcplugin.resolved[-1]
     assert ok and item.path == STREAM
-    payload = json.loads(xbmcgui.window_properties["aniverse.playing"])
+    payload = json.loads(xbmcgui.window_properties["novaflix.playing"])
     assert payload["cleanup_torrent"] == "100"
 
 

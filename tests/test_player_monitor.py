@@ -196,7 +196,7 @@ def test_skip_button_seeks_past_opening(mon):
     start(mon)
     play_to(mon, 65, 0)
     dialog = xbmcgui.xml_dialogs[-1]
-    assert dialog.xml_file == "aniverse-prompt.xml" and dialog.properties["button"] == "Skip intro"
+    assert dialog.xml_file == "novaflix-prompt.xml" and dialog.properties["button"] == "Skip intro"
     dialog.onClick(9000)
     assert xbmc.Player.seeks == [150.0] and dialog.closed
 
@@ -242,7 +242,7 @@ def test_up_next_presearches_and_opens_source_list_on_ok(mon):
     dialog.onClick(9000)
     mon.onPlayBackStopped()
     mon.tick(1)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=154587&ep=4)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=154587&ep=4)"
 
 
 def test_up_next_replaces_skip_ending(mon):
@@ -269,11 +269,11 @@ def test_playback_error_offers_another_source(mon):
     xbmcgui.yesno_answers.append(True)
     mon.onPlayBackError()
     assert "Choose another source" in xbmcgui.yesno_calls[-1][1]
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=154587&ep=3)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=154587&ep=3)"
 
 
-def test_list_refreshes_after_stop_when_showing_aniverse(mon):
-    xbmc.info_labels["Container.FolderPath"] = "plugin://plugin.video.aniverse/show?id=154587"
+def test_list_refreshes_after_stop_when_showing_novaflix(mon):
+    xbmc.info_labels["Container.FolderPath"] = "plugin://plugin.video.novaflix/show?id=154587"
     start(mon)
     play_to(mon, 700, 0)
     mon.onPlayBackStopped()
@@ -313,7 +313,7 @@ def test_watched_episode_is_queued_for_mal_once(mon, monkeypatch):
 
 # -- Up next buttons: stop first, then one transition ------------------------------------------
 
-NEXT_URL = "PlayMedia(plugin://plugin.video.aniverse/play?id=154587&ep=4)"
+NEXT_URL = "PlayMedia(plugin://plugin.video.novaflix/play?id=154587&ep=4)"
 
 
 class Key:
@@ -395,7 +395,7 @@ def test_player_that_will_not_stop_starts_nothing(mon):
     assert NEXT_URL not in xbmc.builtins_executed
 
 
-def test_end_episode_returns_to_the_open_aniverse_window(mon):
+def test_end_episode_returns_to_the_open_novaflix_window(mon):
     xbmcgui.Window(10000).setProperty(monitor_mod.GUI_PROPERTY, "true")
     dialog = up_next(mon)
     session = mon.session
@@ -411,11 +411,11 @@ def test_end_episode_returns_to_the_open_aniverse_window(mon):
 
 
 @pytest.mark.parametrize("styled,command", [
-    (True, "RunPlugin(plugin://plugin.video.aniverse/launch?show=154587)"),
-    (False, "ActivateWindow(Videos,plugin://plugin.video.aniverse/show?id=154587,return)"),
+    (True, "RunPlugin(plugin://plugin.video.novaflix/launch?show=154587)"),
+    (False, "ActivateWindow(Videos,plugin://plugin.video.novaflix/show?id=154587,return)"),
 ])
-def test_end_episode_opens_the_show_when_aniverse_is_not_open(mon, styled, command):
-    xbmcaddon.settings["aniverse_look"] = styled
+def test_end_episode_opens_the_show_when_novaflix_is_not_open(mon, styled, command):
+    xbmcaddon.settings["novaflix_look"] = styled
     dialog = up_next(mon)
     dialog.onClick(9001)
     mon.tick(1)

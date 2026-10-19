@@ -29,7 +29,7 @@ def app(monkeypatch):
         calls.append((key, page_no))
         return page(30, more=page_no < 2, start=(page_no - 1) * 30)
     monkeypatch.setattr(lists, "load", fake_load)
-    window = app_mod.AppWindow("aniverse-app.xml", "", "Default", "1080i")
+    window = app_mod.AppWindow("novaflix-app.xml", "", "Default", "1080i")
     a = app_mod.App(window, loader.Loader(spawn=loader.inline))
     window.app = a
     a.calls = calls
@@ -162,7 +162,7 @@ def test_page_from_before_a_reload_is_dropped(monkeypatch):
     jobs = []
     monkeypatch.setattr(lists, "home_row", lambda key: lists.Page(key, []))
     monkeypatch.setattr(lists, "load", lambda key, page_no=1: page(30, more=True, start=(page_no - 1) * 30))
-    window = app_mod.AppWindow("aniverse-app.xml", "", "Default", "1080i")
+    window = app_mod.AppWindow("novaflix-app.xml", "", "Default", "1080i")
     a = app_mod.App(window, loader.Loader(spawn=jobs.append))
     window.app = a
     window.onInit()
@@ -269,7 +269,7 @@ def test_context_menu_related_opens_related_view(app, monkeypatch):
 
 def test_play_and_search_actions(app, monkeypatch):
     app.run(("play", 7, 3, 754))
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=7&ep=3&resume=754)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=7&ep=3&resume=754)"
     xbmcgui.input_answers.append("frieren")
     app.run(("search_new",))
     assert app.stack[-1] == "search:frieren"
@@ -310,7 +310,7 @@ def test_context_menu_adds_favourite(app, monkeypatch):
 def test_back_while_loading_ignores_late_results(monkeypatch):
     pending = []
     monkeypatch.setattr(lists, "home_row", lambda key: lists.Page(key, [Card(label="x", action=("show", 1))]))
-    window = app_mod.AppWindow("aniverse-app.xml", "", "Default", "1080i")
+    window = app_mod.AppWindow("novaflix-app.xml", "", "Default", "1080i")
     a = app_mod.App(window, loader.Loader(spawn=pending.append))
     window.app = a
     window.onInit()
@@ -328,7 +328,7 @@ def deferred(monkeypatch):
     pending = []
     monkeypatch.setattr(lists, "home_row", lambda key: lists.Page(key, []))
     monkeypatch.setattr(lists, "load", lambda key, page_no=1: page(30))
-    window = app_mod.AppWindow("aniverse-app.xml", "", "Default", "1080i")
+    window = app_mod.AppWindow("novaflix-app.xml", "", "Default", "1080i")
     a = app_mod.App(window, loader.Loader(spawn=pending.append))
     window.app = a
     window.onInit()
@@ -354,7 +354,7 @@ def test_results_of_a_left_grid_are_dropped(deferred):
     assert deferred.window.getControl(ids.GRID).size() == 30  # not 60
 
 
-def test_failed_load_of_a_left_grid_does_not_close_aniverse(deferred, monkeypatch):
+def test_failed_load_of_a_left_grid_does_not_close_novaflix(deferred, monkeypatch):
     from resources.lib import errors
     def boom(key, page_no=1):
         raise errors.NetworkError("down")
@@ -382,9 +382,9 @@ def test_reinit_after_show_page_focuses_the_current_view(app):
 
 def test_app_layout_does_not_force_focus_on_reinit():
     import os
-    path = os.path.join(os.path.dirname(__file__), "..", "plugin.video.aniverse", "resources", "skins",
+    path = os.path.join(os.path.dirname(__file__), "..", "plugin.video.novaflix", "resources", "skins",
                         "Default", "1080i")
-    for name in ("aniverse-app.xml", "aniverse-show.xml"):
+    for name in ("novaflix-app.xml", "novaflix-show.xml"):
         assert 'always="true"' not in open(os.path.join(path, name), encoding="utf-8").read()
 
 
@@ -541,7 +541,7 @@ def test_long_press_adds_a_show_to_myanimelist_with_the_chosen_status(app, mal_m
     cache.close()
 
 
-def test_adding_as_completed_counts_every_episode_and_watching_keeps_aniverse_progress(app, mal_menu):
+def test_adding_as_completed_counts_every_episode_and_watching_keeps_novaflix_progress(app, mal_menu):
     from resources.lib.storage.history import History
     pick("Add to MyAnimeList", "Completed")
     app.window.onAction(xbmcgui.Action(117))
@@ -639,7 +639,7 @@ def test_app_started_for_a_show_opens_it_over_home(monkeypatch):
     xbmcgui.modal_scripts.append(lambda w: flags.append(xbmcgui.Window(10000).getProperty(monitor.GUI_PROPERTY)))
     app_mod.run(154587)
     assert opened == [154587] and flags == ["true"]
-    assert monitor.GUI_PROPERTY not in xbmcgui.window_properties  # cleared when AniVerse closes
+    assert monitor.GUI_PROPERTY not in xbmcgui.window_properties  # cleared when NovaFlix closes
 
 
 def test_phone_search_opens_the_results_like_the_keyboard(app, monkeypatch):

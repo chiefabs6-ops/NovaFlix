@@ -30,7 +30,7 @@ def page(monkeypatch):
     monkeypatch.setattr(catalog.Catalog, "dub_estimates", lambda self, s, n: {})
     monkeypatch.setattr(catalog.Catalog, "dub_status", lambda self, s: "dubbed")
     monkeypatch.setattr(av, "check", lambda i, n: av.Availability(av.AVAILABLE))
-    window = show_view.ShowWindow("aniverse-show.xml", "", "Default", "1080i")
+    window = show_view.ShowWindow("novaflix-show.xml", "", "Default", "1080i")
     p = show_view.ShowPage(window, 7, loader.Loader(spawn=loader.inline))
     window.page = p
     return p
@@ -54,7 +54,7 @@ def test_resume_button_and_play(page):
     page.window.onInit()
     assert page.window.properties["play_label"] == "Resume Ep 2 · 8:20"
     page.window.onClick(ids.SHOW_PLAY)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=7&ep=2&resume=500)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=7&ep=2&resume=500)"
 
 
 def test_favourite_toggle(page):
@@ -78,7 +78,7 @@ def test_episode_select_plays_and_menu_marks(page):
     page.window.onInit()
     page.window.getControl(ids.SHOW_EPISODES).selectItem(2)
     page.window.onClick(ids.SHOW_EPISODES)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=7&ep=3)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=7&ep=3)"
     page.window.setFocusId(ids.SHOW_EPISODES)
     xbmcgui.modal_scripts.append(lambda w: (w.getControl(ids.MENU_LIST).selectItem(0), w.onClick(ids.MENU_LIST)))
     page.window.onAction(xbmcgui.Action(117))
@@ -174,7 +174,7 @@ def test_show_page_fills_before_mal_answers(monkeypatch):
     mal_login()
     FakeNet().route("anime/52991?", FRIEREN_ON_MAL)
     jobs = []
-    window = show_view.ShowWindow("aniverse-show.xml", "", "Default", "1080i")
+    window = show_view.ShowWindow("novaflix-show.xml", "", "Default", "1080i")
     p = show_view.ShowPage(window, 7, loader.Loader(spawn=jobs.append))
     window.page = p
     window.onInit()
@@ -198,7 +198,7 @@ def deferred_page(monkeypatch, check):
     monkeypatch.setattr(catalog.Catalog, "dub_status", lambda self, s: "dubbed")
     monkeypatch.setattr(av, "check", check)
     jobs = []
-    window = show_view.ShowWindow("aniverse-show.xml", "", "Default", "1080i")
+    window = show_view.ShowWindow("novaflix-show.xml", "", "Default", "1080i")
     p = show_view.ShowPage(window, 7, loader.Loader(spawn=jobs.append))
     window.page = p
     window.onInit()
@@ -242,7 +242,7 @@ def test_saved_results_need_no_search_and_mark_the_episodes(monkeypatch):
     assert p.window.properties["avail_line"] == "Ep 1 · No streams currently available"
     assert [i.properties["avail"] for i in episodes(p)] == ["unavailable", "", "available"]
     p.window.onClick(ids.SHOW_PLAY)  # Play still opens the source list (it searches again)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=7&ep=1)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=7&ep=1)"
 
 
 def test_next_episode_after_playback_is_checked(monkeypatch):

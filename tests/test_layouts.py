@@ -9,7 +9,7 @@ import pytest
 
 from resources.lib.gui import ids
 
-SKIN = os.path.join(os.path.dirname(__file__), "..", "plugin.video.aniverse", "resources", "skins", "Default")
+SKIN = os.path.join(os.path.dirname(__file__), "..", "plugin.video.novaflix", "resources", "skins", "Default")
 LAYOUTS = os.path.join(SKIN, "1080i")
 MEDIA = os.path.join(SKIN, "media")
 ESTUARY_FONTS = {"font10", "font12", "font13", "font14", "font23_narrow", "font25_narrow", "font27",
@@ -52,7 +52,7 @@ def test_no_unexpanded_placeholders(name):
 
 
 def test_related_view_rows_hide_when_empty_and_sidebar_reaches_them():
-    root = ET.parse(os.path.join(LAYOUTS, "aniverse-app.xml")).getroot()
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-app.xml")).getroot()
     lists_by_id = {int(c.get("id")): c for c in root.iter("control") if c.get("id", "").isdigit()}
     for n, control_id in enumerate(ids.RELATED_ROWS):
         row = lists_by_id[control_id]
@@ -60,7 +60,7 @@ def test_related_view_rows_hide_when_empty_and_sidebar_reaches_them():
         downs = [d.text for d in row.findall("ondown")]
         if n < len(ids.RELATED_ROWS) - 1:
             assert downs == [str(ids.RELATED_ROWS[n + 1])]
-    text = open(os.path.join(LAYOUTS, "aniverse-app.xml"), encoding="utf-8").read()
+    text = open(os.path.join(LAYOUTS, "novaflix-app.xml"), encoding="utf-8").read()
     for control_id in ids.RELATED_ROWS:
         assert f"Integer.IsGreater(Container({control_id}).NumItems,0)" in text
     sidebar = lists_by_id[ids.SIDEBAR]
@@ -69,7 +69,7 @@ def test_related_view_rows_hide_when_empty_and_sidebar_reaches_them():
 
 
 def test_sidebar_settings_button_sits_below_the_list_and_reaches_every_view():
-    root = ET.parse(os.path.join(LAYOUTS, "aniverse-app.xml")).getroot()
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-app.xml")).getroot()
     by_id = {int(c.get("id")): c for c in root.iter("control") if c.get("id", "").isdigit()}
     sidebar, settings = by_id[ids.SIDEBAR], by_id[ids.SIDEBAR_SETTINGS]
     assert sidebar.find("ondown").text == str(ids.SIDEBAR_SETTINGS)
@@ -84,7 +84,7 @@ def test_open_sidebar_fits_without_scrolling():
     # The Explore accent bar is drawn at a fixed position, so the open list must never scroll.
     # Kodi does not choose item layouts per item, so the list has exactly one of each.
     from resources.lib.gui import app
-    root = ET.parse(os.path.join(LAYOUTS, "aniverse-app.xml")).getroot()
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-app.xml")).getroot()
     sidebar = next(c for c in root.iter("control") if c.get("id") == str(ids.SIDEBAR))
     layouts = sidebar.findall("itemlayout") + sidebar.findall("focusedlayout")
     assert len(layouts) == 2 and not any(l.get("condition") for l in layouts)

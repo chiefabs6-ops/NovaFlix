@@ -6,7 +6,7 @@ import struct
 
 import pytest
 
-MEDIA = os.path.join(os.path.dirname(__file__), "..", "plugin.video.aniverse", "resources", "skins", "Default", "media")
+MEDIA = os.path.join(os.path.dirname(__file__), "..", "plugin.video.novaflix", "resources", "skins", "Default", "media")
 ICONS = ["home", "search", "play_circle", "format_list_bulleted", "star", "schedule", "calendar_month",
          "trending_up", "local_fire_department", "auto_awesome", "grid_view", "inventory_2", "settings",
          "play_arrow", "info", "check_circle", "favorite", "chevron_right", "history", "add_link", "folder", "movie",
@@ -37,7 +37,7 @@ def test_icons_exist(name):
 
 
 def test_addon_icon_is_square_512():
-    assert png_size(os.path.join(MEDIA, "..", "..", "..", "..", "aniverse-icon.png")) == (512, 512)
+    assert png_size(os.path.join(MEDIA, "..", "..", "..", "..", "novaflix-icon.png")) == (512, 512)
 
 
 def test_icon_licence_shipped():
@@ -46,7 +46,7 @@ def test_icon_licence_shipped():
 
 
 @pytest.mark.parametrize("path", [os.path.join(MEDIA, "av-logo.png"),
-                                  os.path.join(MEDIA, "..", "..", "..", "..", "aniverse-icon.png")])
+                                  os.path.join(MEDIA, "..", "..", "..", "..", "novaflix-icon.png")])
 def test_logo_is_only_what_is_inside_the_frame(path):
     # Owner: use only what is inside the neon outline — no dark background around it.
     image = pytest.importorskip("PIL.Image").open(path).convert("RGBA")
@@ -55,20 +55,20 @@ def test_logo_is_only_what_is_inside_the_frame(path):
     assert image.getpixel((w // 2, h // 2))[3] == 255
 
 
-@pytest.mark.parametrize("addon", ["plugin.video.aniverse", "repository.aniverse"])
+@pytest.mark.parametrize("addon", ["plugin.video.novaflix", "repository.novaflix"])
 def test_addon_icons_use_the_new_logo_under_a_new_name(addon):
     # Kodi caches icons by path for about a day; a new file name shows the new logo at once.
     import xml.etree.ElementTree as ET
     base = os.path.join(os.path.dirname(__file__), "..", addon)
     icon = ET.parse(os.path.join(base, "addon.xml")).getroot().find(".//assets/icon").text
-    assert icon == "aniverse-icon.png"
+    assert icon == "novaflix-icon.png"
     path = os.path.join(base, icon)
     assert png_size(path) == (512, 512)
-    assert open(path, "rb").read() == open(os.path.join(os.path.dirname(__file__), "..", "plugin.video.aniverse",
-                                                         "aniverse-icon.png"), "rb").read()
+    assert open(path, "rb").read() == open(os.path.join(os.path.dirname(__file__), "..", "plugin.video.novaflix",
+                                                         "novaflix-icon.png"), "rb").read()
 
 
-@pytest.mark.parametrize("name", ["aniverse-sources.xml", "aniverse-menu.xml"])
+@pytest.mark.parametrize("name", ["novaflix-sources.xml", "novaflix-menu.xml"])
 def test_list_popups_do_not_focus_their_empty_list_on_open(name):
     # Python fills the list in onInit and then focuses it; a defaultcontrol logs "can't focus".
     text = open(os.path.join(MEDIA, "..", "1080i", name), encoding="utf-8").read()

@@ -25,7 +25,7 @@ def row(key):
 def make_app(monkeypatch):
     def build(row_fn=row):
         monkeypatch.setattr(lists, "home_row", row_fn)
-        window = app_mod.AppWindow("aniverse-app.xml", "", "Default", "1080i")
+        window = app_mod.AppWindow("novaflix-app.xml", "", "Default", "1080i")
         a = app_mod.App(window, loader.Loader(spawn=loader.inline))
         window.app = a
         window.onInit()
@@ -67,7 +67,7 @@ def test_play_now_and_more_info(make_app, monkeypatch):
 def test_continue_card_resumes(make_app):
     a = make_app()
     a.window.onClick(ids.HOME_ROWS[0])
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=7&ep=5&resume=754)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=7&ep=5&resume=754)"
 
 
 def test_one_failed_row_says_so_and_rest_work(make_app):

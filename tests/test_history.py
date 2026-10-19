@@ -12,7 +12,7 @@ from resources.lib.metadata import catalog
 from resources.lib.storage import history as history_mod
 from resources.lib.storage.history import History
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 
 
 def dispatch(path, query=""):
@@ -172,7 +172,7 @@ def test_context_menus_cover_dec_036():
     from resources.lib.views import listing
     listing.add_show(1, show(7))
     show_menu = dict(items()[0].context_menu)
-    assert show_menu["Related & sequels"] == "Container.Update(plugin://plugin.video.aniverse/related?id=7)"
+    assert show_menu["Related & sequels"] == "Container.Update(plugin://plugin.video.novaflix/related?id=7)"
     assert show_menu["Add to Favourites"].startswith("RunPlugin(")
     from resources.lib.views import history
     assert "Choose a different source" in [entry[0] for entry in history.episode_context(7, 3, None)]
@@ -186,7 +186,7 @@ def test_episode_context_builtins(hist, monkeypatch):
     monkeypatch.setattr(catalog.Catalog, "dub_estimates", lambda self, _s, _n: {})
     dispatch("show", "?id=1")
     menu = dict(items()[0].context_menu)
-    assert menu["Choose a different source"] == "PlayMedia(plugin://plugin.video.aniverse/play?id=1&ep=1&refresh=1)"
+    assert menu["Choose a different source"] == "PlayMedia(plugin://plugin.video.novaflix/play?id=1&ep=1&refresh=1)"
 
 
 def test_related_without_entries_explains():

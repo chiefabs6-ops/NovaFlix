@@ -17,7 +17,7 @@ def test_service_runs_until_abort_and_logs_lifecycle():
 def test_log_lines_are_prefixed_with_addon_id():
     xbmc.Monitor.waits_before_abort = 0
     service_main.run()
-    assert all(msg.startswith("[plugin.video.aniverse]") for _, msg in xbmc.log_records)
+    assert all(msg.startswith("[plugin.video.novaflix]") for _, msg in xbmc.log_records)
 
 
 def test_service_sends_mal_changes_when_woken(monkeypatch):

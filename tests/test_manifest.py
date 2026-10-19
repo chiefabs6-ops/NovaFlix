@@ -4,7 +4,7 @@ import os
 import re
 import xml.etree.ElementTree as ET
 
-ADDON_DIR = os.path.join(os.path.dirname(__file__), "..", "plugin.video.aniverse")
+ADDON_DIR = os.path.join(os.path.dirname(__file__), "..", "plugin.video.novaflix")
 
 
 def _po_ids():
@@ -15,8 +15,8 @@ def _po_ids():
 
 def test_addon_xml_identity_and_requirements():
     root = ET.parse(os.path.join(ADDON_DIR, "addon.xml")).getroot()
-    assert root.get("id") == "plugin.video.aniverse"
-    assert root.get("name") == "AniVerse"
+    assert root.get("id") == "plugin.video.novaflix"
+    assert root.get("name") == "NovaFlix"
     assert re.fullmatch(r"\d+\.\d+\.\d+", root.get("version"))
     imports = {i.get("addon"): i.get("version") for i in root.iter("import")}
     assert imports.get("xbmc.python") == "3.0.1"

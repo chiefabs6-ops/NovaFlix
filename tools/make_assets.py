@@ -1,5 +1,5 @@
 # tools/make_assets.py
-"""Generate AniVerse UI images (M12). Developer machine only; the add-on never imports Pillow.
+"""Generate NovaFlix UI images (M12). Developer machine only; the add-on never imports Pillow.
 
 Usage:  .venv\\Scripts\\python tools\\make_assets.py
 Colours here are the single source for the PNGs (XML tints white shapes with colordiffuse).
@@ -12,9 +12,9 @@ import urllib.request
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-MEDIA = os.path.join(ROOT, "plugin.video.aniverse", "resources", "skins", "Default", "media")
+MEDIA = os.path.join(ROOT, "plugin.video.novaflix", "resources", "skins", "Default", "media")
 CACHE = os.path.join(ROOT, "tools", ".cache")
-LOGO_SOURCE = os.path.join(ROOT, "tools", "source_art", "aniverse-logo-source.png")
+LOGO_SOURCE = os.path.join(ROOT, "tools", "source_art", "novaflix-logo-source.png")
 FONT_BASE = "https://raw.githubusercontent.com/google/material-design-icons/master/"
 FONT_FILE = "variablefont/MaterialSymbolsRounded%5BFILL,GRAD,opsz,wght%5D"
 LICENSE_URL = FONT_BASE + "LICENSE"
@@ -162,8 +162,8 @@ def logo():
     square.resize((280, 280), Image.LANCZOS).save(os.path.join(MEDIA, "av-logo.png"), optimize=True)
     icon = square.resize((512, 512), Image.LANCZOS)
     # New file name: Kodi caches icons by path, so the new logo shows without waiting a day.
-    for addon in ("plugin.video.aniverse", "script.aniverse", "repository.aniverse"):
-        icon.save(os.path.join(ROOT, addon, "aniverse-icon.png"), optimize=True)
+    for addon in ("plugin.video.novaflix", "script.novaflix", "repository.novaflix"):
+        icon.save(os.path.join(ROOT, addon, "novaflix-icon.png"), optimize=True)
 
 
 def main():

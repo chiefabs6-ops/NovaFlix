@@ -5,9 +5,9 @@ Not packaged with the add-on.
 
 Usage (from project root, Kodi installed):
   .venv\\Scripts\\python tools\\dev_kodi.py install      # copy add-on, restart Kodi, enable it
-  .venv\\Scripts\\python tools\\dev_kodi.py open [path]  # open plugin://plugin.video.aniverse/<path>
+  .venv\\Scripts\\python tools\\dev_kodi.py open [path]  # open plugin://plugin.video.novaflix/<path>
   .venv\\Scripts\\python tools\\dev_kodi.py shot NAME    # screenshot into dist/screens/
-  .venv\\Scripts\\python tools\\dev_kodi.py log          # AniVerse + error lines from kodi.log
+  .venv\\Scripts\\python tools\\dev_kodi.py log          # NovaFlix + error lines from kodi.log
   .venv\\Scripts\\python tools\\dev_kodi.py measure [rounds] [path ...]  # menu open times
 
 KODI_HOST=192.168.1.86 drives the Fire TV stick instead (needs "Allow remote control
@@ -24,8 +24,8 @@ import sys
 import time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-ADDON_ID = "plugin.video.aniverse"
-LAUNCHER_ID = "script.aniverse"
+ADDON_ID = "plugin.video.novaflix"
+LAUNCHER_ID = "script.novaflix"
 KODI_EXE = r"C:\Program Files\Kodi\kodi.exe"
 KODI_DATA = os.path.join(os.environ.get("APPDATA", ""), "Kodi")
 SCREEN_DIR = os.path.join(ROOT, "dist", "screens")

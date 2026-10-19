@@ -175,7 +175,7 @@ def row(**kw):
     (dict(episode=0, watched=True), False),
     (dict(episode=2, watched=True), True),
     (dict(episode=5, watched=True), True),
-    (dict(episode=1, watched=False, position_s=300.0), True),      # really playing episode 1 in AniVerse
+    (dict(episode=1, watched=False, position_s=300.0), True),      # really playing episode 1 in NovaFlix
     (dict(episode=2, watched=False, position_s=0.0), False),       # only episode 1 done
     (dict(episode=3, watched=False, position_s=0.0), True),
 ])

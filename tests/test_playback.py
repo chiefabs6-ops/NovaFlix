@@ -25,7 +25,7 @@ from resources.lib.storage import db
 from resources.lib.storage.added import AddedTorrents
 from resources.lib.views import play
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 
 
 @pytest.fixture(autouse=True)

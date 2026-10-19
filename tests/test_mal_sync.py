@@ -1,4 +1,4 @@
-"""M13: what AniVerse sends to MyAnimeList, the queue and the service's sender."""
+"""M13: what NovaFlix sends to MyAnimeList, the queue and the service's sender."""
 
 from urllib.parse import parse_qs
 
@@ -14,7 +14,7 @@ from resources.lib.myanimelist import api, auth, rules, sync
 from resources.lib.storage.cache import Cache
 from resources.lib.storage.history import History
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 NOW = 1_800_000_000.0
 ENTRY = {"id": 52991, "title": "Sousou no Frieren", "num_episodes": 28, "status": "finished_airing",
          "my_list_status": {"status": "watching", "num_episodes_watched": 7, "score": 8}}

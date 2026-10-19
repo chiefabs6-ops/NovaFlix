@@ -8,7 +8,7 @@ import os
 import re
 
 ADDON_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "plugin.video.aniverse")
+    os.path.join(os.path.dirname(__file__), "..", "..", "plugin.video.novaflix")
 )
 _PO_PATH = os.path.join(ADDON_DIR, "resources", "language", "resource.language.en_gb", "strings.po")
 
@@ -29,8 +29,8 @@ class Addon:
 
     def getAddonInfo(self, key):
         info = {
-            "id": "plugin.video.aniverse",
-            "name": "AniVerse",
+            "id": "plugin.video.novaflix",
+            "name": "NovaFlix",
             "version": "0.0.0-test",
             "path": ADDON_DIR,
             "icon": os.path.join(ADDON_DIR, "icon.png"),

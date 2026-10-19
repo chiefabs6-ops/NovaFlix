@@ -6,14 +6,14 @@ from resources.lib import router
 from resources.lib.kodi import paths
 from resources.lib.storage import cache, db
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 
 
 def test_profile_dir_is_created_under_addon_data(kodi_profile):
     path = paths.profile_dir()
     assert os.path.isdir(path)
     assert path.startswith(str(kodi_profile))
-    assert "plugin.video.aniverse" in path
+    assert "plugin.video.novaflix" in path
 
 
 def test_clear_cache_confirmed_clears_and_notifies():

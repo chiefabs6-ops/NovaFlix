@@ -20,7 +20,7 @@ def test_debug_written_at_info_level_when_setting_on():
     # toggle writes debug lines at LOGINFO.
     xbmcaddon.settings["debug_logging"] = True
     log.debug("detail")
-    assert xbmc.log_records == [(xbmc.LOGINFO, "[plugin.video.aniverse] [debug] detail")]
+    assert xbmc.log_records == [(xbmc.LOGINFO, "[plugin.video.novaflix] [debug] detail")]
 
 
 def test_all_levels_are_redacted():

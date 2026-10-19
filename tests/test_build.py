@@ -7,15 +7,15 @@ from tools import build
 def test_build_creates_installable_zip(tmp_path):
     zip_path = build.build_zip(out_dir=str(tmp_path))
     version = build.read_version()
-    assert os.path.basename(zip_path) == f"plugin.video.aniverse-{version}.zip"
+    assert os.path.basename(zip_path) == f"plugin.video.novaflix-{version}.zip"
 
     with zipfile.ZipFile(zip_path) as zf:
         names = zf.namelist()
     # Kodi expects a single top-level folder named after the add-on ID.
-    assert {n.split("/")[0] for n in names} == {"plugin.video.aniverse"}
-    assert "plugin.video.aniverse/addon.xml" in names
-    assert "plugin.video.aniverse/default.py" in names
-    assert "plugin.video.aniverse/service.py" in names
+    assert {n.split("/")[0] for n in names} == {"plugin.video.novaflix"}
+    assert "plugin.video.novaflix/addon.xml" in names
+    assert "plugin.video.novaflix/default.py" in names
+    assert "plugin.video.novaflix/service.py" in names
 
 
 def test_build_excludes_caches_and_bytecode(tmp_path):
@@ -79,7 +79,7 @@ def test_release_builds_kodi_repository(tmp_path):
     zip_path = os.path.join(repo, build.ADDON_ID, f"{build.ADDON_ID}-{version}.zip")
     with open(zip_path, "rb") as f:
         assert open(zip_path + ".sha256").read() == hashlib.sha256(f.read()).hexdigest()
-    assert os.path.exists(os.path.join(repo, build.ADDON_ID, "aniverse-icon.png"))  # listed in addon.xml <assets>
+    assert os.path.exists(os.path.join(repo, build.ADDON_ID, "novaflix-icon.png"))  # listed in addon.xml <assets>
     index = open(os.path.join(repo, "addons.xml"), "rb").read()
     assert open(os.path.join(repo, "addons.xml.sha256")).read() == hashlib.sha256(index).hexdigest()
     ids = {(a.get("id"), a.get("version")) for a in ET.fromstring(index)}
@@ -106,15 +106,15 @@ def test_older_version_than_published_is_refused(tmp_path):
 def test_keeps_last_three_versions_and_lists_them_all(tmp_path):
     repo = str(tmp_path)
     folder = os.path.join(repo, build.ADDON_ID)
-    for old in ("0.1.0", "0.2.0", "0.3.0"):
+    for old in ("0.0.1", "0.0.2", "0.0.3"):
         _fake_zip(folder, build.ADDON_ID, old)
     report = build.release(repo, tests=False, history=False)
-    assert report[build.ADDON_ID][2] == ["0.1.0"]
+    assert report[build.ADDON_ID][2] == ["0.0.1"]
     kept = sorted(n for n in os.listdir(folder) if n.endswith(".zip"))
-    assert len(kept) == 3 and f"{build.ADDON_ID}-0.1.0.zip" not in kept
+    assert len(kept) == 3 and f"{build.ADDON_ID}-0.0.1.zip" not in kept
     versions = [a.get("version") for a in ET.parse(os.path.join(repo, "addons.xml")).getroot()
                 if a.get("id") == build.ADDON_ID]
-    assert versions == [build.read_version(), "0.3.0", "0.2.0"]  # newest first; older ones for rollback
+    assert versions == [build.read_version(), "0.0.3", "0.0.2"]  # newest first; older ones for rollback
 
 
 def test_repository_addon_points_at_https_pages_url():
@@ -127,7 +127,7 @@ def test_folders_get_link_pages_for_kodi_file_manager(tmp_path):
     repo = str(tmp_path)
     build.release(repo, tests=False, history=False)
     root_page = open(os.path.join(repo, "index.html"), encoding="utf-8").read()
-    assert '<a href="repository.aniverse/">' in root_page and '<a href="addons.xml">' in root_page
+    assert '<a href="repository.novaflix/">' in root_page and '<a href="addons.xml">' in root_page
     repo_page = open(os.path.join(repo, build.REPO_ID, "index.html"), encoding="utf-8").read()
     assert f'<a href="{build.REPO_ID}-{build.read_version(build.REPO_ID)}.zip">' in repo_page
 
@@ -167,9 +167,16 @@ def test_release_publishes_static_pages(tmp_path):
 def test_release_includes_the_launcher(tmp_path):
     repo = str(tmp_path)
     report = build.release(repo, tests=False, history=False)
-    assert build.LAUNCHER_ID == "script.aniverse" and build.LAUNCHER_ID in build.ADDONS
+    assert build.LAUNCHER_ID == "script.novaflix" and build.LAUNCHER_ID in build.ADDONS
     version = build.read_version(build.LAUNCHER_ID)
     assert report[build.LAUNCHER_ID][:2] == (version, "added")
     assert os.path.exists(os.path.join(repo, build.LAUNCHER_ID, f"{build.LAUNCHER_ID}-{version}.zip"))
     with open(os.path.join(repo, "addons.xml"), encoding="utf-8") as f:
-        assert 'id="script.aniverse"' in f.read()
+        assert 'id="script.novaflix"' in f.read()
+
+
+def test_repo_urls_are_novaflix():
+    # Publishing to AniVerse's update site would replace AniVerse on every device.
+    assert build.REPO_URL == "https://chiefabs6-ops.github.io/novaflix-repo/"
+    assert build.PAGES_GIT == "https://github.com/chiefabs6-ops/novaflix-repo.git"
+    assert build.ADDONS == ("plugin.video.novaflix", "script.novaflix", "repository.novaflix")

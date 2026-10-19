@@ -47,11 +47,11 @@ def test_sensitive_key_value_pairs_are_masked():
 
 
 def test_headers_are_masked_by_name():
-    headers = {"Authorization": "Bearer X", "X-MAL-CLIENT-ID": "Y", "User-Agent": "AniVerse"}
+    headers = {"Authorization": "Bearer X", "X-MAL-CLIENT-ID": "Y", "User-Agent": "NovaFlix"}
     masked = redact.headers(headers)
     assert masked["Authorization"] == "<redacted>"
     assert masked["X-MAL-CLIENT-ID"] == "<redacted>"
-    assert masked["User-Agent"] == "AniVerse"
+    assert masked["User-Agent"] == "NovaFlix"
 
 
 def test_magnet_links_are_masked():

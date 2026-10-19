@@ -20,7 +20,7 @@ from resources.lib.debrid.realdebrid import RealDebrid
 from resources.lib.kodi import paths
 from resources.lib.views import account
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 NOW = 1_800_000_000.0
 
 DEVICE = {

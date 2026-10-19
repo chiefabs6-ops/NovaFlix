@@ -4,7 +4,7 @@ import xbmcplugin
 
 from resources.lib import router
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 
 # DEC-033 order.
 EXPECTED_LABELS = [
@@ -65,6 +65,6 @@ def test_root_opens_app_window_when_look_is_on(monkeypatch):
     from resources.lib.gui import app
     opened = []
     monkeypatch.setattr(app, "run", lambda show_id=None: opened.append(True))
-    xbmcaddon.settings["aniverse_look"] = True
+    xbmcaddon.settings["novaflix_look"] = True
     router.dispatch([BASE, "1", ""])
     assert opened == [True] and xbmcplugin.end_calls[-1][1] is False

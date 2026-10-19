@@ -128,7 +128,7 @@ def test_long_running_show_still_checked(cat):
 def test_show_page_marks_episodes_waiting_for_dub(cat, monkeypatch):
     monkeypatch.setattr(catalog.Catalog, "show", lambda self, _id: frieren2())
     FakeNet().route("animeschedule.net", FRIEREN2).route("api.ani.zip", {})
-    router.dispatch(["plugin://plugin.video.aniverse/show", "1", "?id=182255"])
+    router.dispatch(["plugin://plugin.video.novaflix/show", "1", "?id=182255"])
     items = [item for _, _, item, _ in xbmcplugin.directory_items]  # no relations: episodes only
     assert "Dub expected" not in items[1].getLabel()  # episode 2 already dubbed
     day = datetime.datetime.fromtimestamp(utc(2026, 2, 20, 15).timestamp())  # shown in local time

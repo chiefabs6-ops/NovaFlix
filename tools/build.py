@@ -1,4 +1,4 @@
-"""Package AniVerse and build its Kodi repository (DEC-038, DEC-039, architecture §13).
+"""Package NovaFlix and build its Kodi repository (DEC-038, DEC-039, architecture §13).
 
 Usage:
   .venv\\Scripts\\python tools\\build.py [out_dir]   # plugin zip only (dev installs)
@@ -28,13 +28,13 @@ import xml.etree.ElementTree as ET
 import zipfile
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-ADDON_ID = "plugin.video.aniverse"
-REPO_ID = "repository.aniverse"
-LAUNCHER_ID = "script.aniverse"  # Video add-ons tile that opens AniVerse without Kodi's folder screen
+ADDON_ID = "plugin.video.novaflix"
+REPO_ID = "repository.novaflix"
+LAUNCHER_ID = "script.novaflix"  # Video add-ons tile that opens NovaFlix without Kodi's folder screen
 ADDON_DIR = os.path.join(ROOT, ADDON_ID)
 ADDONS = (ADDON_ID, LAUNCHER_ID, REPO_ID)
-REPO_URL = "https://chiefabs6-ops.github.io/aniverse-repo/"   # must match repository.aniverse/addon.xml
-PAGES_GIT = "https://github.com/chiefabs6-ops/aniverse-repo.git"  # public: built zips only (DEC-038)
+REPO_URL = "https://chiefabs6-ops.github.io/novaflix-repo/"   # must match repository.novaflix/addon.xml
+PAGES_GIT = "https://github.com/chiefabs6-ops/novaflix-repo.git"  # public: built zips only (DEC-038)
 KEEP_VERSIONS = 3
 PAGES_DIR = os.path.join(ROOT, "pages")  # static pages served next to addons.xml (M13 login relay)
 EXCLUDED_DIRS = {"__pycache__", ".pytest_cache"}
@@ -149,7 +149,7 @@ def check_repo_url():
     xml = open(os.path.join(addon_dir(REPO_ID), "addon.xml"), encoding="utf-8").read()
     urls = set(re.findall(r">(https?://[^<]+)<", xml))
     if not urls or any(not u.startswith(REPO_URL) for u in urls):
-        raise ReleaseError(f"repository.aniverse/addon.xml must point at {REPO_URL} (found {sorted(urls)})")
+        raise ReleaseError(f"repository.novaflix/addon.xml must point at {REPO_URL} (found {sorted(urls)})")
     if not REPO_URL.startswith("https://"):
         raise ReleaseError("repository must be served over HTTPS (SEC-14)")
 
@@ -249,7 +249,7 @@ def write_listings(repo_dir):
         dirs.sort()
         names = [d + "/" for d in dirs] + sorted(f for f in files if f != "index.html")
         links = "\n".join(f'<a href="{name}">{name}</a><br>' for name in names)
-        title = "AniVerse repository" + ("" if folder == repo_dir else f" / {os.path.basename(folder)}")
+        title = "NovaFlix repository" + ("" if folder == repo_dir else f" / {os.path.basename(folder)}")
         page = (f'<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>{title}</title></head>\n'
                 f"<body>\n{links}\n</body></html>\n")
         _write(os.path.join(folder, "index.html"), page.encode("utf-8"))

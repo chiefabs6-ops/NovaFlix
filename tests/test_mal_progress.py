@@ -1,4 +1,4 @@
-"""M13: MyAnimeList progress shown in AniVerse — watched marks, next episode, details line."""
+"""M13: MyAnimeList progress shown in NovaFlix — watched marks, next episode, details line."""
 
 import xbmc
 import xbmcplugin
@@ -14,7 +14,7 @@ from resources.lib.myanimelist import progress, sync
 from resources.lib.storage.cache import Cache
 from resources.lib.storage.history import History
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 ENTRY = {"title": "Sousou no Frieren", "num_episodes": 28, "airing": "finished_airing",
          "list_status": "watching", "watched": 7, "score": 8}
 API_ENTRY = {"id": 52991, "title": "Sousou no Frieren", "num_episodes": 28, "status": "finished_airing",
@@ -40,7 +40,7 @@ def test_next_episode_after_mal_progress():
     assert cards.next_episode(list(range(1, 29)), progress.merge_states({}, ENTRY)) == (8, 0)
 
 
-def test_mal_ahead_of_aniverse_episode_list_starts_over_without_extra_episodes():
+def test_mal_ahead_of_novaflix_episode_list_starts_over_without_extra_episodes():
     merged = progress.merge_states({}, dict(ENTRY, watched=30))
     assert cards.next_episode([1, 2, 3], merged) == (1, 0)
 
@@ -94,7 +94,7 @@ def test_play_next_uses_saved_mal_progress(monkeypatch):
     Cache(paths.profile_dir()).set(sync.entry_key(101), dict(ENTRY, num_episodes=3, watched=2), 600)
     FakeNet()  # Play Now never waits for MAL
     actions.play_next(SHOW)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=1&ep=3)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=1&ep=3)"
 
 
 LIST = {"data": [{"node": {"id": 52991, "title": "Sousou no Frieren"},
@@ -135,7 +135,7 @@ def test_further_progress_wins_one_card_per_show():
 
 
 def test_started_episode_beats_an_equal_mal_count():
-    # AniVerse: ep 3 half-watched (2 done). MAL: 2 watched. Keep the resume card.
+    # NovaFlix: ep 3 half-watched (2 done). MAL: 2 watched. Keep the resume card.
     rows = progress.merge_continue([local(1, 3, False, 100.0, position=500.0)],
                                    [mal_entry(101, 2, 200.0)], {101: show(1)})
     assert (rows[0]["episode"], rows[0]["position_s"]) == (3, 500.0)
@@ -209,4 +209,4 @@ def test_play_now_never_waits_for_mal(monkeypatch):
                         lambda self, s: [Episode(anilist_id=1, number=n) for n in (1, 2, 3)])
     FakeNet()  # MAL unreachable: any request fails the test
     actions.play_next(SHOW)
-    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.aniverse/play?id=1&ep=1)"
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/play?id=1&ep=1)"

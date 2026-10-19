@@ -14,8 +14,8 @@ from resources.lib.kodi import paths
 from resources.lib.myanimelist import auth, relay
 from resources.lib.views import mal_account
 
-BASE = "plugin://plugin.video.aniverse/"
-ADDON_DIR = os.path.join(os.path.dirname(__file__), "..", "plugin.video.aniverse")
+BASE = "plugin://plugin.video.novaflix/"
+ADDON_DIR = os.path.join(os.path.dirname(__file__), "..", "plugin.video.novaflix")
 
 
 def dispatch(path):
@@ -85,7 +85,7 @@ def linked():
 def test_settings_action_runs_the_account_route():
     tree = ET.parse(os.path.join(ADDON_DIR, "resources", "settings.xml"))
     setting = next(s for s in tree.iter("setting") if s.get("id") == "mal_account")
-    assert setting.find("data").text == "RunPlugin(plugin://plugin.video.aniverse/mal/account)"
+    assert setting.find("data").text == "RunPlugin(plugin://plugin.video.novaflix/mal/account)"
     assert router.ROUTES["mal/account"] == "resources.lib.views.mal_account:menu"
 
 

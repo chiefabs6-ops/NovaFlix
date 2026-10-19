@@ -46,7 +46,7 @@ def test_authorize_url_uses_plain_pkce_state_and_relay_page():
     assert f"{parts.scheme}://{parts.netloc}{parts.path}" == "https://myanimelist.net/v1/oauth2/authorize"
     assert query == {"response_type": "code", "client_id": MAL_CLIENT, "code_challenge": "V" * 64,
                      "code_challenge_method": "plain", "state": "NNNNNNNNNNNNNNNN~192.168.1.86~41234",
-                     "redirect_uri": "https://chiefabs6-ops.github.io/aniverse-repo/mal-login.html"}
+                     "redirect_uri": "https://chiefabs6-ops.github.io/novaflix-repo/mal-login.html"}
 
 
 def test_complete_login_stores_tokens_and_name_only_after_users_me():

@@ -20,7 +20,7 @@ from resources.lib.metadata import dubs, mal
 from resources.lib.storage import db, migrations
 from resources.lib.storage.cache import Cache
 
-BASE = "plugin://plugin.video.aniverse/"
+BASE = "plugin://plugin.video.novaflix/"
 FRIEREN = fixture("anilist_media_154587.json")
 TRENDING = fixture("anilist_trending.json")
 DUBS = fixture("mal_dubs.json")
