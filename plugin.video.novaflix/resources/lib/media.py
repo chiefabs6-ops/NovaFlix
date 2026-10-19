@@ -12,6 +12,20 @@ IMAGES = "https://image.tmdb.org/t/p/"
 POSTER, BACKDROP, STILL = "w342", "w1280", "w300"
 
 
+LANGUAGES = {"en": "English", "ko": "Korean", "ja": "Japanese", "zh": "Chinese", "cn": "Chinese", "hi": "Hindi",
+             "fr": "French", "es": "Spanish", "de": "German", "it": "Italian", "pt": "Portuguese", "pl": "Polish",
+             "ru": "Russian", "tr": "Turkish", "sv": "Swedish", "da": "Danish", "no": "Norwegian", "nl": "Dutch",
+             "th": "Thai", "ar": "Arabic", "uk": "Ukrainian", "hu": "Hungarian", "cs": "Czech", "ta": "Tamil",
+             "te": "Telugu"}
+
+
+def language_name(code):
+    """English name of a TMDB / release language code; unknown codes in capitals."""
+    if not code:
+        return ""
+    return LANGUAGES.get(code, code.upper())
+
+
 def image(path, size):
     return f"{IMAGES}{size}{path}" if path else None
 
@@ -49,6 +63,7 @@ class Title:
     next_air: Optional[tuple] = None     # TV: (season, episode, "YYYY-MM-DD")
     last_aired: Optional[tuple] = None   # TV: (season, episode)
     collection: Optional[tuple] = None   # movie: (collection id, name)
+    original_language: Optional[str] = None  # TMDB code, e.g. "en", "ko"
 
     @property
     def key(self):
@@ -162,6 +177,7 @@ def title_from(data, media_type=None, genre_names=None):
         next_air=nxt + (data["next_episode_to_air"].get("air_date"),) if nxt else None,
         last_aired=last,
         collection=(collection["id"], collection.get("name")) if isinstance(collection.get("id"), int) else None,
+        original_language=data.get("original_language") or None,
     )
 
 

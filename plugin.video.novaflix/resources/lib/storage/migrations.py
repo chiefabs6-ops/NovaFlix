@@ -95,4 +95,16 @@ USER_MIGRATIONS = [
         PRIMARY KEY (media_type, tmdb_id)
     );
     """,
+    # v6 — NovaFlix (Plan 4): My List
+    """
+    CREATE TABLE my_list (
+        media_type  TEXT    NOT NULL,
+        tmdb_id     INTEGER NOT NULL,
+        title       TEXT    NOT NULL,
+        poster      TEXT,
+        year        INTEGER,
+        added_at    REAL    NOT NULL,
+        PRIMARY KEY (media_type, tmdb_id)
+    );
+    """,
 ]

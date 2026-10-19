@@ -88,7 +88,7 @@ def test_v4_database_upgrades_in_place():
     assert history().states("tv", 1396) == {}
     conn = db.connect(path)
     try:
-        assert conn.execute("PRAGMA user_version").fetchone()[0] == 5
+        assert conn.execute("PRAGMA user_version").fetchone()[0] == 6
         assert conn.execute("SELECT anilist_id, episode FROM history").fetchall() == [(154587, 3)]
         assert conn.execute("SELECT COUNT(*) FROM watch_history").fetchone()[0] == 0
     finally:

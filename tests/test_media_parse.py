@@ -112,3 +112,9 @@ def test_malformed_episode_is_skipped():
     raw = fixture("tmdb/tv_1396_season_1.json")["episodes"]
     broken = [dict(raw[0], episode_number=None)] + raw[1:]
     assert [e.number for e in media.episodes_from(broken, 1396)] == [e["episode_number"] for e in raw[1:]]
+
+
+def test_original_language_and_names():
+    assert media.title_from(fixture("tmdb/tv_1396.json"), media.TV).original_language == "en"
+    assert media.language_name("ko") == "Korean" and media.language_name("xx") == "XX"
+    assert media.language_name(None) == ""
