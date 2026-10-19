@@ -1,0 +1,577 @@
+{
+ "streams": [
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune 2021 2160p WEBRip\n👤 342 💾 6.93 GB ⚙️ YTS",
+   "infoHash": "a4a01fa88c9714cf66bcd3d2a769a47c8f51527a",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEBRip|x265|10bit|HDR",
+    "filename": "Dune.2021.2160p.4K.WEB.x265.10bit.HDR.AAC5.1-[YTS.MX].mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR10+ | HDR",
+   "title": "Дюна / Dune: Part One [2021 UHD BDRemux 2160p HDR10 HDR10+ Dolby Vision] [Hybrid] Dub + 2x MVO + AVO + Ukr + Original (Eng) + Sub (Rus Ukr Eng)\n👤 237 💾 83.77 GB ⚙️ Rutracker\n🇬🇧 / 🇷🇺 / 🇺🇦",
+   "infoHash": "e32c5a41daa88b09dfa44eeb2fd4b32375cc54fb",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|10bit|DV|HDR10+|HDR",
+    "filename": "Дюна.2021.Hybrid.UHD.Blu-Ray.Remux.2160p.mkv"
+   },
+   "sources": [
+    "tracker:http://bt.t-ru.org/ann?magnet",
+    "dht:e32c5a41daa88b09dfa44eeb2fd4b32375cc54fb",
+    "tracker:udp://tracker.opentrackr.org:1337/announce",
+    "tracker:udp://open.stealth.si:80/announce",
+    "tracker:udp://tracker.torrent.eu.org:451/announce",
+    "tracker:udp://open.demonii.com:1337/announce",
+    "tracker:udp://tracker.skynetcloud.site:6969/announce",
+    "tracker:udp://tracker.qu.ax:6969/announce",
+    "tracker:udp://tracker.ducks.party:1984/announce",
+    "tracker:udp://tracker.nyaa.vc:6969/announce",
+    "tracker:udp://explodie.org:6969/announce",
+    "tracker:udp://tracker.bittor.pw:1337/announce",
+    "tracker:udp://tracker.corpscorp.online:80/announce",
+    "tracker:udp://tracker-udp.gbitt.info:80/announce",
+    "tracker:udp://tracker.gmi.gd:6969/announce",
+    "tracker:http://tracker.dler.org:6969/announce",
+    "tracker:http://tracker.dler.com:6969/announce",
+    "tracker:http://tracker2.dler.org:80/announce",
+    "tracker:http://tracker.renfei.net:8080/announce",
+    "tracker:https://tracker.pmman.tech:443/announce",
+    "tracker:https://ht.therarbg.to:443/announce",
+    "tracker:udp://retracker01-msk-virt.corbina.net:80/announce",
+    "tracker:udp://opentor.net:6969",
+    "tracker:http://bt2.t-ru.org/ann?magnet",
+    "tracker:http://bt3.t-ru.org/ann?magnet",
+    "tracker:http://bt4.t-ru.org/ann?magnet"
+   ]
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.2160p.HMAX.WEB-DL.DDP5.1.Atmos.HDR.HEVC-EVO[TGx]\n👤 220 💾 20.32 GB ⚙️ ThePirateBay",
+   "infoHash": "799dbc6af33a8f32bf1406dc2ec68bbb6864affb",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEB-DL|hevc|HDR",
+    "filename": "Dune.2021.2160p.HMAX.WEB-DL.DDP5.1.Atmos.HDR.HEVC-EVO.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR10+ | HDR",
+   "title": "Дюна / Dune: Part One [2021 UHD BDRip 2160p HDR10 HDR10+ Dolby Vision] [Hybrid] Dub + 2x MVO + AVO + Ukr + Original (Eng) + Sub (Rus Ukr Eng)\n👤 212 💾 48.45 GB ⚙️ Rutracker\n🇬🇧 / 🇷🇺 / 🇺🇦",
+   "infoHash": "2f1b54bfdb74648eba0b752c6e48f5e87d4c9563",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BDRip|10bit|DV|HDR10+|HDR",
+    "filename": "Дюна.2021.UHD.BDRip.2160p.mkv"
+   },
+   "sources": [
+    "tracker:http://bt3.t-ru.org/ann?magnet",
+    "dht:2f1b54bfdb74648eba0b752c6e48f5e87d4c9563",
+    "tracker:udp://tracker.opentrackr.org:1337/announce",
+    "tracker:udp://open.stealth.si:80/announce",
+    "tracker:udp://tracker.torrent.eu.org:451/announce",
+    "tracker:udp://open.demonii.com:1337/announce",
+    "tracker:udp://tracker.skynetcloud.site:6969/announce",
+    "tracker:udp://tracker.qu.ax:6969/announce",
+    "tracker:udp://tracker.ducks.party:1984/announce",
+    "tracker:udp://tracker.nyaa.vc:6969/announce",
+    "tracker:udp://explodie.org:6969/announce",
+    "tracker:udp://tracker.bittor.pw:1337/announce",
+    "tracker:udp://tracker.corpscorp.online:80/announce",
+    "tracker:udp://tracker-udp.gbitt.info:80/announce",
+    "tracker:udp://tracker.gmi.gd:6969/announce",
+    "tracker:http://tracker.dler.org:6969/announce",
+    "tracker:http://tracker.dler.com:6969/announce",
+    "tracker:http://tracker2.dler.org:80/announce",
+    "tracker:http://tracker.renfei.net:8080/announce",
+    "tracker:https://tracker.pmman.tech:443/announce",
+    "tracker:https://ht.therarbg.to:443/announce",
+    "tracker:udp://retracker01-msk-virt.corbina.net:80/announce",
+    "tracker:udp://opentor.net:6969",
+    "tracker:http://bt.t-ru.org/ann?magnet",
+    "tracker:http://bt2.t-ru.org/ann?magnet",
+    "tracker:http://bt4.t-ru.org/ann?magnet"
+   ]
+  },
+  {
+   "name": "Torrentio\n4k DV",
+   "title": "Дюна / Dune: Part One [2021 WEB-DL 2160p Dolby Vision TV] Dub + 2x MVO + AVO + Ukr + Original (Eng) + Sub (Rus Ukr Eng)\n👤 134 💾 29.41 GB ⚙️ Rutracker\n🇬🇧 / 🇷🇺 / 🇺🇦",
+   "infoHash": "d94edea0846af19a6eee4a81ba9849e15058baf4",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEB-DL|DV",
+    "filename": "Дюна.2021.WEB-DL.2160p.DV.mp4"
+   },
+   "sources": [
+    "tracker:http://bt3.t-ru.org/ann?magnet",
+    "dht:d94edea0846af19a6eee4a81ba9849e15058baf4",
+    "tracker:udp://tracker.opentrackr.org:1337/announce",
+    "tracker:udp://open.stealth.si:80/announce",
+    "tracker:udp://tracker.torrent.eu.org:451/announce",
+    "tracker:udp://open.demonii.com:1337/announce",
+    "tracker:udp://tracker.skynetcloud.site:6969/announce",
+    "tracker:udp://tracker.qu.ax:6969/announce",
+    "tracker:udp://tracker.ducks.party:1984/announce",
+    "tracker:udp://tracker.nyaa.vc:6969/announce",
+    "tracker:udp://explodie.org:6969/announce",
+    "tracker:udp://tracker.bittor.pw:1337/announce",
+    "tracker:udp://tracker.corpscorp.online:80/announce",
+    "tracker:udp://tracker-udp.gbitt.info:80/announce",
+    "tracker:udp://tracker.gmi.gd:6969/announce",
+    "tracker:http://tracker.dler.org:6969/announce",
+    "tracker:http://tracker.dler.com:6969/announce",
+    "tracker:http://tracker2.dler.org:80/announce",
+    "tracker:http://tracker.renfei.net:8080/announce",
+    "tracker:https://tracker.pmman.tech:443/announce",
+    "tracker:https://ht.therarbg.to:443/announce",
+    "tracker:udp://retracker01-msk-virt.corbina.net:80/announce",
+    "tracker:udp://opentor.net:6969",
+    "tracker:http://bt.t-ru.org/ann?magnet",
+    "tracker:http://bt2.t-ru.org/ann?magnet",
+    "tracker:http://bt4.t-ru.org/ann?magnet"
+   ]
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune.2021.REPACK.4K.HDR.DV.2160p.BDRemux Ita Eng x265-NAHOM\n👤 121 💾 73.08 GB ⚙️ ilCorSaRoNeRo\n🇬🇧 / 🇮🇹",
+   "infoHash": "78930639b1a4d37c907966d7b5a6a1c23242fec2",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|x265|DV|HDR",
+    "filename": "Dune.2021.REPACK.4K.HDR.DV.2160p.BDRemux Ita Eng x265-NAHOM.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.2160p.HMAX.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos-CM\n👤 117 💾 20.32 GB ⚙️ RARBG",
+   "infoHash": "26cbf8e10436451021b87e1a54098d655e7a91e7",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEB-DL|x265|10bit|HDR",
+    "filename": "Dune.2021.2160p.HMAX.WEB-DL.DDP5.1.Atmos.HDR.HEVC-CM.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune Part One 2021 Bluray 2160p AV1 HDR10 EN/ITA/FR/ES/HINDI TrueHD 7.1-UH [UserHEVC]\n👤 83 💾 17.32 GB ⚙️ 1337x\n🇬🇧 / 🇮🇹 / 🇫🇷 / 🇮🇳",
+   "infoHash": "585c55a313816f51c0e30f2a8561703959d7b682",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|10bit|HDR",
+    "filename": "Dune.Part.One.2021.Bluray.2160p.AV1.HDR10.TrueHD.7.1-UH.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.TrueHD.7.1.Atmos-SWTYBLZ\n👤 70 💾 29.99 GB ⚙️ RARBG",
+   "infoHash": "1e84694680bab525f5c38fad54e2a4d5bc21b93a",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|x265|10bit|HDR",
+    "filename": "Dune.2021.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.TrueHD.7.1.Atmos-SWTYBLZ.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR10+",
+   "title": "Dune: Part One (2021) 2160p H265 BluRay Rip 10 bit DV HDR10+ ita eng AC3 5.1 sub ita eng Licdom\n👤 69 💾 3.15 GB ⚙️ TorrentGalaxy\n🇬🇧 / 🇮🇹",
+   "infoHash": "a40b1603d26868698148fc38a870efc1a6d0291a",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BRRip|h265|10bit|DV|HDR10+",
+    "filename": "Dune - Part One (2021) 2160p H265 10 bit DV HDR10+ ita eng AC3 5.1 sub ita eng Licdom.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune Part One 2021 UHD BluRay 2160p DV HEVC HDR10 TrueHD Atmos 7.1 x265-E\n👤 63 💾 30.27 GB ⚙️ 1337x",
+   "infoHash": "c0a8b35b73e64426f1c409f09b82ace89742b0d0",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|hevc|10bit|DV|HDR",
+    "filename": "Dune Part One (2021).mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune (2021) (2160p BluRay x265 HEVC 10bit HDR AAC 7.1 Tigole) [QxR]\n👤 56 💾 22.39 GB ⚙️ 1337x",
+   "infoHash": "f380df80eaf77bbd91920d10ae66db49c846ee63",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|hevc|10bit|HDR",
+    "filename": "Dune (2021) (2160p BluRay x265 10bit HDR Tigole).mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.2160p.UHD.BluRay.x265.10bit.HDR.TrueHD.7.1.Atmos-CEBRAY\n👤 56 💾 40.94 GB ⚙️ RARBG",
+   "infoHash": "e20fd1395a28d21236e659ab9a7692afed225bfb",
+   "fileIdx": 2,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|x265|10bit|HDR",
+    "filename": "cebray-dune.part.one.2021.2160p.bluray.x265.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune Part One 2021 Hybrid 2160p UHD BluRay REMUX DV HDR10 HEVC T\n👤 55 💾 70.76 GB ⚙️ TorrentGalaxy",
+   "infoHash": "db390c7b6399b38c61bb5cbe99daa4dc652a35e0",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|hevc|10bit|DV|HDR",
+    "filename": "Dune.Part.One.2021.Hybrid.2160p.UHD.BluRay.REMUX.DV.HDR10Plus.HEVC.TrueHD.7.1.Atmos-WiLDCAT.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.REPACK.4K.HDR.2160p.WEBDL Ita Eng x265-NAHOM\n👤 38 💾 20.81 GB ⚙️ 1337x\n🇬🇧 / 🇮🇹",
+   "infoHash": "b1fc002d8e7ad23ec722d92d4b8676c0a995c2c8",
+   "fileIdx": 2,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEB-DL|x265|HDR",
+    "filename": "Dune.2021.REPACK.4K.HDR.2160p.WEBDL Ita Eng x265-NAHOM.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "DUNE [4K UHDremux][2160p][HDR10][AC3 5.1 Castellano-TrueHD 7.1-Ingles+Subs][ES-EN]\n👤 27 💾 68.65 GB ⚙️ MejorTorrent\n🇬🇧 / 🇪🇸",
+   "infoHash": "b7f1efd0509327df2fdc91d49747f7ca044df297",
+   "fileIdx": 2,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|10bit|HDR",
+    "filename": "Dune 4Kremux2160.atomixhq.one.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Дюна / Dune: Part One (2021) UHD BDRip-HEVC 2160p от селезень | 4K | HDR | D\n👤 26 💾 30.16 GB ⚙️ Rutor\n🇬🇧 / 🇷🇺",
+   "infoHash": "47f686fe269a8acb30c03a37e68fe16bf5c0175c",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BDRip|hevc|HDR",
+    "filename": "Dune.2021.BDRip.2160p.HDR.seleZen.mkv"
+   },
+   "sources": [
+    "tracker:udp://opentor.net:6969",
+    "tracker:udp://opentor.org:2710",
+    "tracker:http://retracker.local/announce",
+    "dht:47f686fe269a8acb30c03a37e68fe16bf5c0175c",
+    "tracker:udp://tracker.opentrackr.org:1337/announce",
+    "tracker:udp://open.stealth.si:80/announce",
+    "tracker:udp://tracker.torrent.eu.org:451/announce",
+    "tracker:udp://open.demonii.com:1337/announce",
+    "tracker:udp://tracker.skynetcloud.site:6969/announce",
+    "tracker:udp://tracker.qu.ax:6969/announce",
+    "tracker:udp://tracker.ducks.party:1984/announce",
+    "tracker:udp://tracker.nyaa.vc:6969/announce",
+    "tracker:udp://explodie.org:6969/announce",
+    "tracker:udp://tracker.bittor.pw:1337/announce",
+    "tracker:udp://tracker.corpscorp.online:80/announce",
+    "tracker:udp://tracker-udp.gbitt.info:80/announce",
+    "tracker:udp://tracker.gmi.gd:6969/announce",
+    "tracker:http://tracker.dler.org:6969/announce",
+    "tracker:http://tracker.dler.com:6969/announce",
+    "tracker:http://tracker2.dler.org:80/announce",
+    "tracker:http://tracker.renfei.net:8080/announce",
+    "tracker:https://tracker.pmman.tech:443/announce",
+    "tracker:https://ht.therarbg.to:443/announce",
+    "tracker:udp://retracker01-msk-virt.corbina.net:80/announce",
+    "tracker:http://bt.t-ru.org/ann?magnet",
+    "tracker:http://bt2.t-ru.org/ann?magnet",
+    "tracker:http://bt3.t-ru.org/ann?magnet",
+    "tracker:http://bt4.t-ru.org/ann?magnet"
+   ]
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune.2021.4K.HDR.DV.2160p.BDRemux Ita Eng x265-NAHOM\n👤 25 💾 67.38 GB ⚙️ 1337x\n🇬🇧 / 🇮🇹",
+   "infoHash": "1ceb66c4a1fca105d17426dcffa942f25f27439f",
+   "fileIdx": 2,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|x265|DV|HDR",
+    "filename": "Dune.2021.4K.HDR.DV.2160p.BDRemux Ita Eng x265-NAHOM.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune (2021) (2160p x265 10bit HDR UHD BD Atmos) [Prof]\n👤 24 💾 24.03 GB ⚙️ TorrentGalaxy",
+   "infoHash": "e508b01b2bc24cb27ca3d04cf956acfb6561a1a9",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|x265|10bit|HDR",
+    "filename": "Dune (2021).mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.2160p.10bit.HDR.WEBRip.6CH.x265.HEVC-PSA\n👤 24 💾 3.08 GB ⚙️ 1337x",
+   "infoHash": "3dc73655871b633e89cb887ae88ad0cc6ef298ea",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEBRip|hevc|10bit|HDR",
+    "filename": "Dune.2021.2160p.10bit.HDR.WEBRip.6CH.x265.HEVC-PSA.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune: Part One.2021.2160p.HDR10.BDRip.DDP5.1.x265.BluBit\n👤 18 💾 2.14 GB ⚙️ 1337x",
+   "infoHash": "7daa15707a42d8b8a1b8989327ea56b8bcb10dcd",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BDRip|x265|10bit|HDR",
+    "filename": "Dune - Part One (2021).mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Duna 2021 2160p 4K Compacto x265 10bit HDR WEB-DL DUAL 5.1\n👤 17 💾 3.52 GB ⚙️ Comando\nDual Audio / 🇬🇧 / 🇵🇹",
+   "infoHash": "4cd2ca7b3a05fca7dafa7e6945f63a7a3bd9759c",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEB-DL|x265|10bit|HDR",
+    "filename": "Duna 2021 2160p 4K Compacto x265 10bit HDR WEB-DL DUAL 5.1.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune - Part One (2021) AC3 5.1 ITA.ENG 2160p H265 HDR10 Dolby Vision sub NUita.eng Sp33dy94 MIRCrew\n👤 15 💾 4.73 GB ⚙️ ilCorSaRoNeRo\n🇬🇧 / 🇮🇹",
+   "infoHash": "335d1be5a290e1eb4268bd13cf522ce3c77bbd82",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|h265|10bit|DV|HDR",
+    "filename": "Dune - Part One (2021) AC3 5.1 ITA.ENG 2160p H265 HDR10 Dolby Vision sub NUita.eng Sp33dy94-MIRCrew.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune.2021.2160p.BluRay.REMUX.DV.HDR.ENG.LATINO.CASTELLANO.HINDI.ITA.FRE.GER.DDP5.1.H265.MP4-BEN.THE.MEN\n👤 15 💾 70.09 GB ⚙️ TorrentGalaxy\n🇬🇧 / 🇮🇹 / 🇪🇸 / 🇲🇽 / 🇫🇷 / 🇩🇪 / 🇮🇳",
+   "infoHash": "f015156e0a766402900ae7a006fba36af3a4df0c",
+   "fileIdx": 3,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|h265|DV|HDR",
+    "filename": "Dune.2021.2160p.BluRay.REMUX.DV.HDR.ENG.LATINO.CASTELLANO.HINDI.ITA.FRE.GER.DDP5.1.H265.MP4-BEN.THE.MEN.mp4"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.4K.MULTi.VFF.2160p.HDR.WEB.EAC3.x265-EXTREME\n👤 14 💾 20.81 GB ⚙️ Torrent9\nMulti Audio / 🇫🇷",
+   "infoHash": "7943541f84aae94ae7f0d373336a1bfcbea8bf2b",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|x265|HDR",
+    "filename": "[ Torrent911.com ] Dune.2021.4K.MULTi.VFF.2160p.HDR.WEB.EAC3.x265-EXTREME.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune.2021.Eng.Fre.Ger.Ita.Spa.Cze.Hun.Pol.Hin.Jpn.2160p.BluRay.Remux.HDR.DV.HEVC.Atmos-SGF\n👤 13 💾 86.23 GB ⚙️ TorrentGalaxy\n🇬🇧 / 🇯🇵 / 🇮🇹 / 🇪🇸 / 🇫🇷 / 🇩🇪 / 🇮🇳 / 🇵🇱 / 🇨🇿 / 🇭🇺",
+   "infoHash": "14acb110f076d0bdda393b56f62dbb0962d99985",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|hevc|DV|HDR",
+    "filename": "Dune.2021.Eng.Fre.Ger.Ita.Spa.Cze.Hun.Pol.Hin.Jpn.2160p.BluRay.Remux.HDR.DV.HEVC.Atmos-SGF.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune.2021.2160p.10bit.HDR.DV.BluRay.8CH.x265.HEVC-PSA\n👤 12 💾 4.86 GB ⚙️ 1337x",
+   "infoHash": "19fa752bd1149b8ac600e4fddee32be00cc03b25",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|hevc|10bit|DV|HDR",
+    "filename": "Dune.2021.2160p.10bit.HDR.DV.BluRay.8CH.x265.HEVC-PSA.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-RARBG\n👤 11 💾 9.54 GB ⚙️ RARBG",
+   "infoHash": "654e02bd6097965ec19a2d659bfd0fe03e0bc124",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|x265|10bit|HDR",
+    "filename": "Dune.2021.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-RARBG.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Дюна / Dune: Part One (2021) WEB-DL-HEVC 2160p от селезень | HDR | D P | iTunes\n👤 11 💾 20.74 GB ⚙️ Rutor\n🇬🇧 / 🇷🇺",
+   "infoHash": "82f49b1a251198d221925f99a4865f114b5e7189",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEB-DL|hevc|HDR",
+    "filename": "Dune.2021.WEB-DL.2160p.HDR.seleZen.mkv"
+   },
+   "sources": [
+    "tracker:udp://opentor.net:6969",
+    "tracker:udp://opentor.org:2710",
+    "tracker:http://retracker.local/announce",
+    "dht:82f49b1a251198d221925f99a4865f114b5e7189",
+    "tracker:udp://tracker.opentrackr.org:1337/announce",
+    "tracker:udp://open.stealth.si:80/announce",
+    "tracker:udp://tracker.torrent.eu.org:451/announce",
+    "tracker:udp://open.demonii.com:1337/announce",
+    "tracker:udp://tracker.skynetcloud.site:6969/announce",
+    "tracker:udp://tracker.qu.ax:6969/announce",
+    "tracker:udp://tracker.ducks.party:1984/announce",
+    "tracker:udp://tracker.nyaa.vc:6969/announce",
+    "tracker:udp://explodie.org:6969/announce",
+    "tracker:udp://tracker.bittor.pw:1337/announce",
+    "tracker:udp://tracker.corpscorp.online:80/announce",
+    "tracker:udp://tracker-udp.gbitt.info:80/announce",
+    "tracker:udp://tracker.gmi.gd:6969/announce",
+    "tracker:http://tracker.dler.org:6969/announce",
+    "tracker:http://tracker.dler.com:6969/announce",
+    "tracker:http://tracker2.dler.org:80/announce",
+    "tracker:http://tracker.renfei.net:8080/announce",
+    "tracker:https://tracker.pmman.tech:443/announce",
+    "tracker:https://ht.therarbg.to:443/announce",
+    "tracker:udp://retracker01-msk-virt.corbina.net:80/announce",
+    "tracker:http://bt.t-ru.org/ann?magnet",
+    "tracker:http://bt2.t-ru.org/ann?magnet",
+    "tracker:http://bt3.t-ru.org/ann?magnet",
+    "tracker:http://bt4.t-ru.org/ann?magnet"
+   ]
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune- Part One (2021) 2160p 4K UHD HDR10 DV Blu-ray REMUX Dual Audio [Hindi English] ESub ~ RemuxDoc.mkv\n👤 10 💾 73.69 GB ⚙️ 1337x\nDual Audio / 🇬🇧 / 🇮🇳",
+   "infoHash": "7482f98038d735eb315275566e74ddc78361987c",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|10bit|DV|HDR",
+    "filename": "Dune- Part One (2021) 2160p 4K UHD HDR10 DV Blu-ray REMUX Dual Audio [Hindi + English] ESub ~ RemuxDoc.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k HDR",
+   "title": "Dune.2021.2160p.UHD.BluRay.x265.10bit.HDR.TrueHD.7.1.Atmos-RARBG\n👤 9 💾 12.72 GB ⚙️ RARBG",
+   "infoHash": "e7a7eed9203b2498ccde890a9307438d781e2449",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|x265|10bit|HDR",
+    "filename": "Dune.2021.2160p.UHD.BluRay.x265.10bit.HDR.TrueHD.7.1.Atmos-RARBG.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV",
+   "title": "Dune.Part.One.2021.2160p.UHD.Blu-Ray.DV.HEVC.TrueHD.7.1.x265-E\n👤 8 💾 34.91 GB ⚙️ 1337x",
+   "infoHash": "84f7693099b04d2ed39b1102328c7f411e1747fa",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|hevc|DV",
+    "filename": "Dune.Part.1.2021.x265.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k DV | HDR",
+   "title": "Dune 2021 2160p 10bit HDR DV BluRay 8CH x265 HEVC-PSA\n👤 6 💾 4.86 GB ⚙️ EXT",
+   "infoHash": "96e285b59b78f2a93714942c1be5ae7197bc6c05",
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|hevc|10bit|DV|HDR"
+   }
+  },
+  {
+   "name": "Torrentio\n4k",
+   "title": "Dune.2021.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.TrueHD.7.1.Atmos-FGT\n👤 203 💾 86.11 GB ⚙️ TorrentGalaxy",
+   "infoHash": "d7b21ca3a5556b8012a65b37b9484f2e0c0bdda5",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay REMUX|hevc",
+    "filename": "Dune.2021.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.TrueHD.7.1.Atmos-FGT.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k",
+   "title": "Дюна / Dune: Part One [2021 WEB-DL 2160p SDR] Dub + 2x MVO + AVO + Ukr + Original (Eng) + Sub (Rus Ukr Eng)\n👤 95 💾 33.24 GB ⚙️ Rutracker\n🇬🇧 / 🇷🇺 / 🇺🇦",
+   "infoHash": "a6a265abc0c307048b6136a87e7bda1df4b2215f",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEB-DL",
+    "filename": "Дюна.2021.WEB-DL.2160p.SDR.mkv"
+   },
+   "sources": [
+    "tracker:http://bt4.t-ru.org/ann?magnet",
+    "dht:a6a265abc0c307048b6136a87e7bda1df4b2215f",
+    "tracker:udp://tracker.opentrackr.org:1337/announce",
+    "tracker:udp://open.stealth.si:80/announce",
+    "tracker:udp://tracker.torrent.eu.org:451/announce",
+    "tracker:udp://open.demonii.com:1337/announce",
+    "tracker:udp://tracker.skynetcloud.site:6969/announce",
+    "tracker:udp://tracker.qu.ax:6969/announce",
+    "tracker:udp://tracker.ducks.party:1984/announce",
+    "tracker:udp://tracker.nyaa.vc:6969/announce",
+    "tracker:udp://explodie.org:6969/announce",
+    "tracker:udp://tracker.bittor.pw:1337/announce",
+    "tracker:udp://tracker.corpscorp.online:80/announce",
+    "tracker:udp://tracker-udp.gbitt.info:80/announce",
+    "tracker:udp://tracker.gmi.gd:6969/announce",
+    "tracker:http://tracker.dler.org:6969/announce",
+    "tracker:http://tracker.dler.com:6969/announce",
+    "tracker:http://tracker2.dler.org:80/announce",
+    "tracker:http://tracker.renfei.net:8080/announce",
+    "tracker:https://tracker.pmman.tech:443/announce",
+    "tracker:https://ht.therarbg.to:443/announce",
+    "tracker:udp://retracker01-msk-virt.corbina.net:80/announce",
+    "tracker:udp://opentor.net:6969",
+    "tracker:http://bt.t-ru.org/ann?magnet",
+    "tracker:http://bt2.t-ru.org/ann?magnet",
+    "tracker:http://bt3.t-ru.org/ann?magnet"
+   ]
+  },
+  {
+   "name": "Torrentio\n4k",
+   "title": "Dune: Part One (2021) [HBO Max 4K to 1080p HEVC OPUS] HR-DR\n👤 16 💾 1.85 GB ⚙️ 1337x",
+   "infoHash": "05172ffc961cbad5805244871dbf2e7aeaf08f5e",
+   "fileIdx": 1,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|hevc",
+    "filename": "[HR] Dune (2021) [66FB151A].mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k",
+   "title": "Dune.2021.2160p.WEBRip.3999MB.DDP5.1.x264-GalaxyRG\n👤 15 💾 4.01 GB ⚙️ ThePirateBay",
+   "infoHash": "b18397666020af7f538800dd2740d2c6c3e6b884",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEBRip|x264",
+    "filename": "Dune.2021.2160p.WEBRip.3999MB.DDP5.1.x264-GalaxyRG.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k",
+   "title": "Dune.2021.2160p.WEBRip.x265.10bit.SDR.DDP5.1.Atmos-SWTYBLZ\n👤 14 💾 27 GB ⚙️ 1337x",
+   "infoHash": "b9584ee5ff0a300721c713cf99678bf1fef1d65f",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|WEBRip|x265|10bit",
+    "filename": "Dune.2021.2160p.WEBRip.x265.10bit.SDR.DDP5.1.Atmos-SWTYBLZ.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n4k",
+   "title": "Dune.2021.2160p.BluRay.x265.10bit.SDR.DTS-HD.MA.TrueHD.7.1.Atmos-SWTYBLZ\n👤 11 💾 61.62 GB ⚙️ RARBG",
+   "infoHash": "3e6be0eb7931d9aa82554884e6bcce05f22b8551",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|4k|BluRay|x265|10bit",
+    "filename": "Dune.2021.2160p.BluRay.x265.10bit.SDR.DTS-HD.MA.TrueHD.7.1.Atmos-SWTYBLZ.mkv"
+   }
+  },
+  {
+   "name": "Torrentio\n1440p",
+   "title": "Dune Part One 2021 WEBRip SDR 10Bit 1440p DDP5.1 Atmos HEVC-3Li\n👤 6 💾 9.2 GB ⚙️ TorrentGalaxy",
+   "infoHash": "86a1f612b8e8de98f85d4c6ea2b03f9f31675c01",
+   "fileIdx": 0,
+   "behaviorHints": {
+    "bingeGroup": "torrentio|1440p|WEBRip|hevc|10bit",
+    "filename": "Dune Part One 2021 WEBRip SDR 10Bit 1440p DDP5.1 Atmos HEVC-3Li.mkv"
+   }
+  }
+ ],
+ "cacheMaxAge": 3600,
+ "staleRevalidate": 14400,
+ "staleError": 604800
+}

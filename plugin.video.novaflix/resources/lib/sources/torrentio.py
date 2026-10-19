@@ -12,6 +12,13 @@ from resources.lib.models import Candidate
 from resources.lib.sources import matcher
 
 DEFAULT_BASE = "https://torrentio.strem.fun"
+# Flag emoji on Torrentio's languages line -> language code. Unknown flags are ignored.
+FLAGS = {
+    "🇬🇧": "en", "🇺🇸": "en", "🇵🇱": "pl", "🇷🇺": "ru", "🇺🇦": "uk", "🇮🇹": "it", "🇪🇸": "es", "🇲🇽": "es",
+    "🇫🇷": "fr", "🇩🇪": "de", "🇵🇹": "pt", "🇧🇷": "pt", "🇮🇳": "hi", "🇯🇵": "ja", "🇰🇷": "ko", "🇨🇳": "zh",
+    "🇹🇷": "tr", "🇳🇱": "nl", "🇭🇺": "hu", "🇨🇿": "cs",
+}
+_FLAG = re.compile("[🇦-🇿]{2}")
 _UNITS = {"B": 1, "KB": 1e3, "MB": 1e6, "GB": 1e9, "TB": 1e12,
           "KIB": 1024, "MIB": 1024 ** 2, "GIB": 1024 ** 3, "TIB": 1024 ** 4}
 
@@ -28,6 +35,24 @@ def url(base, kitsu_id, number, is_movie):
     if is_movie:
         return f"{base}/stream/movie/kitsu:{int(kitsu_id)}.json"
     return f"{base}/stream/series/kitsu:{int(kitsu_id)}:{int(number)}.json"
+
+
+def imdb_url(base, imdb_id, season, episode, is_movie):
+    """Stream list for a TMDB title by its IMDb id (NovaFlix movies and episodes)."""
+    base = (base or DEFAULT_BASE).rstrip("/")
+    if is_movie:
+        return f"{base}/stream/movie/{imdb_id}.json"
+    return f"{base}/stream/series/{imdb_id}:{int(season)}:{int(episode)}.json"
+
+
+def flag_languages(text):
+    """Language codes for the flags in Torrentio's languages line, in order, without repeats."""
+    out = []
+    for flag in _FLAG.findall(text or ""):
+        code = FLAGS.get(flag)
+        if code and code not in out:
+            out.append(code)
+    return out
 
 
 def _audio(release, file_name, languages):
@@ -91,6 +116,7 @@ def parse_streams(data, number, absolute=None, tvdb=None, is_movie=False):
             codec=file_rel.codec or pack_rel.codec,
             release_group=pack_rel.group or file_rel.group,
             audio=_audio(release, file_name, languages),
+            languages=flag_languages(languages),
             match="exact" if verdict else "best_guess",
         ))
     return out

@@ -133,6 +133,7 @@ class Candidate:
     rd_torrent_id: Optional[str] = None
     rd_file_id: Optional[int] = None
     pinned: bool = False
+    languages: List[str] = field(default_factory=list)  # codes from Torrentio's flag line ("en", "ru", ...)
 
     def to_dict(self):
         return asdict(self)
