@@ -1,6 +1,6 @@
 # plugin.video.novaflix/resources/lib/gui/home.py
-"""Home view of the app window (M12): rotating hero + Continue Watching, Trending,
-Airing This Season, Recently Aired rows. Rows load in the background, each on its own."""
+"""Home view of the app window: rotating hero (Trending) + Continue Watching, Trending, Popular shows
+and Popular movies rows. Rows load in the background, each on its own."""
 
 import time
 
@@ -8,8 +8,8 @@ from resources.lib.gui import actions, cards, ids, items, lists
 from resources.lib.kodi import log, ui
 
 ROWS = (("continue", ids.HOME_ROWS[0]), ("trending", ids.HOME_ROWS[1]),
-        ("airing", ids.HOME_ROWS[2]), ("recent", ids.HOME_ROWS[3]))
-REMOTE_ROWS = {"trending", "airing", "recent"}
+        ("popular_tv", ids.HOME_ROWS[2]), ("popular_movies", ids.HOME_ROWS[3]))
+REMOTE_ROWS = {"trending", "popular_tv", "popular_movies"}
 HERO_COUNT = 5
 HERO_SECONDS = 10
 
@@ -23,12 +23,13 @@ class HomeView:
         self.hero_index = 0
         self.hero_since = 0.0
         self.continue_final = False
+        self.key_asked = False
 
     def load(self):
         w = self.app.window
         self.pages, self.failed = {}, set()
         self.continue_final = False
-        self.app.checks.reset()
+        self.key_asked = False
         w.setProperty("offline", "")
         w.setProperty("featured", ui.string(30234))
         w.setProperty("play_label", ui.string(30235))
@@ -37,7 +38,7 @@ class HomeView:
             w.getControl(control_id).reset()
             w.setProperty(f"row{n}_title", ui.string(lists.TITLES[key]))
             w.setProperty(f"row{n}_status", "")
-        jobs = {"continue:local": lambda: lists.home_row("continue:local")}  # local cards at once (spec §6)
+        jobs = {"continue:local": lambda: lists.home_row("continue:local")}  # saved cards at once
         jobs.update({key: (lambda key=key: lists.home_row(key)) for key, _ in ROWS})
         self.app.loader.start(jobs, self._deliver)
 
@@ -48,6 +49,12 @@ class HomeView:
             return
         n, control_id = next((n, c) for n, (k, c) in enumerate(ROWS) if k == key)
         w = self.app.window
+        if isinstance(error, lists.TmdbKeyMissing):
+            w.setProperty(f"row{n}_status", ui.string(30423))
+            if not self.key_asked:  # one question for all rows
+                self.key_asked = True
+                self.app.report(error)
+            return
         if error:
             log.warning(f"home row {key}: {type(error).__name__}: {error}")
             self.failed.add(key)
@@ -63,13 +70,13 @@ class HomeView:
         else:
             self.pages[control_id] = page
             w.getControl(control_id).addItems(items.to_listitems(page.cards))
-        if key == "trending" and page.shows:
-            self.featured = page.shows[:HERO_COUNT]
+        if key == "trending" and page.titles:
+            self.featured = page.titles[:HERO_COUNT]
             w.setProperty("hero_count", str(len(self.featured)))
             self.show_hero(0)
 
     def show_hero(self, index, now=None):
-        data = cards.hero(self.featured[index], None, ui.string)
+        data = cards.title_hero(self.featured[index], ui.string)
         w = self.app.window
         for key in ("title", "alt", "plot", "meta", "art"):
             w.setProperty(f"hero_{key}", data[key])
@@ -94,17 +101,17 @@ class HomeView:
 
     def on_click(self, control_id):
         if control_id == ids.HERO_PLAY and self.featured:
-            actions.play_next(self.featured[self.hero_index])
+            actions.play_title(self.featured[self.hero_index])
         elif control_id == ids.HERO_INFO and self.featured:
-            self.app.run(("show", self.featured[self.hero_index].anilist_id))
+            title = self.featured[self.hero_index]
+            self.app.run(("title", title.media_type, title.tmdb_id))
         else:
             card = self.selected(control_id)
             if card:
                 self.app.run(card.action)
 
     def refresh_continue(self):
-        """Saved data only (local history + cached MyAnimeList list), so it reloads at once
-        after playback or marks."""
+        """Saved data only, so it reloads at once after playback or marks."""
         self._fill_continue(lists.home_row("continue:local"))
 
     def _fill_continue(self, page):
@@ -113,4 +120,3 @@ class HomeView:
         control = self.app.window.getControl(control_id)
         control.reset()
         control.addItems(items.to_listitems(page.cards))
-        self.app.checks.watch(control_id, page.cards)

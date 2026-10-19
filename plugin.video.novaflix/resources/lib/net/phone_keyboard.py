@@ -25,7 +25,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs
 
 from resources.lib.kodi import log
-from resources.lib.myanimelist.relay import is_private
+from resources.lib.net.lan import is_private
 
 CODE_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"  # no 0/o, 1/l/i: easy to type from the TV screen
 CODE_LENGTH = 8

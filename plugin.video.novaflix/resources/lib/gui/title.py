@@ -1,0 +1,242 @@
+# plugin.video.novaflix/resources/lib/gui/title.py
+"""Title page window (Plan 4): backdrop hero, Play/Resume, My List, More like this, Season picker
+(TV) and the episode row of the chosen season. A movie has one card: the film."""
+
+import datetime
+
+import xbmcgui
+
+from resources.lib import media
+from resources.lib.gui import actions, cards, dialogs, ids, items
+from resources.lib.gui.loader import Loader, PlaybackWatch, Ticker, report
+from resources.lib.kodi import paths, ui
+from resources.lib.metadata.library import Library
+from resources.lib.storage.mylist import MyList
+from resources.lib.storage.watching import WatchHistory
+
+
+class TitleWindow(xbmcgui.WindowXML):
+    page = None
+
+    def onInit(self):
+        self.page.on_init()
+
+    def onAction(self, action):
+        self.page.on_action(action)
+
+    def onClick(self, control_id):
+        self.page.on_click(control_id)
+
+
+def season_choices(title):
+    """[(number, label)]: seasons 1..N as TMDB lists them, specials last."""
+    numbers = sorted({s.number for s in title.seasons})
+    ordered = [n for n in numbers if n > 0] + [n for n in numbers if n == 0]
+    return [(n, ui.string(30424) % n if n else ui.string(30425)) for n in ordered]
+
+
+def opening_season(title, directory):
+    """The season of the last episode watched or started, else the first season that has aired, else 1."""
+    last = WatchHistory(directory).last_watched(title.media_type, title.tmdb_id)
+    if last and last[0] > 0:
+        return last[0]
+    today = datetime.date.today().isoformat()
+    regular = [s for s in title.seasons if s.number > 0]
+    aired = [s.number for s in regular if s.air_date and s.air_date <= today]
+    if aired:
+        return min(aired)
+    return regular[0].number if regular else 1
+
+
+class TitlePage:
+    def __init__(self, window, media_type, tmdb_id, loader):
+        self.window = window
+        self.ident = (media_type, int(tmdb_id))
+        self.loader = loader
+        self.result = None
+        self.data = None
+        self.cards = []
+        self.next = (1, 0)
+        self.watch = PlaybackWatch()
+        self._started = False
+
+    @property
+    def is_movie(self):
+        return self.ident[0] == media.MOVIE
+
+    def on_init(self):
+        if self._started:  # Kodi calls onInit again when fullscreen video closes
+            key = actions.take_open_show()  # End episode: this page, or another title's
+            if key and key != self.ident:
+                self.result = ("title",) + key
+                self.window.close()
+            return
+        self._started = True
+        self.window.setProperty("loading", "true")
+        self.loader.start({"title": self._fetch}, self._deliver)
+
+    def _fetch(self):
+        library = Library()
+        title = library.title(*self.ident)
+        has_more = bool(title.collection) or bool(library.more_like_this(*self.ident))
+        if title.is_movie:
+            return {"title": title, "season": None, "episodes": [], "has_more": has_more}
+        season = opening_season(title, paths.profile_dir())
+        return {"title": title, "season": season, "episodes": library.episodes(title, season), "has_more": has_more}
+
+    def _deliver(self, name, data, error):
+        self.window.setProperty("loading", "")
+        if error:
+            report(error, "title page")
+            self.window.close()
+            return
+        self.data = data
+        self._fill_header()
+        self.refresh()
+        self.window.setFocusId(ids.SHOW_PLAY)
+
+    def _fill_header(self):
+        title, w = self.data["title"], self.window
+        hero = cards.title_hero(title, ui.string)
+        for key in ("title", "alt", "plot", "meta", "art"):
+            w.setProperty(key, hero[key])
+        w.setProperty("dark", "true" if hero["dark"] else "")
+        w.setProperty("poster", title.poster or "")
+        w.setProperty("genres", " · ".join(title.genres[:4]))
+        foreign = title.original_language not in (None, "en")
+        w.setProperty("dub", ui.string(30427) % media.language_name(title.original_language) if foreign else "")
+        w.setProperty("has_related", "true" if self.data["has_more"] else "")
+        w.setProperty("related_label", ui.string(30418))
+        w.setProperty("avail", "")
+        w.setProperty("avail_line", "")
+
+    def _season_label(self):
+        season = self.data["season"]
+        if season is None:
+            return ""
+        return ui.string(30424) % season if season else ui.string(30425)
+
+    def refresh(self):
+        """Episodes, ticks, progress and button labels; re-run after playback, marks and season changes."""
+        if not self.data:
+            return
+        title, season = self.data["title"], self.data["season"]
+        states = WatchHistory(paths.profile_dir()).states(*self.ident)
+        if self.is_movie:
+            state = states.get((0, 0))
+            self.cards = [cards.title_movie_card(title, state, ui.string)]
+            position, duration, watched = state or (0.0, 0.0, False)
+            resume = int(position) if position and not watched else 0
+            self.next = (0, resume)
+            label = ui.string(30422) % cards.clock(duration - position) if resume else ui.string(30235)
+        else:
+            in_season = {e: s for (sn, e), s in states.items() if sn == season}
+            self.cards = [cards.title_episode_card(title, ep, in_season.get(ep.number), ui.string)
+                          for ep in self.data["episodes"]]
+            self.next = cards.next_episode([e.number for e in self.data["episodes"]], in_season)
+            episode, resume = self.next
+            if resume:
+                duration = in_season[episode][1]
+                label = ui.string(30420) % (season, episode, cards.clock(duration - resume))
+            else:
+                label = ui.string(30426) % (season, episode)
+        control = self.window.getControl(ids.SHOW_EPISODES)
+        position = max(control.getSelectedPosition(), 0)
+        control.reset()
+        control.addItems(items.to_listitems(self.cards))
+        if self.cards:
+            control.selectItem(min(position, len(self.cards) - 1))
+        self.window.setProperty("play_label", label)
+        self.window.setProperty("season_label", self._season_label())
+        self.window.setProperty("episodes_title", self._season_label())
+        self.window.setProperty("no_episodes", "" if self.cards else ui.string(30035))
+        on_list = MyList(paths.profile_dir()).contains(*self.ident)
+        self.window.setProperty("favourite_label", ui.string(30433 if on_list else 30432))
+        self.window.setProperty("favourited", "true" if on_list else "")
+
+    def on_click(self, control_id):
+        if not self.data:
+            return
+        media_type, tmdb_id = self.ident
+        if control_id == ids.SHOW_PLAY and self.cards:
+            if self.is_movie:
+                actions.watch(media_type, tmdb_id, resume_s=self.next[1])
+            else:
+                actions.watch(media_type, tmdb_id, self.data["season"], *self.next)
+        elif control_id == ids.SHOW_FAVOURITE:
+            actions.toggle_my_list(self.data["title"])
+            self.refresh()
+        elif control_id == ids.SHOW_SEASON and not self.is_movie:
+            self._choose_season()
+        elif control_id == ids.SHOW_RELATED:
+            self.result = ("more", media_type, tmdb_id)
+            self.window.close()
+        elif control_id == ids.SHOW_EPISODES:
+            card = self._selected()
+            if card:
+                _, _, season, episode = card.action
+                actions.title_episode_choice(media_type, tmdb_id, season or None, episode or None)
+
+    def _choose_season(self):
+        choices = season_choices(self.data["title"])
+        choice = dialogs.menu(ui.string(30439), [label for _, label in choices])
+        if not 0 <= choice < len(choices):
+            return
+        season = choices[choice][0]
+        title = self.data["title"]
+        self.window.setProperty("loading", "true")
+        self.loader.start({str(season): lambda: Library().episodes(title, season)}, self._deliver_season)
+
+    def _deliver_season(self, name, episodes, error):
+        self.window.setProperty("loading", "")
+        if error:
+            report(error, "season")
+            return
+        self.data["season"], self.data["episodes"] = int(name), episodes
+        self.refresh()
+
+    def on_action(self, action):
+        if action.getId() in ids.ACTION_BACK:
+            self.window.close()
+        elif action.getId() in ids.ACTION_CONTEXT and self.window.getFocusId() == ids.SHOW_EPISODES:
+            self._episode_menu()
+
+    def _selected(self):
+        position = self.window.getControl(ids.SHOW_EPISODES).getSelectedPosition()
+        return self.cards[position] if 0 <= position < len(self.cards) else None
+
+    def _episode_menu(self):
+        card = self._selected()
+        if not card:
+            return
+        _, _, season, episode = card.action
+        choice = dialogs.menu(card.label, [ui.string(30222 if card.watched else 30221), ui.string(30230)])
+        if choice == 0:
+            WatchHistory(paths.profile_dir()).mark(*self.ident, season, episode, not card.watched)
+            self.refresh()
+        elif choice == 1:
+            actions.search_again(*self.ident, season or None, episode or None)
+
+    def tick(self):
+        text = actions.phone_search()
+        if text:  # the paired phone asked for a search: the results open in the NovaFlix window
+            self.result = ("grid", f"search:{text}")
+            self.window.close()
+            return
+        if self.watch.ended():
+            self.refresh()
+
+
+def open_title(media_type, tmdb_id, loader=None, start_ticker=True):
+    window = TitleWindow("novaflix-show.xml", ui.addon().getAddonInfo("path"), "Default", "1080i")
+    page = TitlePage(window, media_type, tmdb_id, loader or Loader())
+    window.page = page
+    ticker = Ticker(page.tick)
+    if start_ticker:
+        ticker.start()
+    try:
+        window.doModal()
+    finally:
+        ticker.stop()
+        page.loader.cancel()  # a late result must not report after the page is gone
+    return page.result

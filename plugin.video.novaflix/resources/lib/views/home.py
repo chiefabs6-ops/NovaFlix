@@ -40,17 +40,17 @@ def root(request):
 
 def launch(request):
     """Started by the script.novaflix tile through RunPlugin: no Kodi folder screen, no directory to end.
-    show=<id>: End episode with no NovaFlix window open (playback/monitor.py) opens that show page."""
+    title=<type:id>: End episode with no NovaFlix window open (playback/monitor.py) opens that title page."""
     if ui.styled():
-        _open_app(request.params.get("show"))
+        _open_app(request.params.get("title"))
     else:
         xbmc.executebuiltin(f"ActivateWindow(Videos,{router.build_url('')},return)")
 
 
-def _open_app(show_id=None):
+def _open_app(title_key=None):
     from resources.lib.gui import app
     try:
-        app.run(int(show_id) if show_id else None)
+        app.run(title_key)
     except Exception:
         log.exception("NovaFlix window failed")
         ui.notify("NovaFlix", ui.string(30021), error=True)

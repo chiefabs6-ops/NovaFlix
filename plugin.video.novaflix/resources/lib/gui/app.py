@@ -1,42 +1,37 @@
 # plugin.video.novaflix/resources/lib/gui/app.py
-"""NovaFlix app window (M12): sidebar + Home, Grid, My Anime List and Related (M14) views, the screen stack and Back.
+"""NovaFlix app window: sidebar + Home, Grid and More like this views, the screen stack and Back.
 Everything it shows comes from gui/lists.py; everything it does goes through gui/actions.py."""
 
 import contextlib
 
 import xbmcgui
 
-from resources.lib import errors
+from resources.lib import errors, media
 from resources.lib.gui import actions, dialogs, ids, items, lists
-from resources.lib.gui.checks import AvailabilityChecks
 from resources.lib.gui.home import HomeView
-from resources.lib.gui.malhub import MalHubView
 from resources.lib.gui.related import RelatedView
 from resources.lib.gui.loader import Loader, PlaybackWatch, Ticker, report
-from resources.lib.kodi import log, paths, ui
-from resources.lib.metadata import mal
-from resources.lib.metadata.catalog import Catalog
-from resources.lib.myanimelist import sync
-from resources.lib.storage.favourites import Favourites
-from resources.lib.storage.history import History
+from resources.lib.kodi import ui
+from resources.lib.storage.mylist import MyList
+from resources.lib.kodi import paths
 
-# Sidebar redesign: five main entries, then a collapsible Explore group. Settings is its own
-# button (ids.SIDEBAR_SETTINGS) at the bottom; My TorBox moved into the Settings menu.
+# Four main entries, then a collapsible Explore group. Settings is its own button (ids.SIDEBAR_SETTINGS)
+# at the bottom; My TorBox sits in the Settings menu.
 SIDEBAR = [
     (30244, "home", ("home",)),
     (30002, "search", ("grid", "search")),
     (30001, "play_circle", ("grid", "continue")),
-    (30289, "star", ("grid", "mal")),
-    (30004, "favorite", ("grid", "favourites")),
+    (30415, "bookmark", ("grid", "mylist")),
 ]
 EXPLORE = (30290, "explore", ("explore",))
 EXPLORE_ITEMS = [
     (30007, "trending_up", ("grid", "trending")),
-    (30008, "local_fire_department", ("grid", "popular")),
-    (30005, "schedule", ("grid", "airing")),
-    (30291, "auto_awesome", ("grid", "upcoming")),
+    (30410, "movie", ("grid", "popular_movies")),
+    (30411, "local_fire_department", ("grid", "popular_tv")),
+    (30412, "star", ("grid", "top_movies")),
+    (30413, "auto_awesome", ("grid", "top_tv")),
+    (30414, "calendar_month", ("grid", "airing_today")),
     (30010, "grid_view", ("grid", "genres")),
-    (30292, "calendar_month", ("grid", "recent")),
 ]
 EXPLORE_KEYS = {target[1] for _, _, target in EXPLORE_ITEMS} | {"genre"}
 GRID_MORE_MARGIN = 6  # within one grid row of the end -> load the next page
@@ -69,7 +64,6 @@ class GridView:
 
     def load(self, key):
         self.key, self.cards, self.page, self.more = key, [], 1, False
-        self.app.checks.reset()
         w = self.app.window
         w.getControl(ids.GRID).reset()
         w.setProperty("grid_title", "")
@@ -93,9 +87,9 @@ class GridView:
             self.app.back()
             return
         first = not self.cards
-        shown = {c.action for c in self.cards if c.action and c.action[0] == "show"}
-        new = [c for c in page.cards if not (c.action and c.action[0] == "show" and c.action in shown)]
-        self.cards.extend(new)  # AniList pages can overlap when the ranking moves between requests
+        shown = {c.action for c in self.cards if c.action and c.action[0] == "title"}
+        new = [c for c in page.cards if not (c.action and c.action[0] == "title" and c.action in shown)]
+        self.cards.extend(new)  # TMDB pages can overlap when the ranking moves between requests
         self.more = page.more
         w = self.app.window
         w.setProperty("grid_title", page.title)
@@ -107,8 +101,6 @@ class GridView:
                 # Kodi's addItems re-binds the whole container and selects the first card; the owner's
                 # card is selected again in the same GUI pass, so the grid stays where it was.
                 control.selectItem(position)
-        position = control.getSelectedPosition()
-        self.app.checks.follow_grid(ids.GRID, self.cards, max(position, 0))  # next-episode availability
         if first:
             w.setProperty("grid_empty", "" if page.cards else (page.empty or ui.string(30256)))
             if page.cards:
@@ -127,22 +119,20 @@ class GridView:
         return self.cards[position] if 0 <= position < len(self.cards) else None
 
     def refresh(self):
-        if self.key in ("continue", "favourites") or self.key.startswith("mal:"):
+        if self.key in ("continue", "mylist"):
             self.load(self.key)
 
 
 class App:
-    def __init__(self, window, loader=None, show_id=None):
+    def __init__(self, window, loader=None, title_key=None):
         self.window = window
-        self.open_show = show_id  # started by End episode with no NovaFlix window open
+        self.open_title = title_key  # started by End episode with no NovaFlix window open
         self.loader = loader or Loader()
         self.stack = []
         self.view = None
         self.home = HomeView(self)
         self.grid = GridView(self)
         self.related = RelatedView(self)
-        self.malhub = MalHubView(self)
-        self.checks = AvailabilityChecks(self)
         self.watch = PlaybackWatch()
         self.explore_open = False
         self._busy = 0  # > 0 while a key press or click is handled (and any dialog it opened)
@@ -152,22 +142,20 @@ class App:
     # -- lifecycle ---------------------------------------------------------------
 
     def on_init(self):
-        if self._started:  # Kodi calls onInit again after the show page or fullscreen video
+        if self._started:  # Kodi calls onInit again after the title page or fullscreen video
             if self.view == "grid":
                 self.window.setFocusId(ids.GRID)
             elif self.view == "related":
                 self.related.focus()
-            elif self.view == "mal":
-                self.malhub.focus()
-            show_id = actions.take_open_show()  # End episode pressed during the video
-            if show_id:
-                self.run(("show", show_id))
+            key = actions.take_open_show()  # End episode pressed during the video
+            if key:
+                self.run(("title",) + key)
             return
         self._started = True
         self.show_home()
-        if self.open_show:
-            show_id, self.open_show = self.open_show, None
-            self.run(("show", show_id))
+        if self.open_title:
+            key, self.open_title = self.open_title, None
+            self.run(("title",) + key)
 
     def _fill_sidebar(self):
         self.sidebar = [entry + ("main",) for entry in SIDEBAR] + [EXPLORE + ("explore",)]
@@ -197,8 +185,7 @@ class App:
     def toggle_explore(self):
         self.explore_open = not self.explore_open
         self._fill_sidebar()
-        explore_row = len(SIDEBAR)
-        self.window.getControl(ids.SIDEBAR).selectItem(explore_row)  # focus stays on Explore
+        self.window.getControl(ids.SIDEBAR).selectItem(len(SIDEBAR))  # focus stays on Explore
 
     def close(self):
         self.loader.cancel()
@@ -217,7 +204,7 @@ class App:
             self.home.tick(now)
         if self.watch.ended():
             self._refresh()
-        if not self._busy:  # a dialog or the show page on top takes the phone's search itself
+        if not self._busy:  # a dialog or the title page on top takes the phone's search itself
             text = actions.phone_search()
             if text:
                 self.open_grid(f"search:{text}")
@@ -244,18 +231,16 @@ class App:
 
     def _open(self, key):
         name, _, arg = key.partition(":")
-        if key == "mal":  # the status cards; "mal:<status>" is a grid
-            self._set_view("mal", "mal")
-            self.malhub.load()
-        elif name == "related":
+        if name == "more":
+            media_type, _, tmdb_id = arg.partition(":")
             self._set_view("related", "related")
-            self.related.load(arg)
+            self.related.load(media_type, tmdb_id)
         else:
             self._set_view("grid", name)
             self.grid.load(key)
 
     def back(self):
-        if self.view not in ("grid", "related", "mal"):
+        if self.view not in ("grid", "related"):
             self.close()
             return
         if self.stack:
@@ -279,11 +264,8 @@ class App:
             self.back()
         elif action_id in ids.ACTION_CONTEXT:
             self._context_menu()
-        elif action_id in ids.ACTION_MOVES and self.window.getFocusId() == ids.GRID:
-            self.checks.follow_grid(ids.GRID, self.grid.cards,
-                                    self.window.getControl(ids.GRID).getSelectedPosition())
-            if action_id in (ids.ACTION_MOVE_RIGHT, ids.ACTION_MOVE_DOWN):
-                self.grid.maybe_more()
+        elif action_id in (ids.ACTION_MOVE_RIGHT, ids.ACTION_MOVE_DOWN) and self.window.getFocusId() == ids.GRID:
+            self.grid.maybe_more()
 
     def on_click(self, control_id):
         if control_id == ids.SIDEBAR:
@@ -302,8 +284,6 @@ class App:
             self.home.on_click(control_id)
         elif control_id in ids.RELATED_ROWS:
             self.related.on_click(control_id)
-        elif control_id in ids.MAL_CARDS:
-            self.malhub.on_click(control_id)
         elif control_id == ids.HOME_RETRY:
             self.home.load()
         elif control_id == ids.GRID:
@@ -317,23 +297,19 @@ class App:
             self.show_home()
         elif kind == "grid":
             self.open_grid(action[1])
-        elif kind == "related":
-            self.open_grid(f"related:{action[1]}")
+        elif kind == "more":
+            self.open_grid(f"more:{action[1]}:{action[2]}")
         elif kind == "settings":
             actions.open_settings()
-        elif kind == "show":
-            from resources.lib.gui import show
-            result = show.open_show(action[1])
+        elif kind == "title":
+            from resources.lib.gui import title
+            result = title.open_title(action[1], action[2])
             if result:
                 self.run(result)
             else:
-                self._refresh()  # favourites or watched marks may have changed
-        elif kind == "play":
-            actions.play_episode(*action[1:])
-        elif kind == "episode":
-            actions.episode_choice(*action[1:])
-        elif kind == "search":
-            actions.search_episode(*action[1:])
+                self._refresh()  # My List or watched marks may have changed
+        elif kind == "watch":
+            actions.watch(*action[1:])
         elif kind == "search_new":
             text = actions.search_keyboard()
             if text:
@@ -354,7 +330,7 @@ class App:
             actions.play_url(action[1])
 
     def settings_menu(self):
-        """Settings: the add-on settings, plus My TorBox / My Real-Debrid (moved out of the sidebar)."""
+        """Settings: the add-on settings, plus My TorBox."""
         from resources.lib.debrid import service
         choice = dialogs.menu(ui.string(30012), [ui.string(30293), ui.string(30011) % service.label()])
         if choice == 0:
@@ -364,13 +340,8 @@ class App:
             self.run(("grid", "torbox"))
 
     def report(self, error):
-        if isinstance(error, mal.MalSetupMissing):
-            if ui.confirm(ui.string(30003), ui.string(30075)):
-                ui.open_settings()
-        elif isinstance(error, mal.MalUserUnavailable):
-            ui.ok(ui.string(30003), ui.string(30076) % ui.setting("mal_username"))
-        elif isinstance(error, mal.MalClientRejected):
-            if ui.confirm(ui.string(30003), ui.string(30077)):
+        if isinstance(error, lists.TmdbKeyMissing):
+            if ui.confirm("TMDB", ui.string(30423)):
                 ui.open_settings()
         elif isinstance(error, lists.ServiceMissing):
             from resources.lib.views import sources
@@ -390,80 +361,44 @@ class App:
 
     def _context_menu(self):
         card = self._focused_card()
-        # Show cards open the show; Continue Watching cards play or search (anilist_id comes second).
-        if not card or not card.action or card.action[0] not in ("show", "play", "search"):
+        # Title cards open the title page; Continue Watching cards play (media_type, tmdb_id come next).
+        if not card or not card.action or card.action[0] not in ("title", "watch"):
             return
-        anilist_id = card.action[1]
-        favs = Favourites(paths.profile_dir())
-        try:
-            favourite = anilist_id in favs.ids()
-        finally:
-            favs.close()
-        options = [("favourite", ui.string(30061 if favourite else 30060)), ("watched", ui.string(30223)),
-                   ("unwatched", ui.string(30224)), ("related", ui.string(30034))]
-        mal_state = self._mal_state(anilist_id)
-        if mal_state is not None:
-            on_list = bool(mal_state[1] and mal_state[1].get("list_status"))
-            options.append(("mal_remove", ui.string(30308)) if on_list else ("mal_add", ui.string(30307)))
+        media_type, tmdb_id = card.action[1], card.action[2]
+        on_list = MyList(paths.profile_dir()).contains(media_type, tmdb_id)
+        options = [("mylist", ui.string(30433 if on_list else 30432)), ("watched", ui.string(30434)),
+                   ("unwatched", ui.string(30435)), ("more", ui.string(30418))]
         choice = dialogs.menu(card.label, [label for _, label in options])
         if not 0 <= choice < len(options):
             return
         key = options[choice][0]
-        if key == "favourite":
-            favs = Favourites(paths.profile_dir())
-            try:
-                if favourite:
-                    favs.remove(anilist_id)
-                    ui.notify("NovaFlix", ui.string(30064))
-                else:
-                    show = Catalog().show(anilist_id)
-                    favs.add(show)
-                    ui.notify(show.title, ui.string(30063))
-            finally:
-                favs.close()
-        elif key == "watched":
-            catalog = Catalog()
-            show = catalog.show(anilist_id)
-            numbers = [e.number for e in catalog.episodes(show)]
-            History(paths.profile_dir()).mark_show(anilist_id, numbers, True)
-            sync.queue_show(paths.profile_dir(), anilist_id, "show_watched", max(numbers, default=0),
-                            mal_id=show.mal_id)
-        elif key == "unwatched":
-            if ui.confirm("NovaFlix", ui.string(30227)):
-                History(paths.profile_dir()).mark_show(anilist_id, [], False)
-                sync.queue_show(paths.profile_dir(), anilist_id, "show_unwatched")
-        elif key == "related":
-            self.run(("related", anilist_id))
-            return
-        elif key in ("mal_add", "mal_remove"):
-            actions.mal_edit(key, anilist_id, *mal_state)
+        try:
+            if key == "mylist":
+                from resources.lib.metadata.library import Library
+                title = Library().cached_title(media_type, tmdb_id) or media.Title(
+                    media_type=media_type, tmdb_id=tmdb_id, title=card.label, poster=card.poster)
+                actions.toggle_my_list(title)
+            elif key == "watched":
+                actions.mark_title(media_type, tmdb_id, True)
+            elif key == "unwatched":
+                actions.mark_title(media_type, tmdb_id, False)
+            elif key == "more":
+                self.run(("more", media_type, tmdb_id))
+                return
+        except errors.NovaFlixError as exc:
+            self.report(exc)
         self._refresh()
 
-    def _mal_state(self, anilist_id):
-        """(show, MAL entry) for the long-press menu; entry None = not logged in (the menu still
-        offers Add, which explains the login). None = no MAL ID or MAL unreachable: no MAL option."""
-        from resources.lib.myanimelist import auth, progress
-        catalog = Catalog()
-        try:
-            show = catalog.cached_show(anilist_id) or catalog.show(anilist_id)
-        except errors.NovaFlixError:
-            return None
-        if not show.mal_id:
-            return None
-        if not auth.MalStore(paths.profile_dir()).logged_in:
-            return show, None
-        entry = progress.show_entry(show.mal_id)
-        return (show, entry) if entry is not None else None
 
-
-def run(show_id=None):
+def run(title_key=None):
+    """Open the NovaFlix window; title_key "tv:1396" (End episode, nothing open) opens that title page."""
     from resources.lib.playback.monitor import GUI_PROPERTY
     window = AppWindow("novaflix-app.xml", ui.addon().getAddonInfo("path"), "Default", "1080i")
-    app = App(window, show_id=show_id)
+    app = App(window, title_key=actions.parse_title_key(title_key) if title_key else None)
     window.app = app
     ticker = Ticker(app.tick)
     ticker.start()
-    ui.set_window_property(GUI_PROPERTY, "true")  # End episode: this window opens the show page
+    ui.set_window_property(GUI_PROPERTY, "true")  # End episode: this window opens the title page
     actions.start_phone_keyboard()
     try:
         window.doModal()

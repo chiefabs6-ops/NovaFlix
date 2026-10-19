@@ -294,13 +294,12 @@ class PlaybackMonitor(xbmc.Player):
         if self._transition is not None or session is not self.session:
             log.info(f"{kind}: ignored, a playback transition is already running")
             return
-        title = _is_title(session)
+        page = f"{session.media_type}:{session.tmdb_id}" if _is_title(session) else str(session.anilist_id)
         if kind == "end":
             session.cancelled = True  # the Up next pre-search stops
-            if not title:  # movies and shows: returning to their page arrives with the Plan 4 screens
-                # Set before stopping: the NovaFlix window under the video reads it as soon as the video closes.
-                ui.set_window_property(OPEN_SHOW_PROPERTY, str(session.anilist_id))
-        self._transition = [kind, None if title else session.anilist_id, url, None]  # deadline set by the next tick
+            # Set before stopping: the NovaFlix window under the video reads it as soon as the video closes.
+            ui.set_window_property(OPEN_SHOW_PROPERTY, page)
+        self._transition = [kind, page, url, None]  # deadline set by the next tick
         self._close_prompts()
         log.info(f"{kind}: stopping {session.anilist_id} ep {session.episode}")
         self.stop()
@@ -322,7 +321,7 @@ class PlaybackMonitor(xbmc.Player):
             self._finish(ended=False)  # stopped without a stop event: save and clean up now
         if kind == "choose":
             xbmc.executebuiltin(f"PlayMedia({url})")
-        elif anilist_id is not None:
+        else:
             self._return_to_show(anilist_id)
 
     def _playing(self):
@@ -331,14 +330,17 @@ class PlaybackMonitor(xbmc.Player):
         except RuntimeError:
             return False
 
-    def _return_to_show(self, anilist_id):
+    def _return_to_show(self, page):
+        """page: "tv:1396" / "movie:438631" (a title page) or an anime id."""
         if ui.get_window_property(GUI_PROPERTY):
-            return  # the NovaFlix window under the video opens the show page (gui/app.py, gui/show.py)
+            return  # the NovaFlix window under the video opens the title page (gui/app.py, gui/title.py)
         ui.clear_window_property(OPEN_SHOW_PROPERTY)
-        if ui.styled():
-            xbmc.executebuiltin(f"RunPlugin({router.build_url('launch', show=anilist_id)})")
+        if ":" in page:
+            xbmc.executebuiltin(f"RunPlugin({router.build_url('launch', title=page)})")
+        elif ui.styled():
+            xbmc.executebuiltin(f"RunPlugin({router.build_url('launch', show=page)})")
         else:
-            xbmc.executebuiltin(f"ActivateWindow(Videos,{router.build_url('show', id=anilist_id)},return)")
+            xbmc.executebuiltin(f"ActivateWindow(Videos,{router.build_url('show', id=page)},return)")
 
     def _expire_prompts(self, session, position, now):
         keep = []

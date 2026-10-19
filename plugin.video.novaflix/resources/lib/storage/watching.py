@@ -45,6 +45,16 @@ class WatchHistory:
             "SET position_s = 0, watched = excluded.watched, updated_at = excluded.updated_at",
             (media_type, int(tmdb_id), int(season), int(episode), int(bool(watched)), _clock()))
 
+    def forget(self, media_type, tmdb_id):
+        """Mark unwatched: every watched mark and resume point of the title goes."""
+        self._run("DELETE FROM watch_history WHERE media_type = ? AND tmdb_id = ?", (media_type, int(tmdb_id)))
+
+    def last_watched(self, media_type, tmdb_id):
+        """(season, episode) of the title's most recent history row, or None."""
+        rows = self._run("SELECT season, episode FROM watch_history WHERE media_type = ? AND tmdb_id = ? "
+                         "ORDER BY updated_at DESC LIMIT 1", (media_type, int(tmdb_id)))
+        return tuple(rows[0]) if rows else None
+
     def states(self, media_type, tmdb_id):
         """{(season, episode): (position_s, duration_s, watched)} for one title."""
         rows = self._run("SELECT season, episode, position_s, duration_s, watched FROM watch_history "

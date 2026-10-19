@@ -229,7 +229,8 @@ def test_too_many_wrong_codes_is_announced(screen):
 
 
 def test_no_home_network_explains_instead(monkeypatch):
-    monkeypatch.setattr(relay, "lan_address", lambda: None)
+    from resources.lib.net import lan
+    monkeypatch.setattr(lan, "lan_address", lambda: None)
     assert actions.search_phone() is None
     assert "No home network address" in xbmcgui.ok_calls[-1][1]
 

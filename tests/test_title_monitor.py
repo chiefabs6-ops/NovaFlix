@@ -101,12 +101,24 @@ def test_title_playback_error_offers_watch_url(mon):
     assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/watch?type=tv&id=1396&s=2&e=3)"
 
 
-def test_end_episode_for_a_title_only_stops(mon):
+def test_end_episode_returns_to_title_page(mon):
     tmdb_net()
     start(mon, {"type": "tv", "id": 1396, "season": 1, "episode": 7})
     play_to(mon, LENGTH - 89, 0)
+    xbmcgui.Window(10000).setProperty(monitor_mod.GUI_PROPERTY, "true")  # the NovaFlix window is under the video
     xbmcgui.xml_dialogs[-1].onClick(9001)  # End episode
+    assert xbmcgui.window_properties[monitor_mod.OPEN_SHOW_PROPERTY] == "tv:1396"
     mon.onPlayBackStopped()
     mon.tick(1)
-    assert monitor_mod.OPEN_SHOW_PROPERTY not in xbmcgui.window_properties
-    assert not any("launch" in b or "ActivateWindow" in b for b in xbmc.builtins_executed)
+    from resources.lib.gui import actions
+    assert actions.take_open_show() == ("tv", 1396)
+
+
+def test_end_episode_without_the_window_launches_it_for_the_title(mon):
+    tmdb_net()
+    start(mon, {"type": "tv", "id": 1396, "season": 1, "episode": 7})
+    play_to(mon, LENGTH - 89, 0)
+    xbmcgui.xml_dialogs[-1].onClick(9001)
+    mon.onPlayBackStopped()
+    mon.tick(1)
+    assert xbmc.builtins_executed[-1] == "RunPlugin(plugin://plugin.video.novaflix/launch?title=tv%3A1396)"

@@ -50,12 +50,12 @@ def test_launcher_runs_plugin_launch_route_in_background():
 def test_launch_route_opens_app_window_when_look_is_on(monkeypatch):
     from resources.lib.gui import app
     opened = []
-    monkeypatch.setattr(app, "run", lambda show_id=None: opened.append(show_id))
+    monkeypatch.setattr(app, "run", lambda title_key=None: opened.append(title_key))
     xbmcaddon.settings["novaflix_look"] = True
     router.dispatch([BASE + "launch", "-1", ""])
     assert opened == [None] and xbmcplugin.end_calls == []
-    router.dispatch([BASE + "launch", "-1", "?show=154587"])  # End episode with no NovaFlix window open
-    assert opened == [None, 154587]
+    router.dispatch([BASE + "launch", "-1", "?title=tv%3A1396"])  # End episode with no NovaFlix window open
+    assert opened == [None, "tv:1396"]
 
 
 def test_launch_route_opens_classic_lists_when_look_is_off(monkeypatch):

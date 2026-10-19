@@ -1,94 +1,116 @@
 # plugin.video.novaflix/resources/lib/gui/actions.py
-"""What selecting a card does (M12). Playback always goes through the existing play route."""
+"""What selecting a card does. Playback always goes through the `watch` route (views/watch.py)."""
 
 import time
 
 import xbmc
 
-from resources.lib import errors, router
-from resources.lib.gui import cards, dialogs
+from resources.lib import media, router
+from resources.lib.gui import dialogs
 from resources.lib.kodi import log, paths, ui
-from resources.lib.metadata.catalog import Catalog
-from resources.lib.storage.history import History
+from resources.lib.metadata.library import Library
+from resources.lib.storage.mylist import MyList
+from resources.lib.storage.watching import WatchHistory
 
 
 def play_url(url):
     xbmc.executebuiltin(f"PlayMedia({url})")
 
 
-def play_episode(anilist_id, episode, resume_s=0):
-    play_url(router.build_url("play", id=anilist_id, ep=episode, resume=int(resume_s) if resume_s else None))
+def watch(media_type, tmdb_id, season=None, episode=None, resume_s=0):
+    from resources.lib.views.watch import watch_url
+    if media_type == media.MOVIE:
+        season = episode = None
+    play_url(watch_url(media_type, tmdb_id, season, episode, resume_s))
 
 
-def search_episode(anilist_id, episode):
+def search_again(media_type, tmdb_id, season=None, episode=None):
     """Search the providers again (ignoring saved results), then the usual source list."""
-    play_url(router.build_url("play", id=anilist_id, ep=episode, refresh=1))
+    play_url(router.build_url("watch", type=media_type, id=tmdb_id, s=season, e=episode, refresh=1))
 
 
-def play_next(show):
-    from resources.lib.myanimelist import progress
-    numbers = [e.number for e in Catalog().episodes(show)]
-    states = progress.merge_states(History(paths.profile_dir()).states(show.anilist_id),
-                                   progress.show_entry(show.mal_id, network=False))  # GUI thread: never wait on MAL
-    episode, resume_s = cards.next_episode(numbers, states)
-    play_episode(show.anilist_id, episode, resume_s)
-
-
-def episode_choice(anilist_id, episode):
-    """Started, unwatched episode: ask Resume / From start (spec §6); otherwise play."""
-    state = History(paths.profile_dir()).states(anilist_id).get(episode)
+def title_episode_choice(media_type, tmdb_id, season, episode):
+    """Started, unwatched episode or film: ask Resume / From start; otherwise play."""
+    state = WatchHistory(paths.profile_dir()).states(media_type, tmdb_id).get((season or 0, episode or 0))
     if state and state[0] > 0 and not state[2]:
         choice = dialogs.resume_choice(state[0])
         if choice is None:
             return
-        play_episode(anilist_id, episode, state[0] if choice else 0)
+        watch(media_type, tmdb_id, season, episode, state[0] if choice else 0)
         return
-    play_episode(anilist_id, episode)
+    watch(media_type, tmdb_id, season, episode)
+
+
+def play_title(title):
+    """Home hero Play: a movie resumes or starts; a show continues where the owner is, else S1 E1."""
+    history = WatchHistory(paths.profile_dir())
+    if title.is_movie:
+        state = history.states(title.media_type, title.tmdb_id).get((0, 0))
+        resume = state[0] if state and not state[2] else 0
+        watch(title.media_type, title.tmdb_id, resume_s=resume)
+        return
+    row = next((r for r in history.continue_watching() if (r["media_type"], r["tmdb_id"]) ==
+                (title.media_type, title.tmdb_id)), None)
+    if row and not row["watched"]:
+        watch(title.media_type, title.tmdb_id, row["season"], row["episode"], row["position_s"])
+        return
+    library = Library()
+    full = library.title(title.media_type, title.tmdb_id)
+    if row:
+        next_ref = library.next_episode(full, row["season"], row["episode"])
+        if next_ref:
+            watch(title.media_type, title.tmdb_id, *next_ref)
+            return
+    first = next((s.number for s in full.seasons if s.number > 0), 1)
+    watch(title.media_type, title.tmdb_id, first, 1)
+
+
+def toggle_my_list(title):
+    """Add to / remove from My List; True when the title is on it now."""
+    my = MyList(paths.profile_dir())
+    if my.contains(title.media_type, title.tmdb_id):
+        my.remove(title.media_type, title.tmdb_id)
+        ui.notify("NovaFlix", ui.string(30437))
+        return False
+    my.add(title)
+    ui.notify(title.title, ui.string(30436))
+    return True
+
+
+def mark_title(media_type, tmdb_id, watched):
+    """Whole title watched (movie, or every aired episode of every season) or unwatched (after asking)."""
+    history = WatchHistory(paths.profile_dir())
+    if not watched:
+        if ui.confirm("NovaFlix", ui.string(30438)):
+            history.forget(media_type, tmdb_id)
+        return
+    if media_type == media.MOVIE:
+        history.mark(media_type, tmdb_id, 0, 0, True)
+        return
+    library = Library()
+    title = library.title(media_type, tmdb_id)
+    for season in (s.number for s in title.seasons if s.number > 0):
+        for episode in library.episodes(title, season):
+            history.mark(media_type, tmdb_id, season, episode.number, True)
 
 
 def take_open_show():
-    """End episode (playback/monitor.py): the show page to return to, read once; None if none."""
+    """End episode (playback/monitor.py): the title page to return to as (media_type, tmdb_id), read once;
+    None if none."""
     from resources.lib.playback.monitor import OPEN_SHOW_PROPERTY
     value = ui.get_window_property(OPEN_SHOW_PROPERTY)
     if not value:
         return None
     ui.clear_window_property(OPEN_SHOW_PROPERTY)
-    try:
-        return int(value)
-    except ValueError:
-        return None
+    return parse_title_key(value)
 
 
-def mal_edit(key, anilist_id, show, entry):
-    """Add to ("mal_add") or remove from ("mal_remove") MyAnimeList: long-press menu and show page.
-    entry None = not logged in (offers the settings). Returns the entry as it is on MAL now,
-    or None when nothing changed (cancelled, failed, not logged in)."""
-    from resources.lib.myanimelist import listedit
-    from resources.lib.myanimelist.progress import STATUS_STRINGS
-    heading = "MyAnimeList"
-    if entry is None:  # not logged in
-        if ui.confirm(heading, ui.string(30313)):
-            ui.open_settings()
-        return None
-    try:
-        if key == "mal_add":
-            order = listedit.ADD_ORDER
-            choice = dialogs.menu(ui.string(30307), [ui.string(STATUS_STRINGS[s]) for s in order])
-            if not 0 <= choice < len(order):
-                return None
-            watched = listedit.add(paths.profile_dir(), show.mal_id, anilist_id, order[choice],
-                                   show.episodes_total or 0)
-            ui.notify(show.title, ui.string(30310) % ui.string(STATUS_STRINGS[order[choice]]))
-            return dict(entry, list_status=order[choice], watched=watched)
-        if not ui.confirm(heading, ui.string(30309) % show.title):
-            return None
-        listedit.remove(paths.profile_dir(), show.mal_id)
-        ui.notify(show.title, ui.string(30311))
-        return dict(entry, list_status=None, watched=0, score=0)
-    except errors.NovaFlixError as exc:
-        log.warning(f"MyAnimeList list change failed: {type(exc).__name__}: {exc}")
-        ui.notify(heading, ui.string(30312), error=True)
-        return None
+def parse_title_key(value):
+    """"tv:1396" -> ("tv", 1396); None when it is not a title key."""
+    media_type, _, tmdb_id = (value or "").partition(":")
+    if media_type in (media.MOVIE, media.TV) and tmdb_id.isdigit():
+        return media_type, int(tmdb_id)
+    return None
 
 
 def search_keyboard():
@@ -105,9 +127,8 @@ def search_phone():
     title the phone asked to search for, or None (Back/Cancel, 5 minutes, no home network).
     The server keeps running while NovaFlix is open, so the bookmarked page works without this screen."""
     from resources.lib.kodi.login_dialog import KodiLoginPresenter
-    from resources.lib.myanimelist import relay
-    from resources.lib.net import phone_keyboard
-    host = relay.lan_address()
+    from resources.lib.net import lan, phone_keyboard
+    host = lan.lan_address()
     if not host:
         ui.ok(ui.string(30319), ui.string(30270))
         return None
@@ -155,11 +176,10 @@ def unpair_phone():
 
 def start_phone_keyboard():
     """NovaFlix opened: run the paired phone's server (nothing when no phone is paired)."""
-    from resources.lib.myanimelist import relay
-    from resources.lib.net import phone_keyboard
+    from resources.lib.net import lan, phone_keyboard
     if phone_keyboard.load_pairing(paths.profile_dir()) is None:
         return
-    host = relay.lan_address()
+    host = lan.lan_address()
     if not host:
         return
     try:
@@ -185,3 +205,4 @@ def add_magnet():
 
 def open_settings():
     ui.open_settings()
+

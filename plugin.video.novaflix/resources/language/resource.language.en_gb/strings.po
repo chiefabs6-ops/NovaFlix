@@ -1152,3 +1152,51 @@ msgstr ""
 msgctxt "#30431"
 msgid "%d seasons"
 msgstr ""
+
+msgctxt "#30424"
+msgid "Season %d"
+msgstr ""
+
+msgctxt "#30425"
+msgid "Specials"
+msgstr ""
+
+msgctxt "#30426"
+msgid "Play S%d E%d"
+msgstr ""
+
+msgctxt "#30427"
+msgid "Not in English (%s)"
+msgstr ""
+
+msgctxt "#30432"
+msgid "Add to My List"
+msgstr ""
+
+msgctxt "#30433"
+msgid "Remove from My List"
+msgstr ""
+
+msgctxt "#30434"
+msgid "Mark as watched"
+msgstr ""
+
+msgctxt "#30435"
+msgid "Mark as unwatched"
+msgstr ""
+
+msgctxt "#30436"
+msgid "Added to My List"
+msgstr ""
+
+msgctxt "#30437"
+msgid "Removed from My List"
+msgstr ""
+
+msgctxt "#30438"
+msgid "Clear watched marks and resume points for this title?"
+msgstr ""
+
+msgctxt "#30439"
+msgid "Seasons"
+msgstr ""

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- M12 show page. Window properties from gui/show.py: title alt plot meta art dark poster genres
-     dub has_related related_label mal_label play_label favourite_label favourited episodes_title no_episodes loading
+     dub has_related related_label season_label play_label favourite_label favourited episodes_title no_episodes loading
      avail avail_line (availability of the Play episode, gui/show.py). -->
 <window>
   <defaultcontrol>500</defaultcontrol>
@@ -109,8 +109,8 @@
         <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <texturefocus border="20" colordiffuse="FF0663CC">av-round.png</texturefocus>
         <texturenofocus border="20" colordiffuse="B3070F1F">av-round.png</texturenofocus>
-        <label>$INFO[Window.Property(mal_label)]</label>
-        <visible>!String.IsEmpty(Window.Property(mal_label))</visible>
+        <label>$INFO[Window.Property(season_label)]</label>
+        <visible>!String.IsEmpty(Window.Property(season_label))</visible>
         <animation effect="zoom" start="100" end="105" time="120" center="auto">Focus</animation>
       </control>
     </control>

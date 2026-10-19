@@ -1,6 +1,6 @@
 # plugin.video.novaflix/resources/lib/gui/related.py
-"""Related view of the app window (M14, DEC-062): the franchise as up to six Home-style rows.
-Rows are filled from the top, so empty ones are always at the bottom and hidden by the layout."""
+"""More like this view of the app window: a movie's collection and TMDB's recommendations as
+Home-style rows. Rows are filled from the top, so empty ones are always at the bottom and hidden by the layout."""
 
 from resources.lib.gui import ids, items, lists
 from resources.lib.kodi import log, ui
@@ -12,8 +12,8 @@ class RelatedView:
         self.key = None
         self.rows = []
 
-    def load(self, anilist_id):
-        self.key = f"related:{anilist_id}"
+    def load(self, media_type, tmdb_id):
+        self.key = f"more:{media_type}:{tmdb_id}"
         self.rows = []
         w = self.app.window
         for n, control_id in enumerate(ids.RELATED_ROWS):
@@ -22,7 +22,7 @@ class RelatedView:
         for name in ("related_title", "related_notice", "related_status"):
             w.setProperty(name, "")
         w.setProperty("loading", "true")
-        self.app.loader.start({self.key: lambda: lists.related(anilist_id)}, self._deliver)
+        self.app.loader.start({self.key: lambda: lists.more_like_this(media_type, int(tmdb_id))}, self._deliver)
 
     def _deliver(self, key, page, error):
         if key != self.key:

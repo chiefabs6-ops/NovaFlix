@@ -15,7 +15,7 @@ RELATED_ROWS = (800, 810, 820, 830, 840, 850)
 SHOW_PLAY = 500
 SHOW_FAVOURITE = 501
 SHOW_RELATED = 502
-SHOW_MAL = 503
+SHOW_SEASON = 503   # season picker (TV); was the MyAnimeList button
 SHOW_EPISODES = 510
 SOURCES_LIST = 600
 CONFIRM_YES = 700
@@ -39,7 +39,7 @@ WINDOW_IDS = {
     "novaflix-progress.xml": [PROGRESS_BAR, PROGRESS_CANCEL],
     "novaflix-sources.xml": [SOURCES_LIST],
     "novaflix-menu.xml": [MENU_LIST],
-    "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_MAL, SHOW_EPISODES],
+    "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_SEASON, SHOW_EPISODES],
     "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, *MAL_CARDS, *MAL_BARS,
                          *RELATED_ROWS],
 }
