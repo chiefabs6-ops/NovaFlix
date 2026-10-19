@@ -1052,3 +1052,7 @@ msgstr ""
 msgctxt "#30402"
 msgid "This product uses the TMDB API but is not endorsed or certified by TMDB. Get a free key at themoviedb.org → Settings → API."
 msgstr ""
+
+msgctxt "#30403"
+msgid "%d releases in other languages hidden"
+msgstr ""
