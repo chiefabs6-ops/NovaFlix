@@ -29,10 +29,17 @@ BASE = "plugin://plugin.video.novaflix/"
 
 
 @pytest.fixture(autouse=True)
-def use_real_debrid():
-    """These tests exercise the Real-Debrid client; TorBox has its own tests."""
-    import xbmcaddon
-    xbmcaddon.settings["playback_service"] = 1
+def use_real_debrid(monkeypatch):
+    """These tests drive the resolver through the Real-Debrid-shaped fake client (replaced
+    with a TorBox fake when Plan 3 rewrites them); NovaFlix itself only offers TorBox."""
+    from resources.lib.debrid import service
+    from resources.lib.debrid.realdebrid import RealDebrid
+
+    def client(directory=None):
+        store = auth.TokenStore(directory or paths.profile_dir())
+        return RealDebrid(store) if store.connected else None
+
+    monkeypatch.setattr(service, "client", client)
 FRIEREN = fixture("anilist_media_154587.json")
 ANIZIP = fixture("anizip_154587.json")
 TORRENTIO = fixture("torrentio_46474_3.json")
@@ -341,7 +348,7 @@ def test_declined_download_removes_torrent_and_returns_to_list(monkeypatch):
     xbmcgui.select_answers.extend([0, -1])
     xbmcgui.yesno_answers.append(False)
     router.dispatch([BASE + "play", "5", "?id=154587&ep=3"])
-    assert "isn't ready on Real-Debrid yet" in xbmcgui.yesno_calls[-1][1]
+    assert "isn't ready on TorBox yet" in xbmcgui.yesno_calls[-1][1]
     assert fake.torrents == {}
     assert xbmcplugin.resolved[-1][1] is False
 

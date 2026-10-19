@@ -22,10 +22,17 @@ BASE = "plugin://plugin.video.novaflix/"
 
 
 @pytest.fixture(autouse=True)
-def use_real_debrid():
-    """These tests exercise the Real-Debrid client; TorBox has its own tests."""
-    import xbmcaddon
-    xbmcaddon.settings["playback_service"] = 1
+def use_real_debrid(monkeypatch):
+    """These tests drive the resolver through the Real-Debrid-shaped fake client (replaced
+    with a TorBox fake when Plan 3 rewrites them); NovaFlix itself only offers TorBox."""
+    from resources.lib.debrid import service
+    from resources.lib.debrid.realdebrid import RealDebrid
+
+    def client(directory=None):
+        store = auth.TokenStore(directory or paths.profile_dir())
+        return RealDebrid(store) if store.connected else None
+
+    monkeypatch.setattr(service, "client", client)
 TORRENTIO = fixture("torrentio_46474_3.json")
 FRIEREN = fixture("anilist_media_154587.json")
 ANIZIP = fixture("anizip_154587.json")
@@ -319,7 +326,7 @@ def connect_store():
 def test_my_real_debrid_requires_connection():
     xbmcgui.yesno_answers.append(False)
     router.dispatch([BASE + "rd/cloud", "1", ""])
-    assert "not connected" in xbmcgui.yesno_calls[-1][1]
+    assert "Enter your TorBox API key" in xbmcgui.yesno_calls[-1][1]
     assert xbmcplugin.end_calls[-1][1] is False
 
 
@@ -356,7 +363,7 @@ def test_add_magnet_adds_and_selects_all():
     assert net.count("/torrents/addMagnet") == 1
     select_body = [b for m, u, b in net.calls if "selectFiles" in u][0]
     assert "files=all" in select_body
-    assert xbmcgui.notifications[-1][1] == "Added to your Real-Debrid"
+    assert xbmcgui.notifications[-1][1] == "Added to your TorBox"
 
 
 def test_subtitle_flags_are_not_dub_evidence():

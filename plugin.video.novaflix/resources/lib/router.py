@@ -42,7 +42,6 @@ ROUTES = {
     "favourites": "resources.lib.views.mylists:favourites",
     "favourites/add": "resources.lib.views.mylists:favourite_add",
     "favourites/remove": "resources.lib.views.mylists:favourite_remove",
-    "rd/account": "resources.lib.views.account:menu",
     "rd/cloud": "resources.lib.views.sources:cloud",
     "rd/torrent": "resources.lib.views.sources:torrent",
     "rd/play": "resources.lib.views.sources:rd_play",
@@ -118,13 +117,8 @@ def report_error(exc, where):
     if isinstance(exc, errors.AuthError):
         # Expired/revoked login is never shown as "no results".
         log.warning(f"{where}: {exc}")
-        from resources.lib.debrid import service
-        if service.active() == service.TORBOX:
-            if ui.confirm("TorBox", ui.string(30229)):  # API key rejected
-                ui.open_settings()
-        elif ui.confirm("Real-Debrid", ui.string(30135)):
-            from resources.lib.views import account
-            account.connect(None)
+        if ui.confirm("TorBox", ui.string(30229)):  # API key rejected
+            ui.open_settings()
     elif isinstance(exc, errors.AccountError):
         log.warning(f"{where}: {exc}")
         from resources.lib.debrid import service

@@ -72,3 +72,16 @@ def test_crashing_view_is_logged_redacted_and_reported(monkeypatch):
     logged = "\n".join(msg for _, msg in xbmc.log_records)
     assert "RuntimeError" in logged
     assert "SENTINELTOKEN0123456789" not in logged
+
+
+def test_auth_error_opens_torbox_settings():
+    import xbmcaddon
+    import xbmcgui
+    from resources.lib import errors
+    xbmcaddon.settings["playback_service"] = 1  # leftover value must not lead to Real-Debrid
+    try:
+        raise errors.AuthError("rejected")
+    except errors.AuthError as exc:
+        router.report_error(exc, "play")
+    assert xbmcgui.yesno_calls and xbmcgui.yesno_calls[0][0] == "TorBox"
+    assert xbmcaddon.opened_settings == [True]

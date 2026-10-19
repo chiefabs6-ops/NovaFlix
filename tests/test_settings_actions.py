@@ -48,3 +48,9 @@ def test_clear_cache_does_not_touch_user_db():
     router.dispatch([BASE + "clear_cache", "-1", ""])
     conn = db.open_user_db(paths.profile_dir())
     assert conn.execute("SELECT COUNT(*) FROM favourites").fetchone()[0] == 1
+
+
+def test_settings_have_no_real_debrid():
+    path = os.path.join(paths.__file__, "..", "..", "..", "settings.xml")
+    text = open(os.path.abspath(path), encoding="utf-8").read()
+    assert "playback_service" not in text and "realdebrid" not in text and "rd/account" not in text

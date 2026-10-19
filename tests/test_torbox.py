@@ -97,10 +97,26 @@ def torbox_active():
 
 
 def test_service_factory_picks_torbox_with_key():
-    assert service.active() == service.TORBOX and service.label() == "TorBox"
+    assert service.label() == "TorBox"
     assert isinstance(service.client(), TorBox)
     xbmcaddon.settings["torbox_api_key"] = ""
     assert service.client() is None
+
+
+def test_no_real_debrid_choice():
+    # NovaFlix is TorBox only: no service switch, no Real-Debrid account screen or daily check.
+    import importlib
+    from resources.lib import router, service_main
+    assert not hasattr(service, "active") and not hasattr(service, "REAL_DEBRID")
+    assert "rd/account" not in router.ROUTES
+    assert not hasattr(service_main, "check_real_debrid")
+    with pytest.raises(ImportError):
+        importlib.import_module("resources.lib.views.account")
+
+
+def test_leftover_service_setting_still_means_torbox():
+    xbmcaddon.settings["playback_service"] = 1  # value an old settings file could hold
+    assert isinstance(service.client(), TorBox)
 
 
 def test_cache_lookup_marks_cached_and_uncached_without_adding():

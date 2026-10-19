@@ -245,10 +245,6 @@ msgctxt "#30126"
 msgid "Connected as %s · Account type: %s"
 msgstr ""
 
-msgctxt "#30127"
-msgid "Real-Debrid is not connected. Connect now? You will approve NovaFlix on your phone."
-msgstr ""
-
 msgctxt "#30128"
 msgid "Check account status"
 msgstr ""
@@ -277,16 +273,8 @@ msgctxt "#30134"
 msgid "Removed from this device. Real-Debrid could not be reached to revoke access - to be certain, remove NovaFlix under My Devices on real-debrid.com."
 msgstr ""
 
-msgctxt "#30135"
-msgid "Your Real-Debrid login has expired or was revoked. Reconnect now?"
-msgstr ""
-
 msgctxt "#30136"
 msgid "%s reports a problem with your account: %s."
-msgstr ""
-
-msgctxt "#30137"
-msgid "Premium ends in %d day(s)."
 msgstr ""
 
 msgctxt "#30140"
@@ -499,18 +487,6 @@ msgctxt "#30113"
 msgid "Your MyAnimeList username. The list must be public."
 msgstr ""
 
-msgctxt "#30114"
-msgid "Real-Debrid"
-msgstr ""
-
-msgctxt "#30115"
-msgid "Real-Debrid account"
-msgstr ""
-
-msgctxt "#30116"
-msgid "Connect, check status or disconnect. Your login is stored only on this device."
-msgstr ""
-
 msgctxt "#30160"
 msgid "Sources"
 msgstr ""
@@ -589,14 +565,6 @@ msgstr ""
 
 msgctxt "#30203"
 msgid "Enter your TorBox API key in NovaFlix settings (TorBox tab) first. Open settings now?"
-msgstr ""
-
-msgctxt "#30204"
-msgid "Playback service"
-msgstr ""
-
-msgctxt "#30205"
-msgid "Which service plays your sources. TorBox can check its cache without adding anything to your account."
 msgstr ""
 
 msgctxt "#30210"

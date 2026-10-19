@@ -109,15 +109,10 @@ def _rd_client():
 
 
 def _setup_service(request):
-    """Ask the owner to set up the active service. Returns a client or None."""
-    if service.active() == service.TORBOX:
-        if ui.confirm("TorBox", ui.string(30203)):
-            ui.open_settings()
-        return None
-    if ui.confirm("Real-Debrid", ui.string(30127)):
-        from resources.lib.views import account
-        account.connect(request)
-    return _rd_client()
+    """Ask the owner to enter the TorBox API key. Returns None (settings open instead)."""
+    if ui.confirm("TorBox", ui.string(30203)):
+        ui.open_settings()
+    return None
 
 
 def _wanted(show, catalog, number):
