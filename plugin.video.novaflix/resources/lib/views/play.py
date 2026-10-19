@@ -13,9 +13,7 @@ from resources.lib.debrid.resolver import AmbiguousFile, BadSource, NotReady, Re
 from resources.lib.debrid import service
 from resources.lib.kodi import log, paths, ui
 from resources.lib.playback.monitor import HANDOFF_PROPERTY
-from resources.lib.storage import db
 from resources.lib.storage.added import AddedTorrents
-from resources.lib.storage.history import History
 
 PLAYED, BACK, STOP = "played", "back", "stop"
 POLL_S = 5                 # ~12 RD calls a minute while downloading (limit 250/min)
@@ -74,20 +72,6 @@ def mark_blocked(info_hash):
     Cache(paths.profile_dir()).set(precheck.cache_key(info_hash), precheck.BLOCKED, precheck.TTL[precheck.BLOCKED])
 
 
-def remember_choice(anilist_id, number, candidate):
-    """DEC-024: next episode pins the same release group + resolution."""
-    conn = db.open_user_db(paths.profile_dir())
-    try:
-        conn.execute(
-            "INSERT INTO show_prefs (anilist_id, last_release_group, last_resolution, last_episode_played, updated_at) "
-            "VALUES (?, ?, ?, ?, ?) ON CONFLICT(anilist_id) DO UPDATE SET last_release_group = excluded.last_release_group, "
-            "last_resolution = excluded.last_resolution, last_episode_played = excluded.last_episode_played, "
-            "updated_at = excluded.updated_at",
-            (int(anilist_id), candidate.release_group, candidate.resolution, number, time.time()))
-    finally:
-        conn.close()
-
-
 def resolve_choice(resolver, candidate, wanted, heading):
     """Stream for the chosen source: (url, filename), or BACK / STOP. Asks about ambiguous files
     and downloads; never switches to another source on its own (DEC-004)."""
@@ -126,27 +110,8 @@ def hand_off(request, resolver, handoff):
     ui.set_window_property(HANDOFF_PROPERTY, json.dumps(handoff))
 
 
-def play_candidate(request, rd, show, wanted, candidate, heading):
-    resolver = Resolver(rd, AddedTorrents(paths.profile_dir()))
-    result = resolve_choice(resolver, candidate, wanted, heading)
-    if result in (STOP, BACK):
-        return result
-    url, filename = result
-    hand_off(request, resolver, {"anilist_id": show.anilist_id, "episode": wanted.number, "mal_id": show.mal_id})
-    remember_choice(show.anilist_id, wanted.number, candidate)
-    History(paths.profile_dir()).remember_show(show)  # Continue Watching (DEC-029)
-    log.info(f"playing {show.anilist_id} ep {wanted.number} via {candidate.origin}")
-    ui.resolve(request.handle, url, {
-        "Title": filename or show.title,
-        "TvShowTitle": None if show.is_movie else show.title,
-        "Episode": None if show.is_movie else wanted.number,
-        "MediaType": "movie" if show.is_movie else "episode",
-    }, {"poster": show.poster, "thumb": show.poster, "fanart": show.banner})
-    return PLAYED
-
-
 def play_account_file(request, rd, torrent_id, file_id):
-    """My Real-Debrid file: already downloaded, owner-added -> never removed."""
+    """My TorBox file: already downloaded, owner-added -> never removed."""
     from resources.lib.models import Candidate
     candidate = Candidate(origin="rdcloud", release_name="", rd_torrent_id=torrent_id, rd_file_id=int(file_id))
     resolver = Resolver(rd, AddedTorrents(paths.profile_dir()))

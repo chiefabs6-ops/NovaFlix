@@ -3,10 +3,6 @@
 
 import xbmcgui
 
-from resources.lib.kodi import ui
-
-DUB_TEXT = {"dubbed": 30037, "partial": 30038}
-
 
 def to_listitem(card):
     item = xbmcgui.ListItem(label=card.label, label2=card.label2, offscreen=True)
@@ -20,8 +16,6 @@ def to_listitem(card):
         art.update(thumb=card.wide, fanart=card.wide)
     if art:
         item.setArt(art)
-    dub = DUB_TEXT.get(card.dub)
-    item.setProperty("dub", ui.string(dub) if dub else "")
     item.setProperty("watched", "true" if card.watched else "")
     item.setProperty("note", card.note)
     item.setProperty("status", card.status)

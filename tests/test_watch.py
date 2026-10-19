@@ -165,3 +165,35 @@ def test_episode_name_is_passed_to_the_language_filter(monkeypatch):
     router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
     episode = fixture("tmdb/tv_1396_season_2.json")["episodes"][2]["name"]
     assert seen["title"] == ["Breaking Bad", episode]
+
+
+# -- TorBox outcomes through the watch route --------------------------------------------------------
+
+def test_torbox_not_finished_offers_download(monkeypatch):
+    monkeypatch.setattr(test_torbox, "FILE_NAME", EPISODE_FILE)
+    fake = FakeTorBox(cached=(), finished=False)
+    Net(fake, [stream(HASH, "Breaking.Bad.S02.1080p.BluRay.x264-GRP", EPISODE_FILE)])
+    xbmcgui.select_answers.extend([0, -1])
+    xbmcgui.yesno_answers.append(False)  # decline -> removed, back to list
+    router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
+    assert "isn't ready on TorBox yet" in xbmcgui.yesno_calls[-1][1]
+    assert fake.torrents == {}
+
+
+def test_torbox_failed_torrent_is_removed_and_back_to_list(monkeypatch):
+    monkeypatch.setattr(test_torbox, "FILE_NAME", EPISODE_FILE)
+    fake = FakeTorBox(cached=(), finished=False, failed=True)
+    Net(fake, [stream(HASH, "Breaking.Bad.S02.1080p.BluRay.x264-GRP", EPISODE_FILE)])
+    xbmcgui.select_answers.extend([0, -1])
+    router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
+    assert "TorBox could not download this torrent" in xbmcgui.ok_calls[-1][1]
+    assert fake.torrents == {} and xbmcplugin.resolved[-1][1] is False
+
+
+def test_torbox_without_stream_link_is_a_bad_source(monkeypatch):
+    monkeypatch.setattr(test_torbox, "FILE_NAME", EPISODE_FILE)
+    Net(FakeTorBox(empty_link=True), [stream(HASH, "Breaking.Bad.S02.1080p.BluRay.x264-GRP", EPISODE_FILE)])
+    xbmcgui.select_answers.extend([0, -1])
+    router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
+    assert "TorBox returned no stream URL" in xbmcgui.ok_calls[-1][1]
+    assert xbmcplugin.resolved[-1][1] is False

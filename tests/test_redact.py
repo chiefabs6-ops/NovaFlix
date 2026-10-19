@@ -32,14 +32,6 @@ def test_bearer_token_is_masked():
     assert "abc.def-ghi_123" not in out
 
 
-def test_real_debrid_download_links_are_masked():
-    out = redact.text("stream https://abc12.download.real-debrid.com/d/ABCDEF123/Episode.01.mkv ready")
-    assert "ABCDEF123" not in out
-    assert "Episode.01.mkv" not in out
-    out = redact.text("link https://real-debrid.com/d/QWERTY987")
-    assert "QWERTY987" not in out
-
-
 def test_sensitive_key_value_pairs_are_masked():
     out = redact.text('{"access_token": "aaa111", "refresh_token": "bbb222", "client_secret": "ccc333"}')
     for value in ("aaa111", "bbb222", "ccc333"):

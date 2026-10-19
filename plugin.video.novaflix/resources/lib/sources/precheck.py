@@ -1,4 +1,4 @@
-"""Pre-check sources with Real-Debrid before listing them (DEC-053).
+"""Pre-check sources with the playback service before listing them (DEC-053).
 
 For each torrent source, in list order, until `needed` playable ones are found:
 add the magnet, wait briefly for the file list, select the episode file, read
@@ -129,7 +129,7 @@ def run(rd, candidates, wanted, cache, needed=2, cancelled=lambda: False, on_pro
                 status = _check_one(rd, candidate, wanted, existing)
             except errors.RateLimited:
                 with lock:
-                    state["stop"] = True  # Real-Debrid asked to slow down: stop checking
+                    state["stop"] = True  # the service asked to slow down: stop checking
                 return
             except errors.NovaFlixError as exc:
                 log.warning(f"pre-check failed for one source: {exc}")

@@ -36,9 +36,8 @@ def test_no_aniverse_left_in_packages():
 
 
 def test_window_properties_are_novaflix():
-    from resources.lib.myanimelist import sync
     from resources.lib.playback import monitor
-    for name in (monitor.HANDOFF_PROPERTY, monitor.OPEN_SHOW_PROPERTY, monitor.GUI_PROPERTY, sync.KICK_PROPERTY):
+    for name in (monitor.HANDOFF_PROPERTY, monitor.OPEN_SHOW_PROPERTY, monitor.GUI_PROPERTY):
         assert name.startswith("novaflix.")
 
 
@@ -73,3 +72,35 @@ def test_no_real_debrid_in_visible_settings_text():
                            "strings.po"), encoding="utf-8").read()
     texts = dict(re.findall(r'msgctxt "#(\d+)"\nmsgid "(.*)"', po))
     assert [i for i in used if "Real-Debrid" in texts.get(i, "")] == []
+
+
+ANIME_WORDS = re.compile(r"anilist|anizip|myanimelist|aniskip|nyaa|kitsu|real-debrid|realdebrid|animeschedule", re.I)
+
+
+def test_no_anime_or_mal_code_left():
+    hits = []
+    for path in _text_files():
+        if not path.startswith(os.path.join(ROOT, "plugin.video.novaflix")) or path.endswith("migrations.py"):
+            continue  # migrations.py keeps the released schema steps of 0.1.0 unchanged (never edited)
+        with open(path, encoding="utf-8", errors="ignore") as f:
+            hits += [f"{os.path.relpath(path, ROOT)}:{n}" for n, line in enumerate(f, 1) if ANIME_WORDS.search(line)]
+    assert hits == []
+
+
+def test_every_string_id_in_code_exists():
+    # Every 30xxx number in the add-on's code and settings is a string ID of strings.po.
+    po = open(os.path.join(ROOT, "plugin.video.novaflix", "resources", "language", "resource.language.en_gb",
+                           "strings.po"), encoding="utf-8").read()
+    known = set(re.findall(r'msgctxt "#(\d+)"', po))
+    used = {}
+    for path in _text_files():
+        if path.startswith(os.path.join(ROOT, "plugin.video.novaflix")) and path.endswith((".py", ".xml")):
+            for number in re.findall(r"(30[0-9]{3})", open(path, encoding="utf-8", errors="ignore").read()):
+                used.setdefault(number, os.path.relpath(path, ROOT))
+    assert {n: f for n, f in used.items() if n not in known} == {}
+
+
+def test_only_title_routes():
+    from resources.lib import router
+    assert set(router.ROUTES) == {"", "settings", "launch", "clear_cache", "watch", "rd/cloud", "rd/torrent",
+                                  "rd/play", "rd/add_magnet"}

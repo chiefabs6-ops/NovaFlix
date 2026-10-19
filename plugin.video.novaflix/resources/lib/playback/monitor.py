@@ -1,9 +1,9 @@
 """The service's player monitor (DEC-047): history, audio/subtitles, skip
-button, Up next and playback errors for episodes started from NovaFlix.
+button, Up next and playback errors for movies and episodes started from NovaFlix.
 
 Only playback that the plugin announced through the hand-off window property
 (IDs only, SEC-15) is tracked; anything else Kodi plays is ignored.
-Slow work (AniSkip, show details, pre-search) runs in background threads so
+Slow work (title details, pre-search) runs in background threads so
 Kodi's player callbacks never wait on the network.
 
 Up next buttons (Choose source, End episode) never start anything while the episode
@@ -20,18 +20,17 @@ import xbmc
 from resources.lib import router
 from resources.lib.kodi import log, paths, player, ui
 from resources.lib.playback import streams
-from resources.lib.playback.session import Session, TitleSession
-from resources.lib.storage.history import History
+from resources.lib.playback.session import Session
 from resources.lib.storage.watching import WatchHistory
 
 HANDOFF_PROPERTY = "novaflix.playing"
-OPEN_SHOW_PROPERTY = "novaflix.open_show"  # End episode: anilist_id of the show page to return to
+OPEN_SHOW_PROPERTY = "novaflix.open_show"  # End episode: "tv:1396" / "movie:438631", the title page to return to
 GUI_PROPERTY = "novaflix.gui"              # set while the NovaFlix window is open (gui/app.py)
 SKIP_SHOW_S = 10
 UPNEXT_SHOW_S = 20
 STOP_WAIT_S = 10       # longest wait for Kodi's player to close before a transition gives up
-AUDIO_LANGUAGES = ["eng", "jpn", None]     # settings: English, Japanese, Kodi default
-AUDIO_LABELS = {"eng": 30212, "jpn": 30213}
+AUDIO_LANGUAGES = ["eng", None]            # settings: English, Kodi default
+AUDIO_LABELS = {"eng": 30212}
 
 
 def cleanup_after_start(directory, payload_json):
@@ -84,14 +83,6 @@ def apply_streams(language):
         player.subtitles_off()
 
 
-def play_url(anilist_id, episode):
-    return router.build_url("play", id=anilist_id, ep=episode)
-
-
-def _is_title(session):
-    return isinstance(session, TitleSession)
-
-
 def _title_url(session, season, episode):
     from resources.lib.views import watch
     if session.media_type == "movie":
@@ -101,9 +92,7 @@ def _title_url(session, season, episode):
 
 def retry_url(session):
     """The source list again for what was playing (playback error)."""
-    if _is_title(session):
-        return _title_url(session, session.season, session.episode)
-    return play_url(session.anilist_id, session.episode)
+    return _title_url(session, session.season, session.episode)
 
 
 class PlaybackMonitor(xbmc.Player):
@@ -113,7 +102,7 @@ class PlaybackMonitor(xbmc.Player):
         self.session = None
         self._prompts = []          # [(Prompt, close_at, skip interval or None)]
         self._threads = []
-        self._transition = None     # [kind, anilist_id, url, deadline]: waiting for the player to close
+        self._transition = None     # [kind, title page, url, deadline]: waiting for the player to close
 
     # -- Kodi callbacks ----------------------------------------------------------
 
@@ -126,11 +115,7 @@ class PlaybackMonitor(xbmc.Player):
         ui.clear_window_property(HANDOFF_PROPERTY)
         try:
             data = json.loads(payload)
-            if "type" in data:
-                session = TitleSession(data["type"], data["id"], data.get("season"), data.get("episode") or 0,
-                                       data.get("resume_s"))
-            else:
-                session = Session(data["anilist_id"], data["episode"], data.get("mal_id"), data.get("resume_s"))
+            session = Session(data["type"], data["id"], data.get("season"), data.get("episode"), data.get("resume_s"))
         except (ValueError, KeyError, TypeError):
             log.warning("ignoring unreadable playback hand-off")
             return
@@ -158,7 +143,8 @@ class PlaybackMonitor(xbmc.Player):
     def _prepare(self, session, payload):
         cleanup_after_start(self._dir, payload)
         try:
-            apply_streams(AUDIO_LANGUAGES[ui.addon().getSettingInt("audio_language")])
+            choice = ui.addon().getSettingInt("audio_language")
+            apply_streams(AUDIO_LANGUAGES[choice] if 0 <= choice < len(AUDIO_LANGUAGES) else None)
         except Exception as exc:
             log.warning(f"audio/subtitle choice skipped: {type(exc).__name__}: {exc}")
         try:
@@ -168,16 +154,9 @@ class PlaybackMonitor(xbmc.Player):
         if 0 < session.resume_s < duration - 30:
             self.seekTime(session.resume_s)
             log.info(f"resumed at {session.resume_s} s")
-        if _is_title(session):
-            session.prepare(duration, [], self._next_ref(session))  # no skip-intro data for movies and shows
-            log.info(f"tracking {session.media_type}:{session.tmdb_id} S{session.season}E{session.episode}: "
-                     f"{int(duration)} s, up next {session.next_episode}")
-            return
-        from resources.lib.metadata import aniskip
-        skips = aniskip.skip_times(self._dir, session.mal_id, session.episode, duration)
-        session.prepare(duration, skips, self._has_next(session))
-        log.info(f"tracking {session.anilist_id} ep {session.episode}: {int(duration)} s, "
-                 f"skips {[s['type'] for s in skips]}, up next {session.next_episode}")
+        session.prepare(duration, [], self._next_ref(session))  # no skip-intro data for movies and shows yet
+        log.info(f"tracking {session.media_type}:{session.tmdb_id} S{session.season}E{session.episode}: "
+                 f"{int(duration)} s, up next {session.next_episode}")
 
     def _title(self, session):
         from resources.lib.metadata.library import Library
@@ -193,18 +172,6 @@ class PlaybackMonitor(xbmc.Player):
         except Exception as exc:
             log.warning(f"no Up next: title details unavailable ({type(exc).__name__})")
             return None
-
-    def _has_next(self, session):
-        try:
-            from resources.lib.metadata.catalog import Catalog
-            show = Catalog(self._dir).show(session.anilist_id)
-        except Exception as exc:
-            log.warning(f"no Up next: show details unavailable ({type(exc).__name__})")
-            return False
-        if show.is_movie:
-            return False
-        aired = show.aired_episodes
-        return aired is None or session.episode + 1 <= aired
 
     def tick(self, now=None):
         """Called about once a second by the service loop."""
@@ -233,18 +200,8 @@ class PlaybackMonitor(xbmc.Player):
     def _save(self, session, position=None):
         if not session.duration:
             return
-        if _is_title(session):
-            WatchHistory(self._dir).save_position(session.media_type, session.tmdb_id, session.season,
-                                                  session.episode, session.position if position is None else position,
-                                                  session.duration)
-            return
-        watched = History(self._dir).save_position(session.anilist_id, session.episode, session.mal_id,
-                                                   session.position if position is None else position,
-                                                   session.duration)
-        if watched and session.mal_id and not session.mal_queued:
-            from resources.lib.myanimelist import sync
-            session.mal_queued = True
-            sync.queue(self._dir, session.mal_id, "watched", session.episode)
+        WatchHistory(self._dir).save_position(session.media_type, session.tmdb_id, session.season, session.episode,
+                                              session.position if position is None else position, session.duration)
 
     def _show(self, text, button, action, close_at, interval=None, button2=None, action2=None):
         from resources.lib.kodi.prompt import Prompt
@@ -256,24 +213,7 @@ class PlaybackMonitor(xbmc.Player):
         label = ui.string(30216 if interval["type"] == "op" else 30217)
         self._show("", label, lambda: self.seekTime(interval["end"]), now + SKIP_SHOW_S, interval)
 
-    def _offer_next(self, session, episode, now):
-        if _is_title(session):
-            self._offer_next_title(session, episode, now)
-            return
-        from resources.lib.metadata.catalog import Catalog
-        from resources.lib.views import sources
-
-        def presearch():
-            sources.presearch(Catalog(self._dir).show(session.anilist_id), episode,
-                              cancelled=lambda: session.cancelled or xbmc.Monitor().abortRequested())
-
-        self._background(presearch)  # DEC-030: list ready when OK is pressed
-        url = play_url(session.anilist_id, episode)
-        self._show(ui.string(30218) % episode, ui.string(30219),
-                   lambda: self._begin_transition("choose", session, url), now + UPNEXT_SHOW_S,
-                   button2=ui.string(30316), action2=lambda: self._begin_transition("end", session))
-
-    def _offer_next_title(self, session, next_ref, now):
+    def _offer_next(self, session, next_ref, now):
         from resources.lib.views import watch
         season, episode = next_ref
 
@@ -294,18 +234,18 @@ class PlaybackMonitor(xbmc.Player):
         if self._transition is not None or session is not self.session:
             log.info(f"{kind}: ignored, a playback transition is already running")
             return
-        page = f"{session.media_type}:{session.tmdb_id}" if _is_title(session) else str(session.anilist_id)
+        page = f"{session.media_type}:{session.tmdb_id}"
         if kind == "end":
             session.cancelled = True  # the Up next pre-search stops
             # Set before stopping: the NovaFlix window under the video reads it as soon as the video closes.
             ui.set_window_property(OPEN_SHOW_PROPERTY, page)
         self._transition = [kind, page, url, None]  # deadline set by the next tick
         self._close_prompts()
-        log.info(f"{kind}: stopping {session.anilist_id} ep {session.episode}")
+        log.info(f"{kind}: stopping {page} S{session.season}E{session.episode}")
         self.stop()
 
     def _continue_transition(self, now):
-        kind, anilist_id, url, deadline = self._transition
+        kind, page, url, deadline = self._transition
         if deadline is None:
             deadline = self._transition[3] = now + STOP_WAIT_S
         if self._playing():
@@ -322,7 +262,7 @@ class PlaybackMonitor(xbmc.Player):
         if kind == "choose":
             xbmc.executebuiltin(f"PlayMedia({url})")
         else:
-            self._return_to_show(anilist_id)
+            self._return_to_show(page)
 
     def _playing(self):
         try:
@@ -331,16 +271,11 @@ class PlaybackMonitor(xbmc.Player):
             return False
 
     def _return_to_show(self, page):
-        """page: "tv:1396" / "movie:438631" (a title page) or an anime id."""
+        """page: "tv:1396" / "movie:438631", the title page to open."""
         if ui.get_window_property(GUI_PROPERTY):
             return  # the NovaFlix window under the video opens the title page (gui/app.py, gui/title.py)
         ui.clear_window_property(OPEN_SHOW_PROPERTY)
-        if ":" in page:
-            xbmc.executebuiltin(f"RunPlugin({router.build_url('launch', title=page)})")
-        elif ui.styled():
-            xbmc.executebuiltin(f"RunPlugin({router.build_url('launch', show=page)})")
-        else:
-            xbmc.executebuiltin(f"ActivateWindow(Videos,{router.build_url('show', id=page)},return)")
+        xbmc.executebuiltin(f"RunPlugin({router.build_url('launch', title=page)})")
 
     def _expire_prompts(self, session, position, now):
         keep = []

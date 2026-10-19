@@ -1,7 +1,6 @@
-"""Source list for an episode (DEC-004, DEC-021..025) and "My Real-Debrid".
+"""The source list (DEC-004, DEC-021..025, DEC-053) used by the watch route, and "My TorBox".
 
 The owner always picks. Unknown details are left out, never guessed.
-Playback of the chosen source arrives in M7.
 """
 
 import re
@@ -9,16 +8,13 @@ import re
 from resources.lib import router
 from resources.lib.debrid import service
 from resources.lib.kodi import log, paths, ui
-from resources.lib.metadata.catalog import Catalog
-from resources.lib.models import Candidate
 from resources.lib.sources import discovery, precheck, ranking
 from resources.lib.views import play
-from resources.lib.storage import db
 from resources.lib.storage.cache import Cache
 
 CANDIDATE_TTL = 3600
 MIN_RESOLUTIONS = [None, "480p", "720p", "1080p", "2160p"]
-ORIGIN_LABELS = {"rdcloud": "My account", "torrentio": "Torrentio", "nyaa": "Nyaa"}
+ORIGIN_LABELS = {"rdcloud": "My account", "torrentio": "Torrentio"}
 
 
 def _size(n):
@@ -40,7 +36,7 @@ def details_line(c, check=None, extra=None):
     parts += [c.resolution, _size(c.size_bytes), c.codec]
     parts.append({"dub": ui.string(30142), "dual": ui.string(30143)}.get(c.audio))
     origin = ORIGIN_LABELS.get(c.origin, c.origin)
-    parts.append(f"{origin} ({c.site})" if c.site and c.origin != "nyaa" else origin)
+    parts.append(f"{origin} ({c.site})" if c.site else origin)
     if c.seeders is not None:
         parts.append(f"{c.seeders} seeders")
     parts.append(extra)
@@ -90,23 +86,12 @@ def _settings():
     found = discovery.Settings(
         torrentio_enabled=a.getSettingBool("torrentio_enabled"),
         torrentio_url=ui.setting("torrentio_url") or discovery.torrentio.DEFAULT_BASE,
-        nyaa_enabled=a.getSettingBool("nyaa_enabled"),
     )
-    return filters, found, a.getSettingBool("dub_only")
-
-
-def _last_choice(anilist_id):
-    conn = db.open_user_db(paths.profile_dir())
-    try:
-        row = conn.execute("SELECT last_release_group, last_resolution FROM show_prefs WHERE anilist_id = ?",
-                           (int(anilist_id),)).fetchone()
-    finally:
-        conn.close()
-    return row or (None, None)
+    return filters, found
 
 
 def _rd_client():
-    """Client of the active playback service (TorBox or Real-Debrid), or None."""
+    """The TorBox client, or None when no key is set."""
     return service.client()
 
 
@@ -117,83 +102,11 @@ def _setup_service(request):
     return None
 
 
-def _wanted(show, catalog, number):
-    episode = next((e for e in catalog.episodes(show) if e.number == number), None)
-    tvdb = (episode.tvdb_season, episode.tvdb_episode) if episode and episode.tvdb_season and episode.tvdb_episode else None
-    return discovery.Wanted(show=show, number=number, absolute=episode.absolute_number if episode else None,
-                            tvdb=tvdb, kitsu_id=catalog.mappings(show).get("kitsu_id"))
-
-
-def _cache_key(show, number):
-    return f"sources:v2:{show.anilist_id}:{number}"  # v2: other-language dubs and seasons fixed
-
-
-def _discover(wanted, found_settings, cache, cancelled):
-    outcomes, candidates = discovery.discover(wanted, found_settings, _rd_client(), cancelled=cancelled)
-    if wanted.kitsu_id is None and found_settings.torrentio_enabled:
-        outcomes["torrentio"] = "no_id"
-    # Don't cache an all-failed result: next open should try again.
-    if any(v in ("ok", "empty") for v in outcomes.values()):
-        cache.set(_cache_key(wanted.show, wanted.number),
-                  {"candidates": [c.to_dict() for c in candidates], "outcomes": outcomes}, CANDIDATE_TTL)
-    return outcomes, candidates
-
-
-def _find(show, catalog, number, refresh):
-    wanted = _wanted(show, catalog, number)
-    filters, found_settings, dub_only = _settings()
-    cache = Cache(paths.profile_dir())
-    cached = None if refresh else cache.get(_cache_key(show, number))
-    if cached is not None:
-        return wanted, [Candidate.from_dict(c) for c in cached["candidates"]], cached["outcomes"], filters, dub_only
-    progress = ui.Progress(show.title, ui.string(30146))
-    try:
-        outcomes, candidates = _discover(wanted, found_settings, cache, progress.cancelled)
-    finally:
-        progress.close()
-    return wanted, candidates, outcomes, filters, dub_only
-
-
-def presearch(show, number, cancelled=lambda: False):
-    """Up next (DEC-030): fill the source cache for an episode without any UI, so
-    its list opens at once. Runs in the service; failures are only logged."""
-    try:
-        cache = Cache(paths.profile_dir())
-        if cache.get(_cache_key(show, number)) is not None:
-            return
-        _, found_settings, _ = _settings()
-        _, candidates = _discover(_wanted(show, Catalog(), number), found_settings, cache, cancelled)
-        log.info(f"pre-searched episode {number}: {len(candidates)} sources")
-    except Exception as exc:
-        log.warning(f"pre-search failed: {type(exc).__name__}: {exc}")
-
-
 def _report(outcomes):
-    names = {"torrentio": "Torrentio", "nyaa": "Nyaa", "rdcloud": f"My {service.label()}"}
+    names = {"torrentio": "Torrentio", "rdcloud": f"My {service.label()}"}
     failed = [names[k] for k, v in outcomes.items() if v == "failed"]
     if failed:
         ui.notify("NovaFlix", ui.string(30147) % ", ".join(failed), error=True)
-    if outcomes.get("torrentio") == "no_id":
-        ui.notify("NovaFlix", ui.string(30148))
-
-
-def choose(request):
-    """Episode selected: discover, let the owner pick (DEC-004), then play."""
-    if not _choose(request):
-        ui.resolve_failed(request.handle)
-
-
-def _choose(request):
-    catalog = Catalog()
-    show = catalog.show(request.params["id"])
-    number = int(request.params.get("ep", 1))
-    wanted, candidates, outcomes, filters, dub_only = _find(show, catalog, number, request.params.get("refresh") == "1")
-    _report(outcomes)
-    last_group, last_resolution = _last_choice(show.anilist_id)
-    heading_base = show.title if show.is_movie else f"{show.title} — {ui.string(30036) % number}"
-    return pick_source(request, _rd_client(), wanted, candidates, filters, dub_only, last_group, last_resolution,
-                       heading_base, lambda rd, picked: play.play_candidate(request, rd, show, wanted, picked,
-                                                                            heading_base))
 
 
 def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, last_resolution, heading_base, play_fn,
@@ -270,7 +183,7 @@ def _connected_client(request):
     return rd
 
 
-# -- My Real-Debrid ---------------------------------------------------------------
+# -- My TorBox ---------------------------------------------------------------------
 
 def _require_rd(request):
     client = _rd_client()

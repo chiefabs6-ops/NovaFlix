@@ -1,6 +1,6 @@
 """Release/file name parsing and episode matching. Pure functions, no Kodi.
 
-Handles the naming styles seen in Torrentio and Nyaa results (fixtures in
+Handles the naming styles seen in Torrentio results (fixtures in
 tests/fixtures): "[Group] Show - 03 (1080p) [HASH].mkv", "Show S02E05",
 "Show S2 - 08", "E3 Title", batches "S01 E01-E14" / "01-12", absolute
 numbering, scene-style "...x265-Group", and extras (NCOP/NCED/PV...).
@@ -183,7 +183,7 @@ def parse(name, titles=None):
             if m.lastindex and m.lastindex >= 2 and m.group(2):
                 rel.version = int(m.group(2))
     if rel.episode is None and rel.episode_range is None:
-        # Bare trailing number: "Show 03" (Nyaa style). Avoid 4-digit years.
+        # Bare trailing number: "Show 03". Avoid 4-digit years.
         m = re.search(r"\s(\d{1,3})(?:v(\d))?\s*$", core)
         if m:
             rel.episode = int(m.group(1))
@@ -199,7 +199,7 @@ def matches(rel, number, absolute=None, tvdb=None):
     """True: this release/file is the episode. False: it is another one.
     None: no episode number found (a "best guess" at most).
 
-    number: episode within the AniList entry (DEC-013); absolute: absolute
+    number: episode number; absolute: absolute
     number when known; tvdb: (season, episode) from ani.zip when known.
     """
     if rel.is_extra:

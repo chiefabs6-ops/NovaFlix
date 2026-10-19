@@ -1,6 +1,6 @@
 """Watch history for TMDB movies and episodes (user.db v5, Plan 3).
 
-Same rules as the anime history (storage/history.py): watched at 90 %, no resume point under
+Watched at 90 %, no resume point under
 60 s, a rewatch never un-marks. Movies are stored as season 0, episode 0. Lives in user.db, so
 "Clear cache" never touches it.
 """
@@ -8,8 +8,9 @@ Same rules as the anime history (storage/history.py): watched at 90 %, no resume
 import time
 
 from resources.lib.storage import db
-from resources.lib.storage.history import MIN_RESUME_S, WATCHED_AT
 
+WATCHED_AT = 0.90       # share of the duration that counts as watched (DEC-028)
+MIN_RESUME_S = 60       # shorter than this: start from the beginning next time
 _clock = time.time
 
 

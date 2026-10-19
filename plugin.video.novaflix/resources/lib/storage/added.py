@@ -1,4 +1,4 @@
-"""Torrents this add-on added to Real-Debrid (user.db added_torrents).
+"""Torrents this add-on added to TorBox (user.db added_torrents).
 
 Only these may be removed automatically (DEC-019); anything the owner added
 is never touched. keep=1 means the owner chose to keep it for later.

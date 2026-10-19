@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Login screen (Real-Debrid device code, MyAnimeList relay): QR code, address, code, countdown. Properties set from login_dialog.py. -->
+<!-- QR screen (phone search): QR code, address, code, countdown. Properties set from login_dialog.py. -->
 <window>
   <defaultcontrol always="true">9000</defaultcontrol>
   <controls>

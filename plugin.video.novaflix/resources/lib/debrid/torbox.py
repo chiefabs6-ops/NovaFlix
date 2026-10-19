@@ -1,4 +1,4 @@
-"""TorBox client (DEC-054), shaped like the Real-Debrid client so the
+"""TorBox client (DEC-054), with the debrid interface the
 existing resolver, source list and cleanup work unchanged.
 
 API (TorBox official SDK docs, TorrentsService.md, checked 2026-10-11):
@@ -63,7 +63,7 @@ class TorBox:
         if code in ACCOUNT_ERRORS:
             raise errors.AccountError(f"TorBox: {ACCOUNT_ERRORS[code]}", code)
 
-    # -- Real-Debrid-shaped interface used by the resolver ---------------------------------
+    # -- debrid interface used by the resolver -----------------------------------------------
 
     @staticmethod
     def _status(t):

@@ -31,8 +31,6 @@ KEY = "TORBOXKEY-0000-1111-2222-333344445555"
 HASH = "a" * 40
 FILE_NAME = "Show - S01E03.mkv"
 STREAM = "https://store-001.weur.tb-cdn.st/zip/ABC?token=XYZ"
-FRIEREN = fixture("anilist_media_154587.json")
-ANIZIP = fixture("anizip_154587.json")
 
 
 class FakeTorBox:
@@ -92,8 +90,7 @@ class FakeTorBox:
 
 @pytest.fixture(autouse=True)
 def torbox_active():
-    xbmcaddon.settings.update(playback_service=0, torbox_api_key=KEY,
-                              torrentio_enabled=True, nyaa_enabled=True, dub_only=True)
+    xbmcaddon.settings.update(torbox_api_key=KEY, torrentio_enabled=True)
 
 
 def test_service_factory_picks_torbox_with_key():
@@ -150,68 +147,6 @@ def test_multipart_body_for_createtorrent():
     TorBox(KEY).add_magnet("magnet:?xt=urn:btih:" + HASH)
     body = [b for m, p, q, b in fake.calls if p == "/torrents/createtorrent"][0].decode()
     assert 'name="magnet"' in body and HASH in body and 'name="seed"' in body
-
-
-def show_net(fake):
-    data = copy.deepcopy(FRIEREN)
-    data["data"]["Media"].update(status="FINISHED", nextAiringEpisode=None, episodes=28)
-    stream = {"name": "Torrentio\n1080p", "infoHash": HASH, "fileIdx": 1,
-              "title": f"[Salieri] Show S1 [Dual Audio]\n{FILE_NAME}\n👤 9 💾 1 GB ⚙️ NyaaSi\nDubbed / Dual Audio",
-              "behaviorHints": {"filename": FILE_NAME}}
-
-    def transport(method, url, headers, body, timeout, context):
-        if "graphql.anilist.co" in url:
-            return 200, {}, json.dumps(data).encode()
-        if "api.ani.zip" in url:
-            return 200, {}, json.dumps(ANIZIP).encode()
-        if "torrentio" in url:
-            return 200, {}, json.dumps({"streams": [stream]}).encode()
-        if "nyaa.si" in url:
-            raise OSError("off")
-        return fake(method, url, headers, body, timeout, context)
-
-    http.set_transport(transport)
-
-
-def test_play_through_torbox_cached_source():
-    fake = FakeTorBox()
-    show_net(fake)
-    xbmcgui.select_answers.append(0)
-    router.dispatch([BASE + "play", "5", "?id=154587&ep=3"])
-    assert "Ready to play" in xbmcgui.select_calls[-1][1][0][1]
-    handle, ok, item = xbmcplugin.resolved[-1]
-    assert ok and item.path == STREAM
-    payload = json.loads(xbmcgui.window_properties["novaflix.playing"])
-    assert payload["cleanup_torrent"] == "100"
-
-
-def test_torbox_not_finished_offers_download():
-    fake = FakeTorBox(cached=(), finished=False)
-    show_net(fake)
-    xbmcgui.select_answers.extend([0, -1])
-    xbmcgui.yesno_answers.append(False)  # decline -> removed, back to list
-    router.dispatch([BASE + "play", "5", "?id=154587&ep=3"])
-    assert "isn't ready on TorBox yet" in xbmcgui.yesno_calls[-1][1]
-    assert fake.torrents == {}
-
-
-def test_torbox_failed_torrent_is_removed_and_back_to_list():
-    fake = FakeTorBox(cached=(), finished=False, failed=True)
-    show_net(fake)
-    xbmcgui.select_answers.extend([0, -1])  # pick it, then leave the list
-    router.dispatch([BASE + "play", "5", "?id=154587&ep=3"])
-    assert "TorBox could not download this torrent" in xbmcgui.ok_calls[-1][1]
-    assert fake.torrents == {}                   # our torrent removed
-    assert xbmcplugin.resolved[-1][1] is False   # nothing played
-
-
-def test_torbox_without_stream_link_is_a_bad_source():
-    fake = FakeTorBox(empty_link=True)
-    show_net(fake)
-    xbmcgui.select_answers.extend([0, -1])
-    router.dispatch([BASE + "play", "5", "?id=154587&ep=3"])
-    assert "TorBox returned no stream URL" in xbmcgui.ok_calls[-1][1]
-    assert xbmcplugin.resolved[-1][1] is False
 
 
 def test_torbox_cleanup_after_start():

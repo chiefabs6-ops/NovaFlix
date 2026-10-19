@@ -189,6 +189,5 @@ def test_rate_limiter_raises_when_wait_too_long(monkeypatch):
 
 
 def test_default_rate_limits_match_design():
-    assert http.RATE_LIMITS["api.real-debrid.com"] == 200
-    assert http.RATE_LIMITS["graphql.anilist.co"] == 30
+    assert http.RATE_LIMITS["api.themoviedb.org"] == 120
     assert http.DEFAULT_RATE_LIMIT == 60

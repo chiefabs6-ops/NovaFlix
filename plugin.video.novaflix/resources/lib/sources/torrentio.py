@@ -1,9 +1,9 @@
 """Stremio-protocol aggregator (Torrentio-compatible), torrent-only (DEC-003).
 
-GET {base}/stream/series/kitsu:{kitsu_id}:{episode}.json  (movies: /stream/movie/kitsu:{id}.json)
-No debrid options are configured, so the owner's Real-Debrid token is never
-sent (SEC-12). Stream "title" lines (fixture torrentio_46474_3.json):
-  1 release name, 2 file name (packs), 3 "👤 seeders 💾 size ⚙️ site", 4 languages.
+GET {base}/stream/series/{imdb_id}:{season}:{episode}.json  (movies: /stream/movie/{imdb_id}.json)
+No debrid options are configured, so the owner's TorBox key is never sent (SEC-12).
+Stream "title" lines (fixtures tests/fixtures/torrentio): 1 release name, 2 file name (packs),
+3 "👤 seeders 💾 size ⚙️ site", 4 languages (flags; a "Subs" line lists subtitles).
 """
 
 import re
@@ -28,13 +28,6 @@ def parse_size(text):
     if not m:
         return None
     return int(float(m.group(1)) * _UNITS[m.group(2).upper()])
-
-
-def url(base, kitsu_id, number, is_movie):
-    base = (base or DEFAULT_BASE).rstrip("/")
-    if is_movie:
-        return f"{base}/stream/movie/kitsu:{int(kitsu_id)}.json"
-    return f"{base}/stream/series/kitsu:{int(kitsu_id)}:{int(number)}.json"
 
 
 def imdb_url(base, imdb_id, season, episode, is_movie):

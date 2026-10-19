@@ -36,11 +36,11 @@ class SchemaTooNew(NovaFlixError):
 
 
 class AuthError(NovaFlixError):
-    """Real-Debrid authorization missing, expired or revoked: owner must reconnect."""
+    """TorBox or TMDB rejected the key, or no key is set: the owner fixes it in Settings."""
 
 
 class AccountError(NovaFlixError):
-    """Real-Debrid account problem (not premium, limits reached). `code` is RD's error_code."""
+    """TorBox account problem (limits reached, plan restriction). `code` is the service's error code."""
 
     def __init__(self, message, code=None):
         super().__init__(message)

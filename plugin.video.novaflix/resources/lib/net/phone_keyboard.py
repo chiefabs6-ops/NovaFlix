@@ -2,7 +2,7 @@
 
 Paired once: the code and port are saved in the profile (PAIRING_FILE), so the page the phone
 bookmarked keeps working. While the NovaFlix window is open (gui/app.py) the TV listens on its LAN
-address only (same approach as the MyAnimeList login relay, myanimelist/relay.py):
+address only (net/lan.py):
   GET  /p/<code>  -> the typing page (mobile browser, no app)
   POST /p/<code>  -> text=<title>&search=0|1 from that page
   GET  /p/<code>/manifest.webmanifest -> name, colours and icon for "Add to Home screen"

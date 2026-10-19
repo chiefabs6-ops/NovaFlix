@@ -16,32 +16,8 @@ msgctxt "#30002"
 msgid "Search"
 msgstr ""
 
-msgctxt "#30003"
-msgid "My MyAnimeList"
-msgstr ""
-
-msgctxt "#30004"
-msgid "Favourites"
-msgstr ""
-
-msgctxt "#30005"
-msgid "Airing This Season"
-msgstr ""
-
-msgctxt "#30006"
-msgid "Recently Aired Episodes"
-msgstr ""
-
 msgctxt "#30007"
 msgid "Trending Now"
-msgstr ""
-
-msgctxt "#30008"
-msgid "Most Popular"
-msgstr ""
-
-msgctxt "#30009"
-msgid "Upcoming Next Season"
 msgstr ""
 
 msgctxt "#30010"
@@ -57,6 +33,7 @@ msgid "Settings"
 msgstr ""
 
 # Messages (30020-30099)
+
 msgctxt "#30021"
 msgid "Something went wrong. Details are in the Kodi log."
 msgstr ""
@@ -69,24 +46,12 @@ msgctxt "#30023"
 msgid "The service is busy. Try again in a minute."
 msgstr ""
 
-msgctxt "#30030"
-msgid "Next page"
-msgstr ""
-
 msgctxt "#30031"
 msgid "New search..."
 msgstr ""
 
 msgctxt "#30032"
 msgid "Search anime"
-msgstr ""
-
-msgctxt "#30033"
-msgid "Clear recent searches"
-msgstr ""
-
-msgctxt "#30034"
-msgid "Related & sequels"
 msgstr ""
 
 msgctxt "#30035"
@@ -97,132 +62,8 @@ msgctxt "#30036"
 msgid "Episode %d"
 msgstr ""
 
-msgctxt "#30037"
-msgid "DUB"
-msgstr ""
-
-msgctxt "#30038"
-msgid "DUB (partial)"
-msgstr ""
-
 msgctxt "#30039"
 msgid "Nothing found"
-msgstr ""
-
-msgctxt "#30040"
-msgid "Sequel"
-msgstr ""
-
-msgctxt "#30041"
-msgid "Prequel"
-msgstr ""
-
-msgctxt "#30042"
-msgid "Parent story"
-msgstr ""
-
-msgctxt "#30043"
-msgid "Side story"
-msgstr ""
-
-msgctxt "#30044"
-msgid "Spin-off"
-msgstr ""
-
-msgctxt "#30045"
-msgid "Alternative"
-msgstr ""
-
-msgctxt "#30046"
-msgid "Summary"
-msgstr ""
-
-msgctxt "#30047"
-msgid "Compilation"
-msgstr ""
-
-msgctxt "#30048"
-msgid "Contains"
-msgstr ""
-
-msgctxt "#30049"
-msgid "Character"
-msgstr ""
-
-msgctxt "#30050"
-msgid "Other"
-msgstr ""
-
-msgctxt "#30051"
-msgid "Dub expected %s"
-msgstr ""
-
-msgctxt "#30052"
-msgid "estimate from AnimeSchedule.net"
-msgstr ""
-
-msgctxt "#30060"
-msgid "Add to Favourites"
-msgstr ""
-
-msgctxt "#30061"
-msgid "Remove from Favourites"
-msgstr ""
-
-msgctxt "#30062"
-msgid "No favourites yet. Press Menu on any show to add it."
-msgstr ""
-
-msgctxt "#30063"
-msgid "Added to Favourites"
-msgstr ""
-
-msgctxt "#30064"
-msgid "Removed from Favourites"
-msgstr ""
-
-msgctxt "#30070"
-msgid "Watching"
-msgstr ""
-
-msgctxt "#30071"
-msgid "Plan to Watch"
-msgstr ""
-
-msgctxt "#30072"
-msgid "Completed"
-msgstr ""
-
-msgctxt "#30073"
-msgid "On Hold"
-msgstr ""
-
-msgctxt "#30074"
-msgid "Dropped"
-msgstr ""
-
-msgctxt "#30075"
-msgid "Enter your MyAnimeList Client ID and username in NovaFlix settings first. Open settings now?"
-msgstr ""
-
-msgctxt "#30076"
-msgid "MyAnimeList could not find a public list for '%s'. Check the username in NovaFlix settings and that your list is public."
-msgstr ""
-
-msgctxt "#30077"
-msgid "MyAnimeList did not accept your Client ID. Check it in NovaFlix settings. Open settings now?"
-msgstr ""
-
-msgctxt "#30078"
-msgid "not found on AniList"
-msgstr ""
-
-msgctxt "#30120"
-msgid "Connect Real-Debrid"
-msgstr ""
-
-msgctxt "#30121"
-msgid "Scan the QR code with your phone and approve NovaFlix.[CR]Or open this address on any device and enter the code:"
 msgstr ""
 
 msgctxt "#30122"
@@ -231,46 +72,6 @@ msgstr ""
 
 msgctxt "#30123"
 msgid "Waiting for approval... %d:%02d left"
-msgstr ""
-
-msgctxt "#30124"
-msgid "Real-Debrid: not connected"
-msgstr ""
-
-msgctxt "#30125"
-msgid "Connected as %s · Premium until %s"
-msgstr ""
-
-msgctxt "#30126"
-msgid "Connected as %s · Account type: %s"
-msgstr ""
-
-msgctxt "#30128"
-msgid "Check account status"
-msgstr ""
-
-msgctxt "#30129"
-msgid "Disconnect Real-Debrid"
-msgstr ""
-
-msgctxt "#30130"
-msgid "NovaFlix received access, but could not confirm your account status. Check your connection, then use Check account status."
-msgstr ""
-
-msgctxt "#30131"
-msgid "Connected, but this Real-Debrid account is not premium. Playing through Real-Debrid needs premium."
-msgstr ""
-
-msgctxt "#30132"
-msgid "Disconnect Real-Debrid from NovaFlix on this device?"
-msgstr ""
-
-msgctxt "#30133"
-msgid "Disconnected. Real-Debrid access for this device was revoked and removed."
-msgstr ""
-
-msgctxt "#30134"
-msgid "Removed from this device. Real-Debrid could not be reached to revoke access - to be certain, remove NovaFlix under My Devices on real-debrid.com."
 msgstr ""
 
 msgctxt "#30136"
@@ -307,10 +108,6 @@ msgstr ""
 
 msgctxt "#30147"
 msgid "Could not reach: %s"
-msgstr ""
-
-msgctxt "#30148"
-msgid "Torrentio skipped: no anime ID for this show"
 msgstr ""
 
 msgctxt "#30149"
@@ -430,6 +227,7 @@ msgid "No playable sources found yet"
 msgstr ""
 
 # Settings (30100-30199)
+
 msgctxt "#30100"
 msgid "General"
 msgstr ""
@@ -455,6 +253,7 @@ msgid "Remove stored lists and artwork info so they load fresh. Watch history, f
 msgstr ""
 
 # Dialogs (30110-30199)
+
 msgctxt "#30110"
 msgid "Clear cache"
 msgstr ""
@@ -465,26 +264,6 @@ msgstr ""
 
 msgctxt "#30112"
 msgid "Cache cleared"
-msgstr ""
-
-msgctxt "#30106"
-msgid "MyAnimeList"
-msgstr ""
-
-msgctxt "#30107"
-msgid "Client ID"
-msgstr ""
-
-msgctxt "#30108"
-msgid "Your own MyAnimeList API Client ID (myanimelist.net > Account Settings > API). Stored only on this device."
-msgstr ""
-
-msgctxt "#30109"
-msgid "Username"
-msgstr ""
-
-msgctxt "#30113"
-msgid "Your MyAnimeList username. The list must be public."
 msgstr ""
 
 msgctxt "#30160"
@@ -501,14 +280,6 @@ msgstr ""
 
 msgctxt "#30163"
 msgid "Base address of a Torrentio-compatible service. Your TorBox key is never sent to it."
-msgstr ""
-
-msgctxt "#30164"
-msgid "Search Nyaa (best guess)"
-msgstr ""
-
-msgctxt "#30165"
-msgid "Show only English dub sources"
 msgstr ""
 
 msgctxt "#30166"
@@ -579,10 +350,6 @@ msgctxt "#30212"
 msgid "English"
 msgstr ""
 
-msgctxt "#30213"
-msgid "Japanese"
-msgstr ""
-
 msgctxt "#30214"
 msgid "Kodi default"
 msgstr ""
@@ -597,10 +364,6 @@ msgstr ""
 
 msgctxt "#30217"
 msgid "Skip ending"
-msgstr ""
-
-msgctxt "#30218"
-msgid "Next: Episode %d"
 msgstr ""
 
 msgctxt "#30219"
@@ -619,24 +382,8 @@ msgctxt "#30222"
 msgid "Mark as unwatched"
 msgstr ""
 
-msgctxt "#30223"
-msgid "Mark show as watched"
-msgstr ""
-
-msgctxt "#30224"
-msgid "Mark show as unwatched"
-msgstr ""
-
-msgctxt "#30225"
-msgid "Episode %d · resume at %s"
-msgstr ""
-
 msgctxt "#30226"
 msgid "Nothing started yet. Episodes you play appear here."
-msgstr ""
-
-msgctxt "#30227"
-msgid "Clear watched marks and resume points for this show?"
 msgstr ""
 
 msgctxt "#30228"
@@ -649,10 +396,6 @@ msgstr ""
 
 msgctxt "#30230"
 msgid "Choose a different source"
-msgstr ""
-
-msgctxt "#30231"
-msgid "No related entries for this show"
 msgstr ""
 
 msgctxt "#30232"
@@ -679,18 +422,6 @@ msgctxt "#30237"
 msgid "View All"
 msgstr ""
 
-msgctxt "#30238"
-msgid "Ep %d · %s left"
-msgstr ""
-
-msgctxt "#30239"
-msgid "Next: Ep %d"
-msgstr ""
-
-msgctxt "#30240"
-msgid "Ep %d · aired %s"
-msgstr ""
-
 msgctxt "#30241"
 msgid "Couldn't load"
 msgstr ""
@@ -711,22 +442,6 @@ msgctxt "#30245"
 msgid "Results for %s"
 msgstr ""
 
-msgctxt "#30246"
-msgid "Play Ep %d"
-msgstr ""
-
-msgctxt "#30247"
-msgid "Resume Ep %d · %s"
-msgstr ""
-
-msgctxt "#30248"
-msgid "Favourite"
-msgstr ""
-
-msgctxt "#30249"
-msgid "Favourited"
-msgstr ""
-
 msgctxt "#30250"
 msgid "Resume from %s"
 msgstr ""
@@ -743,259 +458,30 @@ msgctxt "#30253"
 msgid "No"
 msgstr ""
 
-msgctxt "#30254"
-msgid "%d episodes"
-msgstr ""
-
-msgctxt "#30255"
-msgid "Ep %d"
-msgstr ""
-
 msgctxt "#30256"
 msgid "Nothing here yet"
-msgstr ""
-
-msgctxt "#30257"
-msgid "Score %d%%"
 msgstr ""
 
 msgctxt "#30258"
 msgid "%d min"
 msgstr ""
 
-msgctxt "#30259"
-msgid "OK"
-msgstr ""
-
 msgctxt "#30260"
 msgid "Cancel"
-msgstr ""
-
-msgctxt "#30261"
-msgid "Episodes"
-msgstr ""
-
-msgctxt "#30262"
-msgid "%s → Ep %d"
-msgstr ""
-
-msgctxt "#30263"
-msgid "%s → Completed"
-msgstr ""
-
-msgctxt "#30264"
-msgid "MAL: %s"
-msgstr ""
-
-msgctxt "#30265"
-msgid "MyAnimeList account"
-msgstr ""
-
-msgctxt "#30266"
-msgid "Log in to MyAnimeList? NovaFlix will then show your MyAnimeList progress and update it while you watch. You log in on your phone."
-msgstr ""
-
-msgctxt "#30267"
-msgid "Logged in as %s"
-msgstr ""
-
-msgctxt "#30268"
-msgid "Check login"
-msgstr ""
-
-msgctxt "#30269"
-msgid "Log out"
 msgstr ""
 
 msgctxt "#30270"
 msgid "No home network address found. Connect the TV to Wi-Fi or Ethernet and try again."
 msgstr ""
 
-msgctxt "#30271"
-msgid "Login was cancelled on MyAnimeList. Nothing was saved."
-msgstr ""
-
-msgctxt "#30272"
-msgid "MyAnimeList refused the login. In your MyAnimeList API app (myanimelist.net/apiconfig) check: App Redirect URL is https://chiefabs6-ops.github.io/novaflix-repo/mal-login.html and App Type is not \"web\"."
-msgstr ""
-
-msgctxt "#30273"
-msgid "Could not finish the login. Check the TV's internet connection and try again."
-msgstr ""
-
-msgctxt "#30274"
-msgid "Log in to MyAnimeList"
-msgstr ""
-
-msgctxt "#30275"
-msgid "Scan the QR code with your phone (on the same Wi-Fi as this TV), log in and press Allow.[CR]Or type this address into your phone's browser:"
-msgstr ""
-
-msgctxt "#30276"
-msgid "MyAnimeList login expired — log in again in Settings."
-msgstr ""
-
-msgctxt "#30277"
-msgid "Log out of MyAnimeList on this device? To cancel NovaFlix's access completely, also remove NovaFlix under Settings → API on myanimelist.net."
-msgstr ""
-
-msgctxt "#30278"
-msgid "Logged out of MyAnimeList on this device."
-msgstr ""
-
-msgctxt "#30279"
-msgid "Log in so NovaFlix shows your MyAnimeList progress and updates it while you watch."
-msgstr ""
-
-msgctxt "#30280"
-msgid "MyAnimeList unreachable — updates will be sent later."
-msgstr ""
-
-msgctxt "#30281"
-msgid "Could not reach MyAnimeList. Check the connection and try again."
-msgstr ""
-
-msgctxt "#30282"
-msgid "Sequels"
-msgstr ""
-
-msgctxt "#30283"
-msgid "Prequels"
-msgstr ""
-
-msgctxt "#30284"
-msgid "Side stories"
-msgstr ""
-
-msgctxt "#30285"
-msgid "OVAs & Specials"
-msgstr ""
-
-msgctxt "#30286"
-msgid "Movies"
-msgstr ""
-
-msgctxt "#30287"
-msgid "Other related"
-msgstr ""
-
-msgctxt "#30288"
-msgid "Some related entries could not be loaded"
-msgstr ""
-
-# Sidebar redesign (30289-30299)
-msgctxt "#30289"
-msgid "My Anime List"
-msgstr ""
-
 msgctxt "#30290"
 msgid "Explore"
-msgstr ""
-
-msgctxt "#30291"
-msgid "Upcoming"
-msgstr ""
-
-msgctxt "#30292"
-msgid "Recently Aired"
 msgstr ""
 
 msgctxt "#30293"
 msgid "NovaFlix settings"
 msgstr ""
 
-msgctxt "#30294"
-msgid "Currently watching"
-msgstr ""
-
-msgctxt "#30295"
-msgid "In your backlog"
-msgstr ""
-
-msgctxt "#30296"
-msgid "Finished anime"
-msgstr ""
-
-msgctxt "#30297"
-msgid "Paused for later"
-msgstr ""
-
-msgctxt "#30298"
-msgid "Anime you stopped watching"
-msgstr ""
-
-# Continue Watching availability (30299-30305)
-msgctxt "#30299"
-msgid "Ep %d · Checking..."
-msgstr ""
-
-msgctxt "#30300"
-msgid "Ep %d · Available"
-msgstr ""
-
-msgctxt "#30301"
-msgid "Ep %d · Upcoming %s"
-msgstr ""
-
-msgctxt "#30302"
-msgid "Ep %d · Not aired yet"
-msgstr ""
-
-msgctxt "#30303"
-msgid "Ep %d · Not available"
-msgstr ""
-
-msgctxt "#30304"
-msgid "Ep %d · Availability unknown"
-msgstr ""
-
-msgctxt "#30305"
-msgid "All episodes watched"
-msgstr ""
-
-msgctxt "#30306"
-msgid "Ep %d · Sub only"
-msgstr ""
-
-# MyAnimeList add / remove (30307-30313)
-msgctxt "#30307"
-msgid "Add to MyAnimeList"
-msgstr ""
-
-msgctxt "#30308"
-msgid "Remove from MyAnimeList"
-msgstr ""
-
-msgctxt "#30309"
-msgid "Remove %s from your MyAnimeList?"
-msgstr ""
-
-msgctxt "#30310"
-msgid "Added to MyAnimeList: %s"
-msgstr ""
-
-msgctxt "#30311"
-msgid "Removed from MyAnimeList"
-msgstr ""
-
-msgctxt "#30312"
-msgid "MyAnimeList could not be updated. Try again later."
-msgstr ""
-
-msgctxt "#30313"
-msgid "Log in to MyAnimeList first: Settings > MyAnimeList > MyAnimeList account. Open settings now?"
-msgstr ""
-
-# Show page availability (30314-30315)
-msgctxt "#30314"
-msgid "Ep %d · No streams currently available"
-msgstr ""
-
-msgctxt "#30315"
-msgid "Ep %d · Could not check streams right now (try again later)"
-msgstr ""
-
-# Up next: End episode (30316-30317)
 msgctxt "#30316"
 msgid "End episode"
 msgstr ""
@@ -1005,6 +491,7 @@ msgid "The episode did not stop. Try again."
 msgstr ""
 
 # Search: phone keyboard (30318-30323)
+
 msgctxt "#30318"
 msgid "Use phone to type"
 msgstr ""
@@ -1065,10 +552,6 @@ msgctxt "#30405"
 msgid "This title has no IMDb id on TMDB yet, so sources can't be searched."
 msgstr ""
 
-msgctxt "#30406"
-msgid "No English release found."
-msgstr ""
-
 msgctxt "#30407"
 msgid "Next: %s"
 msgstr ""
@@ -1115,10 +598,6 @@ msgstr ""
 
 msgctxt "#30418"
 msgid "More like this"
-msgstr ""
-
-msgctxt "#30419"
-msgid "%s"
 msgstr ""
 
 msgctxt "#30420"

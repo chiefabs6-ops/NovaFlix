@@ -48,7 +48,7 @@ def _blocked(exc):
 
 class NotReady(errors.NovaFlixError):
     def __init__(self, torrent_id, info):
-        super().__init__("not downloaded on Real-Debrid yet")
+        super().__init__("not downloaded yet")
         self.torrent_id = torrent_id
         self.info = info
 
@@ -94,8 +94,8 @@ def pick_file(files, candidate, wanted):
 
 
 def _svc(rd):
-    """Name of the playback service for messages ("TorBox" / "Real-Debrid")."""
-    return getattr(rd, "name", "Real-Debrid")
+    """Name of the playback service for messages ("TorBox")."""
+    return getattr(rd, "name", "TorBox")
 
 
 def link_for_file(info, file_id):

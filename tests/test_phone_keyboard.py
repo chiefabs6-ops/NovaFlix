@@ -13,7 +13,7 @@ import xbmcgui
 
 from resources.lib.gui import actions
 from resources.lib.kodi import paths
-from resources.lib.myanimelist import relay
+from resources.lib.net import lan
 from resources.lib.net import phone_keyboard as pk
 
 
@@ -181,7 +181,7 @@ class FakeKeyboard:
 def screen(monkeypatch):
     keyboard = FakeKeyboard()
     starts = []
-    monkeypatch.setattr(relay, "lan_address", lambda: "192.168.1.86")
+    monkeypatch.setattr(lan, "lan_address", lambda: "192.168.1.86")
     monkeypatch.setattr(pk, "start", lambda directory, host, pair=False: starts.append(pair) or keyboard)
     monkeypatch.setattr(actions, "_clock", lambda: 10.0)
     from resources.lib.kodi import login_dialog
@@ -229,7 +229,6 @@ def test_too_many_wrong_codes_is_announced(screen):
 
 
 def test_no_home_network_explains_instead(monkeypatch):
-    from resources.lib.net import lan
     monkeypatch.setattr(lan, "lan_address", lambda: None)
     assert actions.search_phone() is None
     assert "No home network address" in xbmcgui.ok_calls[-1][1]
@@ -258,7 +257,7 @@ def test_phone_search_waits_while_video_plays(monkeypatch):
 
 
 def test_app_start_runs_the_server_only_for_a_paired_phone(monkeypatch):
-    monkeypatch.setattr(relay, "lan_address", lambda: "127.0.0.1")
+    monkeypatch.setattr(lan, "lan_address", lambda: "127.0.0.1")
     actions.start_phone_keyboard()
     assert pk.active() is None
     pk.start(paths.profile_dir(), "127.0.0.1", pair=True)

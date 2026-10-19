@@ -21,40 +21,16 @@ ROUTES = {
     "settings": "resources.lib.views.home:open_settings",
     "launch": "resources.lib.views.home:launch",
     "clear_cache": "resources.lib.views.maintenance:clear_cache",
-    "airing": "resources.lib.views.browse:airing",
-    "recent": "resources.lib.views.browse:recent",
-    "trending": "resources.lib.views.browse:trending",
-    "popular": "resources.lib.views.browse:popular",
-    "upcoming": "resources.lib.views.browse:upcoming",
-    "genres": "resources.lib.views.browse:genres",
-    "genre": "resources.lib.views.browse:genre",
-    "search": "resources.lib.views.browse:search_menu",
-    "search/new": "resources.lib.views.browse:search_new",
-    "search/results": "resources.lib.views.browse:search_results",
-    "search/clear": "resources.lib.views.browse:search_clear",
-    "show": "resources.lib.views.show:show",
-    "related": "resources.lib.views.show:related",
-    "play": "resources.lib.views.sources:choose",
     "watch": "resources.lib.views.watch:choose",
-    "noop": "resources.lib.views.show:noop",
-    "mal": "resources.lib.views.mylists:mal_menu",
-    "mal/list": "resources.lib.views.mylists:mal_list",
-    "mal/account": "resources.lib.views.mal_account:menu",
-    "favourites": "resources.lib.views.mylists:favourites",
-    "favourites/add": "resources.lib.views.mylists:favourite_add",
-    "favourites/remove": "resources.lib.views.mylists:favourite_remove",
-    "rd/cloud": "resources.lib.views.sources:cloud",
+    "rd/cloud": "resources.lib.views.sources:cloud",      # My TorBox
     "rd/torrent": "resources.lib.views.sources:torrent",
     "rd/play": "resources.lib.views.sources:rd_play",
     "rd/add_magnet": "resources.lib.views.sources:add_magnet",
-    "continue": "resources.lib.views.history:continue_watching",
-    "history/mark": "resources.lib.views.history:mark",
-    "history/mark_show": "resources.lib.views.history:mark_show",
 }
 
 
 # Kodi waits for setResolvedUrl on these; failures must answer False, not end a directory.
-PLAYABLE = {"play", "watch", "rd/play"}
+PLAYABLE = {"watch", "rd/play"}
 
 
 @dataclass

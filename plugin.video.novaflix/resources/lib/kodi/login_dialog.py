@@ -1,8 +1,7 @@
-"""TV login dialog: QR code + address (+ short code) for Real-Debrid (DEC-010, DEC-017) and MyAnimeList (M13).
+"""TV QR screen: QR code + address (+ short code), used by the phone search (gui/actions.search_phone).
 
-The QR encodes RD's direct_verification_url, so scanning it on a phone opens
-the approval page with the code already filled in. If the QR module is
-missing the dialog still shows the URL and code.
+Scanning the QR on a phone opens the address. If the QR module is missing the
+dialog still shows the address.
 """
 
 import os
@@ -48,13 +47,13 @@ class KodiLoginPresenter:
             return ""
 
     def show(self, info):
-        """info: Real-Debrid's device-code answer, or for MyAnimeList heading/text/qr/url (M13)."""
+        """info: heading, text, qr (the address to encode) and url (shown under it)."""
         self._window = _LoginWindow("novaflix-login.xml", ui.addon().getAddonInfo("path"), "Default", "1080i")
-        qr = self._make_qr(info.get("qr") or info.get("direct_verification_url") or info.get("verification_url"))
+        qr = self._make_qr(info.get("qr"))
         self._window.setProperty("qr", qr)
-        self._window.setProperty("heading", info.get("heading") or ui.string(30120))
-        self._window.setProperty("text", info.get("text") or ui.string(30121))
-        self._window.setProperty("url", info.get("url") or info.get("verification_url", "https://real-debrid.com/device"))
+        self._window.setProperty("heading", info.get("heading") or "")
+        self._window.setProperty("text", info.get("text") or "")
+        self._window.setProperty("url", info.get("url") or "")
         self._window.setProperty("code", info.get("user_code", ""))
         self._window.show()
 

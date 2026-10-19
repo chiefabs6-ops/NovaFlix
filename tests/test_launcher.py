@@ -58,9 +58,3 @@ def test_launch_route_opens_app_window_when_look_is_on(monkeypatch):
     assert opened == [None, "tv:1396"]
 
 
-def test_launch_route_opens_classic_lists_when_look_is_off(monkeypatch):
-    from resources.lib.gui import app
-    monkeypatch.setattr(app, "run", lambda show_id=None: (_ for _ in ()).throw(AssertionError("app opened")))
-    xbmcaddon.settings["novaflix_look"] = False
-    router.dispatch([BASE + "launch", "-1", ""])
-    assert xbmc.builtins_executed[-1] == "ActivateWindow(Videos,plugin://plugin.video.novaflix/,return)"

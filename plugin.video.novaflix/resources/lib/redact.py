@@ -4,7 +4,7 @@ Two layers (DEC-037, SEC-03/04):
 - known secret values registered at runtime (tokens, client IDs) are replaced
   wherever they appear;
 - pattern rules catch credentials we never registered: URL query strings,
-  Bearer values, JSON/form token fields, Real-Debrid download links, magnets.
+  Bearer values, JSON/form token fields, magnets.
 """
 
 import re
@@ -20,9 +20,6 @@ _SENSITIVE_KEYS = (
 )
 
 _PATTERNS = [
-    # Real-Debrid download hosts and /d/ links: the path itself grants access.
-    (re.compile(r"(https?://[^\s/]*download\.real-debrid\.com)/\S+", re.I), r"\1/" + MASK),
-    (re.compile(r"(https?://(?:www\.)?real-debrid\.com/d)/\S+", re.I), r"\1/" + MASK),
     (re.compile(r"magnet:\?\S+", re.I), "magnet:?" + MASK),
     (re.compile(r"(https?://[^\s?#\"']+)[?#][^\s\"']*"), r"\1?" + MASK),
     (re.compile(r"(Bearer\s+)[A-Za-z0-9._~+/=-]+", re.I), r"\1" + MASK),

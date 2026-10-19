@@ -1,6 +1,6 @@
 """NovaFlix's playback service: TorBox only.
 
-The TorBox client keeps the Real-Debrid-shaped interface (torrents, torrent_info,
+The TorBox client has the debrid interface (torrents, torrent_info,
 add_magnet, select_files, unrestrict, delete_torrent) that the resolver, source
 list and cleanup use.
 """

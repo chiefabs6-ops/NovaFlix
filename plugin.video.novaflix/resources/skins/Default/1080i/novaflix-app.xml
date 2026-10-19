@@ -895,9 +895,8 @@
       </control>
     </control>
 
-    <!-- ================= MY ANIME LIST VIEW =================
-         One card per MyAnimeList status (gui/malhub.py): count badge, title, short text and the
-         status's share of the whole list. A card opens that status as a grid. -->
+    <!-- ================= STATUS CARDS VIEW (view "mal"; not used by NovaFlix) =================
+         Count badge, title, short text and share bar per card. -->
     <control type="group">
       <visible>String.IsEqual(Window.Property(view),mal)</visible>
       <animation effect="fade" start="0" end="100" time="200">Visible</animation>

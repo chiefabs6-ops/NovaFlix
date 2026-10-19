@@ -24,7 +24,7 @@ def test_discover_uses_imdb_and_skips_nyaa():
     net = FakeNet().route("torrentio.strem.fun/stream/series/tt0903747:2:3",
                           fixture("torrentio/series_tt0903747_2_3.json"))
     outcomes, found = discovery.discover(discovery.for_title(breaking_bad(), 2, 3), discovery.Settings())
-    assert outcomes["torrentio"] == "ok" and outcomes["nyaa"] == "skipped" and found
+    assert outcomes["torrentio"] == "ok" and "nyaa" not in outcomes and found
     assert all("nyaa" not in url and "kitsu" not in url for _, url, _ in net.calls)
 
 

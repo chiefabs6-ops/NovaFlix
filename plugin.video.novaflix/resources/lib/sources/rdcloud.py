@@ -1,4 +1,4 @@
-"""Episodes already in the owner's Real-Debrid account (DEC-003, path 1).
+"""Movies and episodes already in the owner's TorBox account (DEC-003, path 1).
 
 Lists /torrents, keeps downloaded torrents whose name contains one of the
 show's titles, then inspects at most MAX_INSPECT of them with
@@ -18,8 +18,7 @@ def _compact(text):
 
 
 def title_keys(show):
-    names = [getattr(show, "title_english", None), getattr(show, "title_romaji", None), show.title,
-             getattr(show, "original_title", None), *(getattr(show, "synonyms", None) or [])[:3]]
+    names = [show.title, getattr(show, "original_title", None)]
     keys = {_compact(t) for t in names if t}
     return {k for k in keys if len(k) >= 4}
 

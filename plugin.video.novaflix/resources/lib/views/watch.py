@@ -65,7 +65,7 @@ def presearch(title, season, episode, cancelled=lambda: False):
         cache = Cache(paths.profile_dir())
         if cache.get(_cache_key(title, season, episode)) is not None:
             return
-        _, found_settings, _ = sources._settings()
+        _, found_settings = sources._settings()
         _, candidates = _discover(discovery.for_title(title, season, episode), title, season, episode,
                                   found_settings, cache, cancelled)
         log.info(f"pre-searched {title.key} S{season}E{episode}: {len(candidates)} sources")
@@ -95,7 +95,7 @@ def _choose(request):
         return False
     episode_name = None if title.is_movie else _episode_name(library, title, season, episode)
     wanted = discovery.for_title(title, season, episode, episode_name)
-    filters, found_settings, _ = sources._settings()
+    filters, found_settings = sources._settings()
     candidates, outcomes = _find(wanted, title, season, episode, found_settings, params.get("refresh") == "1")
     sources._report(outcomes)
     kept, hidden = language.split(candidates, title=wanted.titles)

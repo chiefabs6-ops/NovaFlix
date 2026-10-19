@@ -153,17 +153,6 @@ def test_publish_mirrors_repository_and_drops_pruned_files(tmp_path, monkeypatch
     assert build.publish(repo, pages) == "nothing changed"
 
 
-def test_release_publishes_static_pages(tmp_path):
-    repo = str(tmp_path / "repo")
-    build.release(repo, tests=False, history=False)
-    with open(os.path.join(build.ROOT, "pages", "mal-login.html"), "rb") as f:
-        source = f.read()
-    with open(os.path.join(repo, "mal-login.html"), "rb") as f:
-        assert f.read() == source
-    with open(os.path.join(repo, "index.html"), encoding="utf-8") as f:
-        assert 'href="mal-login.html"' in f.read()
-
-
 def test_release_includes_the_launcher(tmp_path):
     repo = str(tmp_path)
     report = build.release(repo, tests=False, history=False)

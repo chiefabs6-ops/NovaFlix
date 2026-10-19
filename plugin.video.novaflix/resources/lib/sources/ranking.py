@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from resources.lib.sources.matcher import RESOLUTION_ORDER
 
-GROUP_ORDER = {"rdcloud": 0, "torrentio": 1, "nyaa": 2}
+GROUP_ORDER = {"rdcloud": 0, "torrentio": 1}
 
 
 @dataclass
@@ -24,7 +24,7 @@ class SourceList:
 
 
 def dedupe(candidates):
-    """One entry per (torrent, file); earlier providers win (RD account > Torrentio > Nyaa)."""
+    """One entry per (torrent, file); earlier providers win (TorBox account > Torrentio)."""
     in_account, seen, out = set(), set(), []
     for c in sorted(candidates, key=lambda c: GROUP_ORDER.get(c.origin, 9)):
         if c.origin == "rdcloud":

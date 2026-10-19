@@ -29,8 +29,6 @@ BACKOFF_BASE = 1.0
 
 DEFAULT_RATE_LIMIT = 60  # requests per minute per host
 RATE_LIMITS = {
-    "api.real-debrid.com": 200,   # documented limit 250/min
-    "graphql.anilist.co": 30,     # documented 90/min, reported degraded
     "api.themoviedb.org": 120,    # TMDB allows ~50 requests/second; stay well below
 }
 

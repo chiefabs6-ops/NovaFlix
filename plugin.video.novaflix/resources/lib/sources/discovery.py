@@ -12,7 +12,7 @@ from typing import Optional
 from resources.lib import errors
 from resources.lib.kodi import log
 from resources.lib.net import http
-from resources.lib.sources import nyaa, rdcloud, torrentio
+from resources.lib.sources import rdcloud, torrentio
 
 PROVIDER_TIMEOUT = 12
 TOTAL_TIMEOUT = 15
@@ -25,19 +25,14 @@ class Wanted:
     show: object
     number: int
     absolute: Optional[int] = None
-    tvdb: Optional[tuple] = None
-    kitsu_id: Optional[int] = None
-    imdb_id: Optional[str] = None     # NovaFlix titles (TMDB); anime entries use kitsu_id
+    tvdb: Optional[tuple] = None      # (season, episode) for an episode
+    imdb_id: Optional[str] = None
     season: Optional[int] = None
     titles: Optional[list] = None     # title (and episode name): their words are never extras or languages
 
     @property
     def is_movie(self):
         return self.show.is_movie
-
-    @property
-    def is_title(self):
-        return hasattr(self.show, "tmdb_id")
 
 
 def for_title(title, season=None, episode=None, episode_name=None):
@@ -52,30 +47,15 @@ def for_title(title, season=None, episode=None, episode_name=None):
 class Settings:
     torrentio_enabled: bool = True
     torrentio_url: str = torrentio.DEFAULT_BASE
-    nyaa_enabled: bool = True
 
 
 def from_torrentio(wanted, settings):
-    if wanted.is_title:
-        if not wanted.imdb_id:
-            return SKIPPED, []
-        url = torrentio.imdb_url(settings.torrentio_url, wanted.imdb_id, wanted.season, wanted.number, wanted.is_movie)
-    elif wanted.kitsu_id:
-        url = torrentio.url(settings.torrentio_url, wanted.kitsu_id, wanted.number, wanted.is_movie)
-    else:
+    if not wanted.imdb_id:
         return SKIPPED, []
+    url = torrentio.imdb_url(settings.torrentio_url, wanted.imdb_id, wanted.season, wanted.number, wanted.is_movie)
     resp = http.get(url, timeout=PROVIDER_TIMEOUT)
     return OK, torrentio.parse_streams(resp.json(), wanted.number, wanted.absolute, wanted.tvdb, wanted.is_movie,
                                        wanted.titles)
-
-
-def from_nyaa(wanted, settings):
-    if wanted.is_title:
-        return SKIPPED, []  # Nyaa is an anime tracker
-    title = wanted.show.title_romaji or wanted.show.title
-    resp = http.get(nyaa.URL, params={"page": "rss", "q": nyaa.query_for(title, wanted.number, wanted.is_movie),
-                                      "c": "1_2", "f": "0"}, timeout=PROVIDER_TIMEOUT)
-    return OK, nyaa.parse_rss(resp.text, wanted.number, wanted.absolute, wanted.tvdb, wanted.is_movie)
 
 
 def from_rdcloud(wanted, client):
@@ -95,8 +75,6 @@ def discover(wanted, settings, rd_client=None, cancelled=lambda: False):
     jobs = {"rdcloud": lambda: from_rdcloud(wanted, rd_client)}
     if settings.torrentio_enabled:
         jobs["torrentio"] = lambda: from_torrentio(wanted, settings)
-    if settings.nyaa_enabled:
-        jobs["nyaa"] = lambda: from_nyaa(wanted, settings)
 
     results = {}
 
