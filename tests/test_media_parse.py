@@ -97,3 +97,18 @@ def test_collection_parts_in_release_order():
 
 def test_image_without_path_is_none():
     assert media.image(None, "w342") is None and media.image("", "w342") is None
+
+
+def test_odd_shapes_do_not_break_a_title():
+    t = media.title_from({"id": 8, "name": "Odd", "next_episode_to_air": {"season_number": 2, "episode_number": None},
+                          "last_episode_to_air": {"air_date": "2020-01-01"}, "seasons": [{"name": "no number"}]},
+                         media.TV)
+    assert (t.next_air, t.last_aired, t.seasons) == (None, None, [])
+    m = media.title_from({"id": 9, "title": "M", "belongs_to_collection": {"name": "no id"}}, media.MOVIE)
+    assert m.collection is None
+
+
+def test_malformed_episode_is_skipped():
+    raw = fixture("tmdb/tv_1396_season_1.json")["episodes"]
+    broken = [dict(raw[0], episode_number=None)] + raw[1:]
+    assert [e.number for e in media.episodes_from(broken, 1396)] == [e["episode_number"] for e in raw[1:]]

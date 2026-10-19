@@ -98,7 +98,7 @@ def details(token, media_type, tmdb_id):
 
 def season(token, tmdb_id, number):
     data = get(token, f"/tv/{int(tmdb_id)}/season/{int(number)}")
-    return [media.episode_from(e, tmdb_id) for e in data.get("episodes") or []]
+    return media.episodes_from(data.get("episodes"), tmdb_id)
 
 
 def collection(token, collection_id):

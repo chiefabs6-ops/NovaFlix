@@ -109,6 +109,12 @@ class Collection:
         return cls(**data)
 
 
+def _numbers(data, *keys):
+    """The values as a tuple when all are ints, else None (TMDB sometimes sends nulls or leaves keys out)."""
+    values = tuple((data or {}).get(k) for k in keys)
+    return values if all(isinstance(v, int) for v in values) else None
+
+
 def _rating(data):
     return data.get("vote_average") if data.get("vote_average") and data.get("vote_count") else None
 
@@ -133,8 +139,9 @@ def title_from(data, media_type=None, genre_names=None):
         genres = [genre_names[i] for i in data.get("genre_ids") or [] if genre_names and i in genre_names]
     imdb = data.get("imdb_id") or (data.get("external_ids") or {}).get("imdb_id") or None
     runtime = data.get("runtime") if movie else next(iter(data.get("episode_run_time") or []), None)
-    nxt, last = data.get("next_episode_to_air"), data.get("last_episode_to_air")
-    collection = data.get("belongs_to_collection")
+    nxt = _numbers(data.get("next_episode_to_air"), "season_number", "episode_number")
+    last = _numbers(data.get("last_episode_to_air"), "season_number", "episode_number")
+    collection = data.get("belongs_to_collection") or {}
     return Title(
         media_type=media_type,
         tmdb_id=int(data["id"]),
@@ -152,9 +159,9 @@ def title_from(data, media_type=None, genre_names=None):
         status=data.get("status") or None,
         imdb_id=imdb,
         seasons=[] if movie else _seasons(data),
-        next_air=(nxt["season_number"], nxt["episode_number"], nxt.get("air_date")) if nxt else None,
-        last_aired=(last["season_number"], last["episode_number"]) if last else None,
-        collection=(collection["id"], collection.get("name")) if collection else None,
+        next_air=nxt + (data["next_episode_to_air"].get("air_date"),) if nxt else None,
+        last_aired=last,
+        collection=(collection["id"], collection.get("name")) if isinstance(collection.get("id"), int) else None,
     )
 
 
@@ -174,6 +181,11 @@ def episode_from(data, tmdb_id):
         runtime_min=data.get("runtime") or None,
         rating=_rating(data),
     )
+
+
+def episodes_from(results, tmdb_id):
+    """Episodes of a season response; entries without int season/episode numbers are skipped."""
+    return [episode_from(e, tmdb_id) for e in results or [] if _numbers(e, "season_number", "episode_number")]
 
 
 def collection_from(data):

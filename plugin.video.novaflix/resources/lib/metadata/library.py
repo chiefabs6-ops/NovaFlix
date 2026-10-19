@@ -117,17 +117,25 @@ class Library:
                             lambda c: c.to_dict(), media.Collection.from_dict)
 
     def episodes(self, title, season):
-        """Episodes of a season that have aired (air date today or earlier); undated ones are listed."""
+        """Episodes of a season that have aired (air date today or earlier). Undated episodes are
+        listed only when the whole season is undated; next to dated ones they are announced, not aired."""
+        all_episodes = self._season(title, season)
+        if all(not e.air_date for e in all_episodes):
+            return all_episodes
         today = _today()
-        return [e for e in self._season(title, season) if not e.air_date or e.air_date <= today]
+        return [e for e in all_episodes if e.air_date and e.air_date <= today]
 
     def next_episode(self, title, season, episode):
-        """(season, episode) to play after this one if it has aired, else None. Never a special (season 0)."""
+        """(season, episode) to play after this one if it has aired, else None. Never a special (season 0).
+        Gaps in TMDB's numbering are skipped; a next season may continue the numbering."""
         if title.is_movie or season < 1:
             return None
-        if any(e.number == episode + 1 for e in self.episodes(title, season)):
-            return season, episode + 1
+        later_here = [e.number for e in self.episodes(title, season) if e.number > episode]
+        if later_here:
+            return season, min(later_here)
         later = sorted(s.number for s in title.seasons if s.number > season)
-        if later and any(e.number == 1 for e in self.episodes(title, later[0])):
-            return later[0], 1
+        if later:
+            aired = [e.number for e in self.episodes(title, later[0])]
+            if aired:
+                return later[0], min(aired)
         return None

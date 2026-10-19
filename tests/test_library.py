@@ -109,7 +109,8 @@ def test_next_episode_never_specials():
     lib = Library(token=TOKEN)
     title = lib.title(media.TV, 1396)
     assert lib.next_episode(title, 0, 1) is None
-    assert all(s != 0 for s, _ in filter(None, [lib.next_episode(title, 2, 13)]))
+    last = len(fixture("tmdb/tv_1396_season_2.json")["episodes"])
+    assert lib.next_episode(title, 2, last) is None  # season 0 (specials) is listed, but never next
 
 
 def test_missing_token_needs_no_network():
@@ -128,3 +129,34 @@ def test_genres_sorted_by_name_and_collection_cached():
     lib.collection(raw["id"])
     lib.collection(raw["id"])
     assert net.count("/3/collection/") == 1
+
+
+def test_undated_episode_in_a_dated_season_is_not_aired(monkeypatch):
+    # TMDB lists announced episodes with air_date null ("TBA") next to dated ones.
+    season = copy.deepcopy(fixture("tmdb/tv_1396_season_2.json"))
+    season["episodes"][-1]["air_date"] = None
+    FakeNet().route("/3/tv/1396/season/2", season).route("/3/tv/1396", breaking_bad())
+    lib = Library(token=TOKEN)
+    title = lib.title(media.TV, 1396)
+    numbers = [e.number for e in lib.episodes(title, 2)]
+    last = season["episodes"][-1]["episode_number"]
+    assert last not in numbers and numbers
+    assert lib.next_episode(title, 2, last - 1) is None
+
+
+def test_next_episode_skips_a_gap_in_numbering():
+    season = copy.deepcopy(fixture("tmdb/tv_1396_season_1.json"))
+    season["episodes"] = [e for e in season["episodes"] if e["episode_number"] != 4]
+    FakeNet().route("/3/tv/1396/season/1", season).route("/3/tv/1396", breaking_bad())
+    lib = Library(token=TOKEN)
+    assert lib.next_episode(lib.title(media.TV, 1396), 1, 3) == (1, 5)
+
+
+def test_next_season_starting_above_one():
+    s2 = copy.deepcopy(fixture("tmdb/tv_1396_season_2.json"))
+    for e in s2["episodes"]:
+        e["episode_number"] += 7  # continues the numbering of season 1
+    (FakeNet().route("/3/tv/1396/season/1", fixture("tmdb/tv_1396_season_1.json"))
+     .route("/3/tv/1396/season/2", s2).route("/3/tv/1396", breaking_bad()))
+    lib = Library(token=TOKEN)
+    assert lib.next_episode(lib.title(media.TV, 1396), 1, 7) == (2, 8)
