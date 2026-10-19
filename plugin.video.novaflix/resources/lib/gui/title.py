@@ -1,6 +1,8 @@
 # plugin.video.novaflix/resources/lib/gui/title.py
 """Title page window (Plan 4): backdrop hero, Play/Resume, My List, More like this, Season picker
-(TV) and the episode row of the chosen season. A movie has one card: the film."""
+(TV) and the episode row of the chosen season. A movie has one card: the film.
+Availability (sources/availability.py, the same check as Continue Watching): the Play episode is checked
+once per page and shown under the buttons; episodes with a saved result get a dot."""
 
 import datetime
 
@@ -11,6 +13,7 @@ from resources.lib.gui import actions, cards, dialogs, ids, items
 from resources.lib.gui.loader import Loader, PlaybackWatch, Ticker, report
 from resources.lib.kodi import paths, ui
 from resources.lib.metadata.library import Library
+from resources.lib.sources import availability
 from resources.lib.storage.mylist import MyList
 from resources.lib.storage.watching import WatchHistory
 
@@ -63,6 +66,8 @@ class TitlePage:
         self.next = (1, 0)
         self.watch = PlaybackWatch()
         self._started = False
+        self.avail = {}        # (season, episode) -> Availability: saved results and this page's checks
+        self.checking = set()  # (season, episode) whose check is running (never started twice)
 
     @property
     def is_movie(self):
@@ -84,10 +89,19 @@ class TitlePage:
         title = library.title(*self.ident)
         has_more = bool(title.collection) or bool(library.more_like_this(*self.ident))
         if title.is_movie:
-            return {"title": title, "season": None, "episodes": [], "has_more": has_more}
+            return {"title": title, "season": None, "episodes": [], "has_more": has_more,
+                    "avail": self._saved(title, 0, [0])}
         season = opening_season(title, paths.profile_dir())
         episodes = library.episodes(title, season) if season is not None else []
-        return {"title": title, "season": season, "episodes": episodes, "has_more": has_more}
+        return {"title": title, "season": season, "episodes": episodes, "has_more": has_more,
+                "avail": self._saved(title, season, [e.number for e in episodes])}
+
+    def _saved(self, title, season, numbers):
+        """{(season, episode): Availability} from saved data (loader thread)."""
+        if season is None:
+            return {}
+        found = availability.cached_episodes(title.media_type, title.tmdb_id, season, numbers)
+        return {(season, n): result for n, result in found.items()}
 
     def _deliver(self, name, data, error):
         self.window.setProperty("loading", "")
@@ -96,6 +110,7 @@ class TitlePage:
             self.window.close()
             return
         self.data = data
+        self.avail.update(data["avail"])
         self._fill_header()
         self.refresh()
         self.window.setFocusId(ids.SHOW_PLAY)
@@ -112,8 +127,6 @@ class TitlePage:
         w.setProperty("dub", ui.string(30427) % media.language_name(title.original_language) if foreign else "")
         w.setProperty("has_related", "true" if self.data["has_more"] else "")
         w.setProperty("related_label", ui.string(30418))
-        w.setProperty("avail", "")
-        w.setProperty("avail_line", "")
 
     def _season_label(self):
         season = self.data["season"]
@@ -147,6 +160,10 @@ class TitlePage:
                 label = ui.string(30420) % (season, episode, cards.clock(duration - resume))
             else:
                 label = ui.string(30426) % (season, episode)
+        for card in self.cards:
+            _, _, card_season, number = card.action
+            known = self.avail.get((card_season, number))
+            card.avail = known.state if known else ""
         control = self.window.getControl(ids.SHOW_EPISODES)
         position = max(control.getSelectedPosition(), 0)
         control.reset()
@@ -157,9 +174,50 @@ class TitlePage:
         self.window.setProperty("season_label", self._season_label())
         self.window.setProperty("episodes_title", self._season_label())
         self.window.setProperty("no_episodes", "" if self.cards else ui.string(30035))
+        if self.cards:
+            self._show_availability((0, 0) if self.is_movie else (season, self.next[0]))
+        else:
+            self.window.setProperty("avail", "")
+            self.window.setProperty("avail_line", "")
         on_list = MyList(paths.profile_dir()).contains(*self.ident)
         self.window.setProperty("favourite_label", ui.string(30433 if on_list else 30432))
         self.window.setProperty("favourited", "true" if on_list else "")
+
+    def _show_availability(self, key):
+        """Status line for the Play episode: saved result at once, else checking until the background
+        check answers. A failed check reads "could not check", never "no streams"."""
+        season, episode = key
+        known = self.avail.get(key)
+        if known is None:
+            self.window.setProperty("avail", "checking")
+            line = ui.string(30442) % key
+            self.window.setProperty("avail_line", line.split(" · ", 1)[-1] if self.is_movie else line)
+            if key not in self.checking:
+                self.checking.add(key)
+                self.loader.start({"%d:%d" % key: lambda: availability.check(*self.ident, season, episode)},
+                                  self._deliver_availability)
+            return
+        self.window.setProperty("avail", known.state)
+        self.window.setProperty("avail_line", cards.availability_text(known, season, episode, ui.string,
+                                                                      title_page=True))
+
+    def _deliver_availability(self, name, result, error):
+        key = tuple(int(n) for n in name.split(":"))
+        self.checking.discard(key)
+        self.avail[key] = result if error is None else availability.Availability(availability.UNKNOWN)
+        self.refresh()
+
+    def _reload_availability(self):
+        """After playback: the played episode's sources are saved now; read the saved results again."""
+        title, season = self.data["title"], self.data["season"]
+        numbers = [0] if self.is_movie else [e.number for e in self.data["episodes"]]
+        self.loader.start({"avail": lambda: self._saved(title, 0 if self.is_movie else season, numbers)},
+                          self._deliver_saved)
+
+    def _deliver_saved(self, name, saved, error):
+        if saved:
+            self.avail.update(saved)
+            self.refresh()
 
     def on_click(self, control_id):
         if not self.data:
@@ -192,14 +250,20 @@ class TitlePage:
         season = choices[choice][0]
         title = self.data["title"]
         self.window.setProperty("loading", "true")
-        self.loader.start({str(season): lambda: Library().episodes(title, season)}, self._deliver_season)
+        self.loader.start({str(season): lambda: self._season_data(title, season)}, self._deliver_season)
 
-    def _deliver_season(self, name, episodes, error):
+    def _season_data(self, title, season):
+        episodes = Library().episodes(title, season)
+        return episodes, self._saved(title, season, [e.number for e in episodes])
+
+    def _deliver_season(self, name, data, error):
         self.window.setProperty("loading", "")
         if error:
             report(error, "season")
             return
+        episodes, saved = data
         self.data["season"], self.data["episodes"] = int(name), episodes
+        self.avail.update(saved)
         self.refresh()
 
     def on_action(self, action):
@@ -232,6 +296,8 @@ class TitlePage:
             return
         if self.watch.ended():
             self.refresh()
+            if self.data:
+                self._reload_availability()
 
 
 def open_title(media_type, tmdb_id, loader=None, start_ticker=True):

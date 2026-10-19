@@ -184,3 +184,44 @@ def test_season_without_aired_episodes_has_no_play_label():
     FakeNet().route("/3/tv/1396/season/", {"episodes": []}).route("/3/tv/1396", tv)
     p = open_page("tv", 1396)
     assert p.window.properties["play_label"] == "No episodes have aired yet"
+
+
+# -- availability (availability plan, Task 4) ------------------------------------------------------------
+
+def test_play_episode_status_line_checks_once_then_shows_the_result(monkeypatch):
+    from resources.lib.sources import availability as av
+    calls = []
+    monkeypatch.setattr(av, "check", lambda m, i, s, e: calls.append((m, i, s, e)) or av.Availability(av.AVAILABLE))
+    tmdb()
+    p = open_page("tv", 1396)
+    assert calls == [("tv", 1396, 1, 1)]
+    assert (p.window.properties["avail"], p.window.properties["avail_line"]) == ("available", "S1 E1 · Available")
+    assert episodes(p)[0].properties["avail"] == "available"
+    p.refresh()
+    assert calls == [("tv", 1396, 1, 1)]  # never checked twice
+
+
+def test_unknown_reads_could_not_check(monkeypatch):
+    from resources.lib.sources import availability as av
+    monkeypatch.setattr(av, "check", lambda m, i, s, e: av.Availability(av.UNKNOWN))
+    tmdb()
+    p = open_page("tv", 1396)
+    assert p.window.properties["avail_line"] == "S1 E1 · Could not check streams right now (try again later)"
+
+
+def test_saved_results_put_dots_on_episodes(monkeypatch):
+    from resources.lib.sources import availability as av
+    monkeypatch.setattr(av, "cached_episodes", lambda m, i, s, numbers, directory=None:
+                        {2: av.Availability(av.UNAVAILABLE), 1: av.Availability(av.AVAILABLE)})
+    monkeypatch.setattr(av, "check", lambda *a: (_ for _ in ()).throw(AssertionError("searched")))
+    tmdb()
+    p = open_page("tv", 1396)
+    assert [episodes(p)[i].properties["avail"] for i in range(3)] == ["available", "unavailable", ""]
+
+
+def test_movie_status_line(monkeypatch):
+    from resources.lib.sources import availability as av
+    monkeypatch.setattr(av, "check", lambda m, i, s, e: av.Availability(av.NO_ENGLISH))
+    tmdb()
+    p = open_page("movie", 438631)
+    assert (p.window.properties["avail"], p.window.properties["avail_line"]) == ("sub_only", "No English audio")
