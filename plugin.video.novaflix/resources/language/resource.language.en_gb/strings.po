@@ -679,3 +679,11 @@ msgstr ""
 msgctxt "#30439"
 msgid "Seasons"
 msgstr ""
+
+msgctxt "#30440"
+msgid "TMDB did not accept the key. Check it in Settings (TMDB tab)."
+msgstr ""
+
+msgctxt "#30441"
+msgid "No English audio track"
+msgstr ""

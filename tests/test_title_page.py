@@ -145,3 +145,42 @@ def test_end_episode_of_another_title_opens_that_page():
     xbmcgui.Window(10000).setProperty(monitor.OPEN_SHOW_PROPERTY, "movie:438631")
     p.window.onInit()  # video closed
     assert p.result == ("title", "movie", 438631) and p.window.closed
+
+
+# -- review fixes --------------------------------------------------------------------------------
+
+def test_specials_episode_plays_with_season_zero():
+    specials = {"episodes": [dict(fixture("tmdb/tv_1396_season_1.json")["episodes"][0], season_number=0,
+                                  episode_number=1, air_date="2009-02-17")]}
+    xbmcaddon.settings["tmdb_token"] = TOKEN
+    (FakeNet().route("/3/tv/1396/season/0", specials).route("/3/tv/1396/season/1", fixture("tmdb/tv_1396_season_1.json"))
+     .route("/3/tv/1396", fixture("tmdb/tv_1396.json")))
+    p = open_page("tv", 1396)
+    choose_in_menu(5)  # Seasons 1-5, then Specials
+    p.window.onClick(ids.SHOW_SEASON)
+    assert p.window.properties["season_label"] == "Specials"
+    p.window.onClick(ids.SHOW_EPISODES)
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/watch?type=tv&id=1396&s=0&e=1)"
+
+
+def test_show_without_regular_seasons_opens():
+    tv = dict(fixture("tmdb/tv_1396.json"), seasons=[])
+    net = tmdb(tv)
+    p = open_page("tv", 1396)
+    assert not p.window.closed and p.window.properties["no_episodes"] and net.count("/season/") == 0
+
+
+def test_show_with_only_specials_opens_on_specials():
+    tv = dict(fixture("tmdb/tv_1396.json"))
+    tv["seasons"] = [s for s in tv["seasons"] if s["season_number"] == 0]
+    xbmcaddon.settings["tmdb_token"] = TOKEN
+    FakeNet().route("/3/tv/1396/season/0", {"episodes": []}).route("/3/tv/1396", tv)
+    assert open_page("tv", 1396).window.properties["season_label"] == "Specials"
+
+
+def test_season_without_aired_episodes_has_no_play_label():
+    tv = dict(fixture("tmdb/tv_1396.json"))
+    xbmcaddon.settings["tmdb_token"] = TOKEN
+    FakeNet().route("/3/tv/1396/season/", {"episodes": []}).route("/3/tv/1396", tv)
+    p = open_page("tv", 1396)
+    assert p.window.properties["play_label"] == "No episodes have aired yet"

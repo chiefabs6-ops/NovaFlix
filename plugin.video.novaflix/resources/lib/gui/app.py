@@ -136,6 +136,7 @@ class App:
         self.watch = PlaybackWatch()
         self.explore_open = False
         self._busy = 0  # > 0 while a key press or click is handled (and any dialog it opened)
+        self.key_asked = False  # the TMDB key question is asked once per window
         self.sidebar = []   # (label string, icon, target, kind) of the rows the sidebar list shows now
         self._started = False
 
@@ -341,13 +342,25 @@ class App:
 
     def report(self, error):
         if isinstance(error, lists.TmdbKeyMissing):
+            if self.key_asked:
+                return
+            self.key_asked = True
             if ui.confirm("TMDB", ui.string(30423)):
                 ui.open_settings()
+                from resources.lib.metadata.library import Library
+                if Library().has_token:  # the key was added: browse at once
+                    self.key_asked = False
+                    self.show_home()
         elif isinstance(error, lists.ServiceMissing):
             from resources.lib.views import sources
             sources._setup_service(None)
         else:
             report(error, "NovaFlix window")
+
+    def _marked(self, name, result, error):
+        if error:
+            self.report(error)
+        self._refresh()
 
     def _focused_card(self):
         focus = self.window.getFocusId()
@@ -379,7 +392,10 @@ class App:
                     media_type=media_type, tmdb_id=tmdb_id, title=card.label, poster=card.poster)
                 actions.toggle_my_list(title)
             elif key == "watched":
-                actions.mark_title(media_type, tmdb_id, True)
+                # A long show is one TMDB call per season: never on the GUI thread.
+                self.loader.start({f"mark:{media_type}:{tmdb_id}": lambda: actions.mark_title(media_type, tmdb_id, True)},
+                                  self._marked)
+                return
             elif key == "unwatched":
                 actions.mark_title(media_type, tmdb_id, False)
             elif key == "more":

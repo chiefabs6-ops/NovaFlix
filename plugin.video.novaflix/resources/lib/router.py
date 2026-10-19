@@ -94,7 +94,10 @@ def report_error(exc, where):
     if isinstance(exc, errors.AuthError):
         # Expired/revoked login is never shown as "no results".
         log.warning(f"{where}: {exc}")
-        if ui.confirm("TorBox", ui.string(30229)):  # API key rejected
+        if "TMDB" in str(exc):  # metadata/tmdb.py: key missing or rejected
+            if ui.confirm("TMDB", ui.string(30440)):
+                ui.open_settings()
+        elif ui.confirm("TorBox", ui.string(30229)):  # API key rejected
             ui.open_settings()
     elif isinstance(exc, errors.AccountError):
         log.warning(f"{where}: {exc}")

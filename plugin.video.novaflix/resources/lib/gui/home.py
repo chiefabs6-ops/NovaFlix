@@ -23,13 +23,11 @@ class HomeView:
         self.hero_index = 0
         self.hero_since = 0.0
         self.continue_final = False
-        self.key_asked = False
 
     def load(self):
         w = self.app.window
         self.pages, self.failed = {}, set()
         self.continue_final = False
-        self.key_asked = False
         w.setProperty("offline", "")
         w.setProperty("featured", ui.string(30234))
         w.setProperty("play_label", ui.string(30235))
@@ -51,9 +49,7 @@ class HomeView:
         w = self.app.window
         if isinstance(error, lists.TmdbKeyMissing):
             w.setProperty(f"row{n}_status", ui.string(30423))
-            if not self.key_asked:  # one question for all rows
-                self.key_asked = True
-                self.app.report(error)
+            self.app.report(error)  # asked once per window (App.report)
             return
         if error:
             log.warning(f"home row {key}: {type(error).__name__}: {error}")
@@ -101,7 +97,9 @@ class HomeView:
 
     def on_click(self, control_id):
         if control_id == ids.HERO_PLAY and self.featured:
-            actions.play_title(self.featured[self.hero_index])
+            title = self.featured[self.hero_index]
+            # A show may need TMDB (next episode): off the GUI thread, failures reported.
+            self.app.loader.start({"hero_play": lambda: actions.play_title(title)}, self._played)
         elif control_id == ids.HERO_INFO and self.featured:
             title = self.featured[self.hero_index]
             self.app.run(("title", title.media_type, title.tmdb_id))
@@ -111,8 +109,14 @@ class HomeView:
                 self.app.run(card.action)
 
     def refresh_continue(self):
-        """Saved data only, so it reloads at once after playback or marks."""
+        """Saved data at once after playback or marks, then the full row (next episodes) in the background."""
+        self.continue_final = False
         self._fill_continue(lists.home_row("continue:local"))
+        self.app.loader.start({"continue": lambda: lists.home_row("continue")}, self._deliver)
+
+    def _played(self, name, result, error):
+        if error:
+            self.app.report(error)
 
     def _fill_continue(self, page):
         control_id = ROWS[0][1]

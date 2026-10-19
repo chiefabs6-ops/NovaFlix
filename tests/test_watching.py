@@ -93,3 +93,11 @@ def test_v4_database_upgrades_in_place():
         assert conn.execute("SELECT COUNT(*) FROM watch_history").fetchone()[0] == 0
     finally:
         conn.close()
+
+
+def test_mark_many_in_one_go():
+    h = history()
+    h.save_position("tv", 1396, 1, 2, 600, 2800)
+    h.mark_many("tv", 1396, [(1, 1), (1, 2), (2, 1)])
+    assert {k: v[2] for k, v in h.states("tv", 1396).items()} == {(1, 1): True, (1, 2): True, (2, 1): True}
+    assert h.states("tv", 1396)[(1, 2)][0] == 0

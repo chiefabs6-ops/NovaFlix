@@ -46,6 +46,23 @@ class WatchHistory:
             "SET position_s = 0, watched = excluded.watched, updated_at = excluded.updated_at",
             (media_type, int(tmdb_id), int(season), int(episode), int(bool(watched)), _clock()))
 
+    def mark_many(self, media_type, tmdb_id, numbers, watched=True):
+        """Manual mark of many (season, episode) at once: one connection, one transaction."""
+        conn = db.open_user_db(self._directory)
+        try:
+            conn.execute("BEGIN")
+            conn.executemany(
+                "INSERT INTO watch_history (media_type, tmdb_id, season, episode, position_s, duration_s, watched, "
+                "updated_at) VALUES (?, ?, ?, ?, 0, 0, ?, ?) ON CONFLICT(media_type, tmdb_id, season, episode) "
+                "DO UPDATE SET position_s = 0, watched = excluded.watched, updated_at = excluded.updated_at",
+                [(media_type, int(tmdb_id), int(s), int(e), int(bool(watched)), _clock()) for s, e in numbers])
+            conn.execute("COMMIT")
+        except Exception:
+            conn.execute("ROLLBACK")
+            raise
+        finally:
+            conn.close()
+
     def forget(self, media_type, tmdb_id):
         """Mark unwatched: every watched mark and resume point of the title goes."""
         self._run("DELETE FROM watch_history WHERE media_type = ? AND tmdb_id = ?", (media_type, int(tmdb_id)))

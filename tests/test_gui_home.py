@@ -123,3 +123,26 @@ def test_late_local_continue_row_does_not_replace_the_full_one(make_app):
     a.home._deliver("continue:local", lists.Page("Continue Watching", [Card(label="A", action=("title", "tv", 1))]),
                     None)
     assert a.window.getControl(ids.HOME_ROWS[0]).size() == 2
+
+
+def test_hero_play_failure_is_reported_not_raised(make_app, monkeypatch):
+    from resources.lib import errors
+    from resources.lib.gui import actions
+
+    def offline(title):
+        raise errors.NetworkError("down")
+    monkeypatch.setattr(actions, "play_title", offline)
+    a = make_app()
+    a.window.onClick(ids.HERO_PLAY)
+    assert "internet" in xbmcgui.notifications[-1][1]
+
+
+def test_continue_row_reloads_fully_after_playback(make_app, monkeypatch):
+    a = make_app()
+    asked = []
+    monkeypatch.setattr(lists, "home_row", lambda key: asked.append(key) or row(key))
+    xbmc.cond_visibility["Player.HasVideo"] = True
+    a.tick()
+    xbmc.cond_visibility["Player.HasVideo"] = False
+    a.tick()
+    assert asked == ["continue:local", "continue"]

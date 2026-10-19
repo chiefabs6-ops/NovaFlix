@@ -104,7 +104,8 @@ def _choose(request):
     if candidates and not kept:
         # Not in English anywhere: list them all and say so plainly (owner, 2026-10-19).
         kept, row_note = candidates, ui.string(30409)
-        note = ui.string(30408) % _release_language(title, candidates, wanted.titles)
+        spoken = _release_language(title, candidates, wanted.titles)
+        note = ui.string(30408) % spoken if spoken else ui.string(30441)
     history = WatchHistory(paths.profile_dir())
     last_group, last_resolution = history.last_choice(media_type, tmdb_id)
     return sources.pick_source(
@@ -121,7 +122,7 @@ def _release_language(title, candidates, titles):
     for c in candidates:
         for code in language.languages_of(c, titles) - {"en", language.MULTI}:
             counts[code] = counts.get(code, 0) + 1
-    return media.language_name(max(counts, key=counts.get)) if counts else media.language_name("xx")
+    return media.language_name(max(counts, key=counts.get)) if counts else ""
 
 
 def _episode_name(library, title, season, episode):

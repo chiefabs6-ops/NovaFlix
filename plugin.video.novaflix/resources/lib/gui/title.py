@@ -36,16 +36,20 @@ def season_choices(title):
 
 
 def opening_season(title, directory):
-    """The season of the last episode watched or started, else the first season that has aired, else 1."""
+    """The season of the last episode watched or started, else the first season that has aired, else the
+    first regular season, else specials (0); None when TMDB lists no seasons at all."""
+    numbers = {s.number for s in title.seasons}
     last = WatchHistory(directory).last_watched(title.media_type, title.tmdb_id)
-    if last and last[0] > 0:
+    if last and last[0] > 0 and last[0] in numbers:
         return last[0]
     today = datetime.date.today().isoformat()
     regular = [s for s in title.seasons if s.number > 0]
     aired = [s.number for s in regular if s.air_date and s.air_date <= today]
     if aired:
         return min(aired)
-    return regular[0].number if regular else 1
+    if regular:
+        return regular[0].number
+    return 0 if 0 in numbers else None
 
 
 class TitlePage:
@@ -82,7 +86,8 @@ class TitlePage:
         if title.is_movie:
             return {"title": title, "season": None, "episodes": [], "has_more": has_more}
         season = opening_season(title, paths.profile_dir())
-        return {"title": title, "season": season, "episodes": library.episodes(title, season), "has_more": has_more}
+        episodes = library.episodes(title, season) if season is not None else []
+        return {"title": title, "season": season, "episodes": episodes, "has_more": has_more}
 
     def _deliver(self, name, data, error):
         self.window.setProperty("loading", "")
@@ -135,7 +140,9 @@ class TitlePage:
                           for ep in self.data["episodes"]]
             self.next = cards.next_episode([e.number for e in self.data["episodes"]], in_season)
             episode, resume = self.next
-            if resume:
+            if not self.cards:
+                label = ui.string(30035)  # nothing to play in this season yet
+            elif resume:
                 duration = in_season[episode][1]
                 label = ui.string(30420) % (season, episode, cards.clock(duration - resume))
             else:
@@ -175,7 +182,7 @@ class TitlePage:
             card = self._selected()
             if card:
                 _, _, season, episode = card.action
-                actions.title_episode_choice(media_type, tmdb_id, season or None, episode or None)
+                actions.title_episode_choice(media_type, tmdb_id, season, episode)
 
     def _choose_season(self):
         choices = season_choices(self.data["title"])
@@ -215,7 +222,7 @@ class TitlePage:
             WatchHistory(paths.profile_dir()).mark(*self.ident, season, episode, not card.watched)
             self.refresh()
         elif choice == 1:
-            actions.search_again(*self.ident, season or None, episode or None)
+            actions.search_again(*self.ident, season, episode)
 
     def tick(self):
         text = actions.phone_search()

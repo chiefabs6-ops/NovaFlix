@@ -197,3 +197,11 @@ def test_torbox_without_stream_link_is_a_bad_source(monkeypatch):
     router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
     assert "TorBox returned no stream URL" in xbmcgui.ok_calls[-1][1]
     assert xbmcplugin.resolved[-1][1] is False
+
+
+def test_unknown_release_language_has_no_name():
+    # Safety net: with no original language and no stated release language the heading is the generic one.
+    from resources.lib import media
+    from resources.lib.views import watch
+    title = media.Title(media_type="tv", tmdb_id=1, title="X")
+    assert watch._release_language(title, [], ["X"]) == ""

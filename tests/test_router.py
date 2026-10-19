@@ -85,3 +85,15 @@ def test_auth_error_opens_torbox_settings():
         router.report_error(exc, "play")
     assert xbmcgui.yesno_calls and xbmcgui.yesno_calls[0][0] == "TorBox"
     assert xbmcaddon.opened_settings == [True]
+
+
+def test_rejected_tmdb_key_names_tmdb_not_torbox():
+    import xbmcaddon
+    import xbmcgui
+    from resources.lib import errors
+    try:
+        raise errors.AuthError("TMDB rejected the key")
+    except errors.AuthError as exc:
+        router.report_error(exc, "title page")
+    assert xbmcgui.yesno_calls[-1][0] == "TMDB" and "TMDB" in xbmcgui.yesno_calls[-1][1]
+    assert xbmcaddon.opened_settings == [True]

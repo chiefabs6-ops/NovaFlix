@@ -26,6 +26,8 @@ def watch(media_type, tmdb_id, season=None, episode=None, resume_s=0):
 
 def search_again(media_type, tmdb_id, season=None, episode=None):
     """Search the providers again (ignoring saved results), then the usual source list."""
+    if media_type == media.MOVIE:
+        season = episode = None
     play_url(router.build_url("watch", type=media_type, id=tmdb_id, s=season, e=episode, refresh=1))
 
 
@@ -87,11 +89,11 @@ def mark_title(media_type, tmdb_id, watched):
     if media_type == media.MOVIE:
         history.mark(media_type, tmdb_id, 0, 0, True)
         return
-    library = Library()
+    library = Library()  # network: callers run this off the GUI thread (gui/app.py)
     title = library.title(media_type, tmdb_id)
-    for season in (s.number for s in title.seasons if s.number > 0):
-        for episode in library.episodes(title, season):
-            history.mark(media_type, tmdb_id, season, episode.number, True)
+    numbers = [(season, episode.number) for season in (s.number for s in title.seasons if s.number > 0)
+               for episode in library.episodes(title, season)]
+    history.mark_many(media_type, tmdb_id, numbers)
 
 
 def take_open_show():

@@ -368,3 +368,44 @@ def test_app_layout_does_not_force_focus_on_reinit():
                         "Default", "1080i")
     for name in ("novaflix-app.xml", "novaflix-show.xml"):
         assert 'always="true"' not in open(os.path.join(path, name), encoding="utf-8").read()
+
+
+# -- review fixes --------------------------------------------------------------------------------
+
+def test_mark_show_watched_runs_in_the_background(monkeypatch):
+    tmdb()
+    pending = []
+    monkeypatch.setattr(lists, "home_row", lambda key: lists.Page(key, []))
+    monkeypatch.setattr(lists, "load", lambda key, page_no=1: lists.Page(
+        "x", [Card(label="BB", action=("title", "tv", 1396))]))
+    window = app_mod.AppWindow("novaflix-app.xml", "", "Default", "1080i")
+    a = app_mod.App(window, loader.Loader(spawn=pending.append))
+    window.app = a
+    window.onInit()
+    a.open_grid("trending")
+    pending.pop()()
+    pending.clear()
+    long_press(a, 1)  # Mark as watched
+    assert WatchHistory(paths.profile_dir()).states("tv", 1396) == {}  # nothing done on the GUI thread
+    for job in list(pending):
+        job()
+    assert WatchHistory(paths.profile_dir()).states("tv", 1396)[(2, 3)][2] is True
+
+
+def test_missing_key_is_asked_once_across_grid_and_home(app, monkeypatch):
+    def missing(key, page_no=1):
+        raise lists.TmdbKeyMissing()
+    monkeypatch.setattr(lists, "load", missing)
+    monkeypatch.setattr(lists, "home_row", lambda key: lists.Page(key, []) if key.startswith("continue") else missing(key))
+    xbmcgui.yesno_answers.append(False)
+    select_sidebar(app, "trending")
+    assert len(xbmcgui.yesno_calls) == 1 and app.view == "home"
+
+
+def test_home_reloads_once_the_tmdb_key_is_added(app, monkeypatch):
+    from resources.lib.kodi import ui
+    reloads = []
+    monkeypatch.setattr(app.home, "load", lambda: reloads.append(1))
+    monkeypatch.setattr(ui, "open_settings", lambda: xbmcaddon.settings.update(tmdb_token=TOKEN))
+    app.report(lists.TmdbKeyMissing())
+    assert reloads == [1] and app.view == "home"
