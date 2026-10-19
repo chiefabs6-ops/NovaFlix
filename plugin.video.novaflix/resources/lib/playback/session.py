@@ -65,3 +65,20 @@ class Session:
     def skip_over(self, interval, position):
         """True while the skip prompt for this interval is still useful."""
         return interval["start"] <= position < interval["end"] - SKIP_LEAD_S
+
+
+class TitleSession(Session):
+    """A TMDB movie or episode (NovaFlix, Plan 3). Movies are season 0, episode 0. Up next is the
+    (season, episode) the library found, which may be in the next season."""
+
+    def __init__(self, media_type, tmdb_id, season, episode, resume_s=0):
+        super().__init__(0, episode, None, resume_s)
+        self.media_type = media_type
+        self.tmdb_id = int(tmdb_id)
+        self.season = int(season or 0)
+
+    def prepare(self, duration, skips, next_ref):
+        """next_ref: (season, episode) to offer near the end, or None."""
+        super().prepare(duration, skips, bool(next_ref))
+        if self.next_episode is not None:
+            self.next_episode = tuple(next_ref)

@@ -20,8 +20,9 @@ import xbmc
 from resources.lib import router
 from resources.lib.kodi import log, paths, player, ui
 from resources.lib.playback import streams
-from resources.lib.playback.session import Session
+from resources.lib.playback.session import Session, TitleSession
 from resources.lib.storage.history import History
+from resources.lib.storage.watching import WatchHistory
 
 HANDOFF_PROPERTY = "novaflix.playing"
 OPEN_SHOW_PROPERTY = "novaflix.open_show"  # End episode: anilist_id of the show page to return to
@@ -87,6 +88,24 @@ def play_url(anilist_id, episode):
     return router.build_url("play", id=anilist_id, ep=episode)
 
 
+def _is_title(session):
+    return isinstance(session, TitleSession)
+
+
+def _title_url(session, season, episode):
+    from resources.lib.views import watch
+    if session.media_type == "movie":
+        return watch.watch_url(session.media_type, session.tmdb_id)
+    return watch.watch_url(session.media_type, session.tmdb_id, season, episode)
+
+
+def retry_url(session):
+    """The source list again for what was playing (playback error)."""
+    if _is_title(session):
+        return _title_url(session, session.season, session.episode)
+    return play_url(session.anilist_id, session.episode)
+
+
 class PlaybackMonitor(xbmc.Player):
     def __init__(self, directory=None):
         super().__init__()
@@ -107,7 +126,11 @@ class PlaybackMonitor(xbmc.Player):
         ui.clear_window_property(HANDOFF_PROPERTY)
         try:
             data = json.loads(payload)
-            session = Session(data["anilist_id"], data["episode"], data.get("mal_id"), data.get("resume_s"))
+            if "type" in data:
+                session = TitleSession(data["type"], data["id"], data.get("season"), data.get("episode") or 0,
+                                       data.get("resume_s"))
+            else:
+                session = Session(data["anilist_id"], data["episode"], data.get("mal_id"), data.get("resume_s"))
         except (ValueError, KeyError, TypeError):
             log.warning("ignoring unreadable playback hand-off")
             return
@@ -123,7 +146,7 @@ class PlaybackMonitor(xbmc.Player):
     def onPlayBackError(self):
         session = self._finish(ended=False)
         if session and ui.confirm("NovaFlix", ui.string(30220)):
-            xbmc.executebuiltin(f"PlayMedia({play_url(session.anilist_id, session.episode)})")
+            xbmc.executebuiltin(f"PlayMedia({retry_url(session)})")
 
     # -- work --------------------------------------------------------------------
 
@@ -145,11 +168,31 @@ class PlaybackMonitor(xbmc.Player):
         if 0 < session.resume_s < duration - 30:
             self.seekTime(session.resume_s)
             log.info(f"resumed at {session.resume_s} s")
+        if _is_title(session):
+            session.prepare(duration, [], self._next_ref(session))  # no skip-intro data for movies and shows
+            log.info(f"tracking {session.media_type}:{session.tmdb_id} S{session.season}E{session.episode}: "
+                     f"{int(duration)} s, up next {session.next_episode}")
+            return
         from resources.lib.metadata import aniskip
         skips = aniskip.skip_times(self._dir, session.mal_id, session.episode, duration)
         session.prepare(duration, skips, self._has_next(session))
         log.info(f"tracking {session.anilist_id} ep {session.episode}: {int(duration)} s, "
                  f"skips {[s['type'] for s in skips]}, up next {session.next_episode}")
+
+    def _title(self, session):
+        from resources.lib.metadata.library import Library
+        return Library(self._dir).title(session.media_type, session.tmdb_id)
+
+    def _next_ref(self, session):
+        """(season, episode) after this one that has aired, or None (movies, last aired episode)."""
+        if session.media_type == "movie":
+            return None
+        try:
+            from resources.lib.metadata.library import Library
+            return Library(self._dir).next_episode(self._title(session), session.season, session.episode)
+        except Exception as exc:
+            log.warning(f"no Up next: title details unavailable ({type(exc).__name__})")
+            return None
 
     def _has_next(self, session):
         try:
@@ -190,6 +233,11 @@ class PlaybackMonitor(xbmc.Player):
     def _save(self, session, position=None):
         if not session.duration:
             return
+        if _is_title(session):
+            WatchHistory(self._dir).save_position(session.media_type, session.tmdb_id, session.season,
+                                                  session.episode, session.position if position is None else position,
+                                                  session.duration)
+            return
         watched = History(self._dir).save_position(session.anilist_id, session.episode, session.mal_id,
                                                    session.position if position is None else position,
                                                    session.duration)
@@ -209,6 +257,9 @@ class PlaybackMonitor(xbmc.Player):
         self._show("", label, lambda: self.seekTime(interval["end"]), now + SKIP_SHOW_S, interval)
 
     def _offer_next(self, session, episode, now):
+        if _is_title(session):
+            self._offer_next_title(session, episode, now)
+            return
         from resources.lib.metadata.catalog import Catalog
         from resources.lib.views import sources
 
@@ -222,6 +273,20 @@ class PlaybackMonitor(xbmc.Player):
                    lambda: self._begin_transition("choose", session, url), now + UPNEXT_SHOW_S,
                    button2=ui.string(30316), action2=lambda: self._begin_transition("end", session))
 
+    def _offer_next_title(self, session, next_ref, now):
+        from resources.lib.views import watch
+        season, episode = next_ref
+
+        def presearch():
+            watch.presearch(self._title(session), season, episode,
+                            cancelled=lambda: session.cancelled or xbmc.Monitor().abortRequested())
+
+        self._background(presearch)  # DEC-030: list ready when Choose source is pressed
+        url = _title_url(session, season, episode)
+        self._show(ui.string(30407) % (ui.string(30404) % (season, episode)), ui.string(30219),
+                   lambda: self._begin_transition("choose", session, url), now + UPNEXT_SHOW_S,
+                   button2=ui.string(30316), action2=lambda: self._begin_transition("end", session))
+
     # -- transitions (Up next buttons) -------------------------------------------
 
     def _begin_transition(self, kind, session, url=None):
@@ -229,11 +294,13 @@ class PlaybackMonitor(xbmc.Player):
         if self._transition is not None or session is not self.session:
             log.info(f"{kind}: ignored, a playback transition is already running")
             return
+        title = _is_title(session)
         if kind == "end":
             session.cancelled = True  # the Up next pre-search stops
-            # Set before stopping: the NovaFlix window under the video reads it as soon as the video closes.
-            ui.set_window_property(OPEN_SHOW_PROPERTY, str(session.anilist_id))
-        self._transition = [kind, session.anilist_id, url, None]  # deadline set by the next tick
+            if not title:  # movies and shows: returning to their page arrives with the Plan 4 screens
+                # Set before stopping: the NovaFlix window under the video reads it as soon as the video closes.
+                ui.set_window_property(OPEN_SHOW_PROPERTY, str(session.anilist_id))
+        self._transition = [kind, None if title else session.anilist_id, url, None]  # deadline set by the next tick
         self._close_prompts()
         log.info(f"{kind}: stopping {session.anilist_id} ep {session.episode}")
         self.stop()
@@ -255,7 +322,7 @@ class PlaybackMonitor(xbmc.Player):
             self._finish(ended=False)  # stopped without a stop event: save and clean up now
         if kind == "choose":
             xbmc.executebuiltin(f"PlayMedia({url})")
-        else:
+        elif anilist_id is not None:
             self._return_to_show(anilist_id)
 
     def _playing(self):

@@ -1068,3 +1068,7 @@ msgstr ""
 msgctxt "#30406"
 msgid "No English release found."
 msgstr ""
+
+msgctxt "#30407"
+msgid "Next: %s"
+msgstr ""
