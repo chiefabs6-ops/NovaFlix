@@ -201,7 +201,7 @@ def fanart():
         ImageDraw.Draw(layer).ellipse(box, fill=80)
         small = Image.composite(Image.new("RGB", small.size, colour), small, layer.filter(ImageFilter.GaussianBlur(28)))
     image = small.resize((1920, 1080), Image.BICUBIC)
-    for addon in ("plugin.video.novaflix", "repository.novaflix"):
+    for addon in ("plugin.video.novaflix", "script.novaflix", "repository.novaflix"):
         image.save(os.path.join(ROOT, addon, "fanart.png"), optimize=True)
 
 

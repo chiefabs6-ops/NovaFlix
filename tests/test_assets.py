@@ -103,7 +103,7 @@ def test_phone_page_uses_the_darker_palette():
 
 
 def test_fanart_is_1920x1080():
-    for addon in ("plugin.video.novaflix", "repository.novaflix"):
+    for addon in ("plugin.video.novaflix", "script.novaflix", "repository.novaflix"):
         assert png_size(os.path.join(ROOT, addon, "fanart.png")) == (1920, 1080)
 
 

@@ -303,6 +303,10 @@ def publish(repo_dir=None, pages_dir=None, message=None):
     if not os.path.exists(os.path.join(repo_dir, "addons.xml")):
         raise ReleaseError("nothing to publish: run `build.py release` first")
     if os.path.isdir(os.path.join(pages_dir, ".git")):
+        origin = _git(pages_dir, "remote", "get-url", "origin").strip()
+        if origin != PAGES_GIT:
+            # A checkout of another add-on's update site would be overwritten and pushed.
+            raise ReleaseError(f"{pages_dir} is a checkout of {origin}, not {PAGES_GIT}")
         _git(pages_dir, "pull", "--ff-only", "-q")
     else:
         _git(ROOT, "clone", "-q", PAGES_GIT, pages_dir)

@@ -180,3 +180,21 @@ def test_repo_urls_are_novaflix():
     assert build.REPO_URL == "https://chiefabs6-ops.github.io/novaflix-repo/"
     assert build.PAGES_GIT == "https://github.com/chiefabs6-ops/novaflix-repo.git"
     assert build.ADDONS == ("plugin.video.novaflix", "script.novaflix", "repository.novaflix")
+
+
+def test_publish_refuses_a_checkout_of_another_repository(tmp_path, monkeypatch):
+    # A copied dist/pages of AniVerse's update site must never be mirrored over and pushed.
+    import subprocess
+    pages = str(tmp_path / "pages")
+    subprocess.run(["git", "init", "-q", pages], check=True)
+    subprocess.run(["git", "-C", pages, "remote", "add", "origin",
+                    "https://github.com/chiefabs6-ops/aniverse-repo.git"], check=True)
+    repo = str(tmp_path / "repo")
+    build.release(repo, tests=False, history=False)
+    pushed = []
+    real_git = build._git
+    monkeypatch.setattr(build, "_git", lambda cwd, *args: pushed.append(args) if args[:1] == ("push",)
+                        else real_git(cwd, *args))
+    with pytest.raises(build.ReleaseError, match="aniverse-repo"):
+        build.publish(repo, pages)
+    assert pushed == []

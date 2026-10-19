@@ -500,7 +500,7 @@ msgid "Torrentio address"
 msgstr ""
 
 msgctxt "#30163"
-msgid "Base address of a Torrentio-compatible service. Your Real-Debrid login is never sent to it."
+msgid "Base address of a Torrentio-compatible service. Your TorBox key is never sent to it."
 msgstr ""
 
 msgctxt "#30164"

@@ -63,3 +63,13 @@ def test_profile_and_log_prefix_are_novaflix():
     assert router.PLUGIN_ID == "plugin.video.novaflix"
     assert paths._PROFILE == "special://profile/addon_data/plugin.video.novaflix/"
     assert log._PREFIX == "[plugin.video.novaflix]"
+
+
+def test_no_real_debrid_in_visible_settings_text():
+    # Settings show labels and help texts by string id; none may still name Real-Debrid.
+    settings = open(os.path.join(ROOT, "plugin.video.novaflix", "resources", "settings.xml"), encoding="utf-8").read()
+    used = set(re.findall(r'(?:label|help)="(\d+)"', settings))
+    po = open(os.path.join(ROOT, "plugin.video.novaflix", "resources", "language", "resource.language.en_gb",
+                           "strings.po"), encoding="utf-8").read()
+    texts = dict(re.findall(r'msgctxt "#(\d+)"\nmsgid "(.*)"', po))
+    assert [i for i in used if "Real-Debrid" in texts.get(i, "")] == []
