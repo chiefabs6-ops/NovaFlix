@@ -189,7 +189,16 @@ def _choose(request):
     _report(outcomes)
     last_group, last_resolution = _last_choice(show.anilist_id)
     heading_base = show.title if show.is_movie else f"{show.title} — {ui.string(30036) % number}"
-    rd = _rd_client()
+    return pick_source(request, _rd_client(), wanted, candidates, filters, dub_only, last_group, last_resolution,
+                       heading_base, lambda rd, picked: play.play_candidate(request, rd, show, wanted, picked,
+                                                                            heading_base))
+
+
+def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, last_resolution, heading_base, play_fn,
+                note=None):
+    """The source list (DEC-004, DEC-021..025, DEC-053) until the owner plays one or leaves.
+    play_fn(rd, picked) -> play.PLAYED | play.BACK | play.STOP. `note` is added to the heading
+    (e.g. how many other-language releases were hidden). True when something plays."""
     needed, show_blocked = 2, False  # DEC-053: check until 2 playable
     cache = Cache(paths.profile_dir())
 
@@ -204,7 +213,7 @@ def _choose(request):
             ui.ok(heading_base, ui.string(30150) if not result.hidden_by_filters
                   else ui.string(30151) % result.hidden_by_filters)
             return False
-        heading = heading_base
+        heading = heading_base + (f" · {note}" if note else "")
         if result.hidden_by_filters:
             heading += " · " + ui.string(30152) % result.hidden_by_filters
         if rd is not None:
@@ -244,7 +253,7 @@ def _choose(request):
         rd = _connected_client(request)
         if rd is None:
             return False
-        outcome = play.play_candidate(request, rd, show, wanted, picked, heading_base)
+        outcome = play_fn(rd, picked)
         if outcome == play.PLAYED:
             return True
         if outcome == play.STOP:

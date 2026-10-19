@@ -1056,3 +1056,15 @@ msgstr ""
 msgctxt "#30403"
 msgid "%d releases in other languages hidden"
 msgstr ""
+
+msgctxt "#30404"
+msgid "S%d E%d"
+msgstr ""
+
+msgctxt "#30405"
+msgid "This title has no IMDb id on TMDB yet, so sources can't be searched."
+msgstr ""
+
+msgctxt "#30406"
+msgid "No English release found."
+msgstr ""

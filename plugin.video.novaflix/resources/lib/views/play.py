@@ -88,13 +88,13 @@ def remember_choice(anilist_id, number, candidate):
         conn.close()
 
 
-def play_candidate(request, rd, show, wanted, candidate, heading):
-    resolver = Resolver(rd, AddedTorrents(paths.profile_dir()))
+def resolve_choice(resolver, candidate, wanted, heading):
+    """Stream for the chosen source: (url, filename), or BACK / STOP. Asks about ambiguous files
+    and downloads; never switches to another source on its own (DEC-004)."""
     chosen_file, torrent_id = None, None
     while True:
         try:
-            url, filename = resolver.resolve(candidate, wanted, chosen_file, torrent_id)
-            break
+            return resolver.resolve(candidate, wanted, chosen_file, torrent_id)
         except AmbiguousFile as exc:
             index = ui.select(ui.string(30189), [path for _, path in exc.files])
             if index < 0:
@@ -105,11 +105,7 @@ def play_candidate(request, rd, show, wanted, candidate, heading):
             if not ui.confirm(heading, ui.string(30190) % service.label()):
                 resolver.remove(exc.torrent_id)
                 return BACK
-            result = download_and_wait(resolver, exc.torrent_id, candidate, wanted, heading)
-            if result in (STOP, BACK):
-                return result
-            url, filename = result
-            break
+            return download_and_wait(resolver, exc.torrent_id, candidate, wanted, heading)
         except BadSource as exc:
             log.info(f"source not playable: {exc}")
             if "blocked" in str(exc) and candidate.info_hash:
@@ -117,15 +113,26 @@ def play_candidate(request, rd, show, wanted, candidate, heading):
             ui.ok(heading, ui.string(30191) % str(exc))
             return BACK
 
+
+def hand_off(request, resolver, handoff):
+    """Tell the service what plays (IDs only, SEC-15): resume point and the torrent to clean up."""
     added = AddedTorrents(paths.profile_dir())
     ours = resolver.torrent_id
-    handoff = {"anilist_id": show.anilist_id, "episode": wanted.number, "mal_id": show.mal_id}
     resume = int(request.params.get("resume") or 0)
     if resume > 0:
         handoff["resume_s"] = resume  # M12 screens: NovaFlix asks about resuming, the service seeks
     if ours and added.is_ours(ours) and not added.is_kept(ours):
         handoff["cleanup_torrent"] = str(ours)
-    ui.set_window_property(HANDOFF_PROPERTY, json.dumps(handoff))  # IDs only (SEC-15)
+    ui.set_window_property(HANDOFF_PROPERTY, json.dumps(handoff))
+
+
+def play_candidate(request, rd, show, wanted, candidate, heading):
+    resolver = Resolver(rd, AddedTorrents(paths.profile_dir()))
+    result = resolve_choice(resolver, candidate, wanted, heading)
+    if result in (STOP, BACK):
+        return result
+    url, filename = result
+    hand_off(request, resolver, {"anilist_id": show.anilist_id, "episode": wanted.number, "mal_id": show.mal_id})
     remember_choice(show.anilist_id, wanted.number, candidate)
     History(paths.profile_dir()).remember_show(show)  # Continue Watching (DEC-029)
     log.info(f"playing {show.anilist_id} ep {wanted.number} via {candidate.origin}")

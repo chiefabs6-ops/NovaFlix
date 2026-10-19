@@ -35,6 +35,7 @@ ROUTES = {
     "show": "resources.lib.views.show:show",
     "related": "resources.lib.views.show:related",
     "play": "resources.lib.views.sources:choose",
+    "watch": "resources.lib.views.watch:choose",
     "noop": "resources.lib.views.show:noop",
     "mal": "resources.lib.views.mylists:mal_menu",
     "mal/list": "resources.lib.views.mylists:mal_list",
@@ -53,7 +54,7 @@ ROUTES = {
 
 
 # Kodi waits for setResolvedUrl on these; failures must answer False, not end a directory.
-PLAYABLE = {"play", "rd/play"}
+PLAYABLE = {"play", "watch", "rd/play"}
 
 
 @dataclass
