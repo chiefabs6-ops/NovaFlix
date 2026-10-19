@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.aniverse" name="AniVerse" version="1.4.3" provider-name="AniVerse">
+  <requires>
+    <import addon="xbmc.python" version="3.0.1"/>
+    <import addon="script.module.pyqrcode" version="1.2.1"/>
+    <import addon="script.aniverse" version="1.0.0"/>
+  </requires>
+  <!-- No <provides>: the Video add-ons tile is script.aniverse, which opens AniVerse without Kodi's
+       folder screen. plugin:// links (playback, widgets, classic lists) work as before. -->
+  <extension point="xbmc.python.pluginsource" library="default.py"/>
+  <extension point="xbmc.service" library="service.py"/>
+  <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
+    <summary lang="en_GB">Personal anime add-on with TorBox or Real-Debrid playback</summary>
+    <description lang="en_GB">Browse anime, choose a source yourself and play it through your own TorBox (or Real-Debrid) account. For personal use.</description>
+    <platform>all</platform>
+    <license>Personal use</license>
+    <news>1.4.3: Search from your phone: pair it once with a QR code, then type a title on the phone while AniVerse is open. Lists keep your place when more anime load. Add to or remove from MyAnimeList on the show page. 1.4.2: Choose source in the Up next popup now stops the episode before the source list opens, so the next episode starts without overlapping playback. New End episode button stops the episode and returns to its show page. 1.4.1: The show page shows whether the next episode has streams (available, sub only, not available, or could not check right now) and marks episodes already checked. 1.4.0: Cleaner sidebar with a collapsible Explore group; My TorBox moved into Settings. New My Anime List page with status cards and counts. Continue Watching only lists shows you have started and shows whether the next episode is available, dub only, upcoming or not available (also in the MyAnimeList lists). Add to or remove from MyAnimeList in the long-press menu. 1.3.1: AniVerse opens straight away from Video add-ons, without Kodi's folder screen first. 1.3.0: Related &amp; sequels shows the whole franchise in rows — every sequel and prequel season, side stories, OVAs &amp; specials and movies, oldest first.</news>
+    <assets>
+      <icon>aniverse-icon.png</icon>
+      <fanart>fanart.png</fanart>
+    </assets>
+  </extension>
+</addon>

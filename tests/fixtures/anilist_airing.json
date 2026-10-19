@@ -1,0 +1,223 @@
+{
+ "data": {
+  "Page": {
+   "pageInfo": {
+    "hasNextPage": true
+   },
+   "airingSchedules": [
+    {
+     "episode": 27,
+     "airingAt": 1791669600,
+     "media": {
+      "id": 204269,
+      "idMal": 63125,
+      "format": "TV_SHORT",
+      "status": "RELEASING",
+      "episodes": 72,
+      "duration": 2,
+      "season": "SPRING",
+      "seasonYear": 2026,
+      "averageScore": null,
+      "genres": [
+       "Slice of Life"
+      ],
+      "isAdult": false,
+      "title": {
+       "romaji": "Odekake Kozame Season 2",
+       "english": "Little Shark's Day Out Season 2",
+       "native": "\u304a\u3067\u304b\u3051\u5b50\u30b6\u30e1 \u30b7\u30fc\u30ba\u30f32"
+      },
+      "synonyms": [
+       "A Little Shark Going Out. Season 2",
+       "Little Shark's Outings Season 2"
+      ],
+      "description": "Second season of <i>Odekake Kozame</i>.",
+      "coverImage": {
+       "extraLarge": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx204269-fTR4iyVjTHiC.png",
+       "large": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx204269-fTR4iyVjTHiC.png"
+      },
+      "bannerImage": null,
+      "startDate": {
+       "year": 2026,
+       "month": 4,
+       "day": 12
+      },
+      "nextAiringEpisode": {
+       "episode": 28,
+       "airingAt": 1792274400
+      }
+     }
+    },
+    {
+     "episode": 2,
+     "airingAt": 1791669600,
+     "media": {
+      "id": 213298,
+      "idMal": 64430,
+      "format": "TV_SHORT",
+      "status": "RELEASING",
+      "episodes": null,
+      "duration": 2,
+      "season": "FALL",
+      "seasonYear": 2026,
+      "averageScore": null,
+      "genres": [],
+      "isAdult": false,
+      "title": {
+       "romaji": "Yuruyuru Zukan",
+       "english": null,
+       "native": "\u3086\u308b\u3086\u308b\u56f3\u9451"
+      },
+      "synonyms": [],
+      "description": "Gakken's hugely popular illustrated encyclopedia series, which everyone can enjoy with its laid-back four-panel comics, is finally being adapted into a TV anime!\n<br><br>\nDiscover surprising aspects and fun facts about living creatures\u2014full of secrets that will make you say, \"Wow!\"\n<br><br>\nEnjoy this new kind of anime that makes even scary things fun and easy to watch, with its cute art style.\n<br><br>\n(Source: Official Site, translated)",
+      "coverImage": {
+       "extraLarge": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx213298-ymB1Sw0yDZ0Y.jpg",
+       "large": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx213298-ymB1Sw0yDZ0Y.jpg"
+      },
+      "bannerImage": null,
+      "startDate": {
+       "year": 2026,
+       "month": 10,
+       "day": 4
+      },
+      "nextAiringEpisode": {
+       "episode": 3,
+       "airingAt": 1792274400
+      }
+     }
+    },
+    {
+     "episode": 2,
+     "airingAt": 1791669600,
+     "media": {
+      "id": 218011,
+      "idMal": 64028,
+      "format": "TV_SHORT",
+      "status": "RELEASING",
+      "episodes": null,
+      "duration": 2,
+      "season": "FALL",
+      "seasonYear": 2026,
+      "averageScore": null,
+      "genres": [
+       "Comedy"
+      ],
+      "isAdult": false,
+      "title": {
+       "romaji": "Tanuki to Kitsune (TV)",
+       "english": "Raccoon Dog & Fox",
+       "native": "\u30bf\u30cc\u30ad\u3068\u30ad\u30c4\u30cd"
+      },
+      "synonyms": [
+       "Tanuki & Kitsune"
+      ],
+      "description": "The story centers on the daily lives of a raccoon dog who is not quite with it and a mischievous fox who likes to tease the raccoon dog. The two are close friends who live together on a mountain. Their other friends include a wolf, a bear, a rabbit, and birds.<br><br>(Source: Anime News Network)",
+      "coverImage": {
+       "extraLarge": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx218011-dPgr1MlfSuhH.jpg",
+       "large": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx218011-dPgr1MlfSuhH.jpg"
+      },
+      "bannerImage": null,
+      "startDate": {
+       "year": 2026,
+       "month": 10,
+       "day": 4
+      },
+      "nextAiringEpisode": {
+       "episode": 3,
+       "airingAt": 1792274400
+      }
+     }
+    },
+    {
+     "episode": 2,
+     "airingAt": 1791649800,
+     "media": {
+      "id": 202250,
+      "idMal": 62922,
+      "format": "TV",
+      "status": "RELEASING",
+      "episodes": null,
+      "duration": 23,
+      "season": "FALL",
+      "seasonYear": 2026,
+      "averageScore": 60,
+      "genres": [
+       "Action",
+       "Adventure",
+       "Fantasy"
+      ],
+      "isAdult": false,
+      "title": {
+       "romaji": "Kashita Maryoku wa [Revo Barai] de Kyousei Choushuu",
+       "english": "Magic Repo Man: Dumped by My Party, I\u2019ll Cash In With a Cute Support Fairy to Become the Strongest!",
+       "native": "\u8cb8\u3057\u305f\u9b54\u529b\u306f\u3010\u30ea\u30dc\u6255\u3044\u3011\u3067\u5f37\u5236\u5fb4\u53ce"
+      },
+      "synonyms": [
+       "\u8cb8\u3057\u305f\u9b54\u529b\u306f\u3010\u30ea\u30dc\u6255\u3044\u3011\u3067\u5f37\u5236\u5fb4\u53ce\uff5e\u7528\u6e08\u307f\u3068\u30d1\u30fc\u30c6\u30a3\u30fc\u8ffd\u653e\u3055\u308c\u305f\u4ffa\u306f\u3001\u53ef\u611b\u3044\u30b5\u30dd\u30fc\u30c8\u5996\u7cbe\u3068\u4e00\u7dd2\u306b\u53d6\u308a\u7acb\u3066\u305f\u9b54\u529b\u3092\u904b\u7528\u3057\u3066\u6700\u5f37\u3092\u76ee\u6307\u3059\u3002\uff5e",
+       "Kashita Maryoku wa [Revo Barai] de Kyousei Choushuu ~Youzumi to Party Tsuihou sareta Ore wa, Kawaii Support Yousei to Issho ni Toritateta Maryoku wo Unyou shite Saikyou wo Mezasu.",
+       "Maryoku Revo",
+       "\u9b54\u529b\u30ea\u30dc"
+      ],
+      "description": "If there's one thing you can never have enough of in a world of RPG-style swords and sorcery, it's magic points! Whether you're fueling spells, techniques, or showing off an incredible ability, you've gotta spend those points to do real damage. But what if you run out?\n<br><br>\nLent is part of the up-and-coming party known as the \u201cSkypiercers,\u201d and thanks to his unique Gift, he can loan massive amounts of magic to others. No MP? No problem with Lent around! Except, now that his companions have become formidable heroes (thanks to his skill), his usefulness is questioned. Kicked out of the group, Lent is furious\u2026until he discovers a hidden power to his Gift. Now, with his adorably devious fairy partner, he's going to claw back every last scrap of magic from his former party\u2014with interest!<br><br>\n(Source: Seven Seas Entertainment)",
+      "coverImage": {
+       "extraLarge": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx202250-mpm2cvr92Au2.jpg",
+       "large": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx202250-mpm2cvr92Au2.jpg"
+      },
+      "bannerImage": null,
+      "startDate": {
+       "year": 2026,
+       "month": 10,
+       "day": 4
+      },
+      "nextAiringEpisode": {
+       "episode": 3,
+       "airingAt": 1792254600
+      }
+     }
+    },
+    {
+     "episode": 2,
+     "airingAt": 1791647760,
+     "media": {
+      "id": 209872,
+      "idMal": 63801,
+      "format": "TV",
+      "status": "RELEASING",
+      "episodes": null,
+      "duration": 24,
+      "season": "FALL",
+      "seasonYear": 2026,
+      "averageScore": 76,
+      "genres": [
+       "Action",
+       "Comedy",
+       "Romance"
+      ],
+      "isAdult": false,
+      "title": {
+       "romaji": "Ranma 1/2 (2024) 3rd Season",
+       "english": "Ranma1/2 (2024) Season 3",
+       "native": "\u3089\u3093\u307e1/2 (2024) \u7b2c3\u671f"
+      },
+      "synonyms": [],
+      "description": "The third season of <i>Ranma 1/2 (2024)</i>.",
+      "coverImage": {
+       "extraLarge": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx209872-RBeVPqwejHFp.jpg",
+       "large": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx209872-RBeVPqwejHFp.jpg"
+      },
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/209872-Qczb4k9Mw0pq.jpg",
+      "startDate": {
+       "year": 2026,
+       "month": 10,
+       "day": 4
+      },
+      "nextAiringEpisode": {
+       "episode": 3,
+       "airingAt": 1792252560
+      }
+     }
+    }
+   ]
+  }
+ }
+}

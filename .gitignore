@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+dist/
+*.zip
+.env
+*.db
+
+# superpowers execution workspace
+.superpowers/
+
+# downloaded by tools/make_assets.py
+tools/.cache/

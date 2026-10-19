@@ -1,0 +1,38 @@
+# plugin.video.aniverse/resources/lib/gui/items.py
+"""Card -> xbmcgui.ListItem for the AniVerse layouts (M12)."""
+
+import xbmcgui
+
+from resources.lib.kodi import ui
+
+DUB_TEXT = {"dubbed": 30037, "partial": 30038}
+
+
+def to_listitem(card):
+    item = xbmcgui.ListItem(label=card.label, label2=card.label2, offscreen=True)
+    art = {}
+    if card.poster:
+        art.update(poster=card.poster, icon=card.poster)
+    icon = ""
+    if card.wide and card.wide.startswith("icon:"):
+        icon = f"av-icon-{card.wide[5:]}.png"
+    elif card.wide:
+        art.update(thumb=card.wide, fanart=card.wide)
+    if art:
+        item.setArt(art)
+    dub = DUB_TEXT.get(card.dub)
+    item.setProperty("dub", ui.string(dub) if dub else "")
+    item.setProperty("watched", "true" if card.watched else "")
+    item.setProperty("note", card.note)
+    item.setProperty("status", card.status)
+    item.setProperty("kind", card.kind)
+    item.setProperty("avail", card.avail)
+    item.setProperty("icon", icon)
+    item.setProperty("has_wide", "true" if card.wide and not icon else "")
+    if card.position > 0 and card.duration > 0:
+        item.getVideoInfoTag().setResumePoint(card.position, card.duration)
+    return item
+
+
+def to_listitems(cards):
+    return [to_listitem(c) for c in cards]
