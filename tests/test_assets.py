@@ -81,3 +81,40 @@ def test_logo_keeps_the_neon_frame():
     w, h = image.size
     left_edge = [image.getpixel((x, h // 2)) for x in range(0, 12)]
     assert any(p[3] == 255 and max(p[:3]) > 150 for p in left_edge), "bright frame line missing on the left edge"
+
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+SKINS = os.path.join(MEDIA, "..", "1080i")
+# AniVerse's backgrounds and accents; NovaFlix uses darker ones (owner, 2026-10-19).
+OLD_ACCENTS = ["FF050B18", "FF0C1930", "FF132443", "FF1A2747", "FF00CFFF", "FFA855F7", "FF702CFF", "FF087BFF",
+               "FF5A8BFF"]
+
+
+def test_skins_use_the_darker_palette():
+    for name in sorted(os.listdir(SKINS)):
+        text = open(os.path.join(SKINS, name), encoding="utf-8").read().upper()
+        assert [c for c in OLD_ACCENTS if c in text] == [], name
+
+
+def test_phone_page_uses_the_darker_palette():
+    from resources.lib.net import phone_keyboard
+    css = (phone_keyboard.PAGE + phone_keyboard.EXPIRED).lower()
+    assert [c for c in ("#050b18", "#00cfff", "#a855f7", "#0c1930", "#132443", "#5a6bff") if c in css] == []
+
+
+def test_fanart_is_1920x1080():
+    for addon in ("plugin.video.novaflix", "repository.novaflix"):
+        assert png_size(os.path.join(ROOT, addon, "fanart.png")) == (1920, 1080)
+
+
+def test_logo_comes_from_the_novaflix_artwork():
+    pytest.importorskip("PIL.Image")
+    from tools import make_assets
+    assert os.path.basename(make_assets.LOGO_SOURCE) == "novaflix-logo-source.png"
+    assert os.path.isfile(make_assets.LOGO_SOURCE)
+    assert make_assets.LOGO_INSIDE == (50, 65, 1203, 1187)
+
+
+def test_launcher_tile_uses_the_same_icon():
+    plugin = open(os.path.join(ROOT, "plugin.video.novaflix", "novaflix-icon.png"), "rb").read()
+    assert open(os.path.join(ROOT, "script.novaflix", "novaflix-icon.png"), "rb").read() == plugin

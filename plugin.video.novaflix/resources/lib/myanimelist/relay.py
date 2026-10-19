@@ -19,7 +19,7 @@ IPV4 = re.compile(r"^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$")
 
 PAGE = ('<!DOCTYPE html><html><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1"><title>NovaFlix</title></head>'
-        '<body style="font-family:sans-serif;background:#050b18;color:#f5f7ff;text-align:center;padding:48px 16px">'
+        '<body style="font-family:sans-serif;background:#02050d;color:#f5f7ff;text-align:center;padding:48px 16px">'
         '<h1>NovaFlix</h1><p>{}</p></body></html>')
 DONE = "Done — you can return to your TV."
 DENIED = "Login cancelled. You can return to your TV."

@@ -9,7 +9,7 @@
   <controls>
     <control type="image">
       <left>0</left><top>0</top><width>1920</width><height>1080</height>
-      <texture colordiffuse="FF050B18">av-white.png</texture>
+      <texture colordiffuse="FF02050D">av-white.png</texture>
     </control>
     <!-- banner hero -->
     <control type="image">
@@ -19,7 +19,7 @@
     </control>
     <control type="image">
       <left>0</left><top>0</top><width>1920</width><height>660</height>
-      <texture colordiffuse="99050B18">av-white.png</texture>
+      <texture colordiffuse="9902050D">av-white.png</texture>
       <visible>!String.IsEmpty(Window.Property(dark))</visible>
     </control>
     <control type="image">
@@ -51,7 +51,7 @@
       <left>360</left><top>318</top>
       <control type="image">
         <width>110</width><height>36</height>
-        <texture border="16" colordiffuse="FF702CFF">av-pill.png</texture>
+        <texture border="16" colordiffuse="FF5B1FD6">av-pill.png</texture>
         <visible>!String.IsEmpty(Window.Property(dub))</visible>
       </control>
       <control type="label">
@@ -61,7 +61,7 @@
       </control>
       <control type="label">
         <left>130</left><width>1100</width><height>36</height><aligny>center</aligny>
-        <font>font12</font><textcolor>FF00CFFF</textcolor>
+        <font>font12</font><textcolor>FF00A6D6</textcolor>
         <label>$INFO[Window.Property(meta)]$INFO[Window.Property(genres), · ]$INFO[Window.Property(mal), · ]</label>
       </control>
     </control>
@@ -80,7 +80,7 @@
         <font>font30_title</font><align>center</align><aligny>center</aligny>
         <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <texturefocus border="20">av-gradient.png</texturefocus>
-        <texturenofocus border="20" colordiffuse="CC702CFF">av-gradient.png</texturenofocus>
+        <texturenofocus border="20" colordiffuse="CC5B1FD6">av-gradient.png</texturenofocus>
         <label>$INFO[Window.Property(play_label)]</label>
         <animation effect="zoom" start="100" end="105" time="120" center="auto">Focus</animation>
       </control>
@@ -88,8 +88,8 @@
         <width>260</width><height>80</height>
         <font>font30_title</font><align>center</align><aligny>center</aligny>
         <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-        <texturefocus border="20" colordiffuse="FF087BFF">av-round.png</texturefocus>
-        <texturenofocus border="20" colordiffuse="B30C1930">av-round.png</texturenofocus>
+        <texturefocus border="20" colordiffuse="FF0663CC">av-round.png</texturefocus>
+        <texturenofocus border="20" colordiffuse="B3070F1F">av-round.png</texturenofocus>
         <label>$INFO[Window.Property(favourite_label)]</label>
         <animation effect="zoom" start="100" end="105" time="120" center="auto">Focus</animation>
       </control>
@@ -97,8 +97,8 @@
         <width>340</width><height>80</height>
         <font>font30_title</font><align>center</align><aligny>center</aligny>
         <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-        <texturefocus border="20" colordiffuse="FF087BFF">av-round.png</texturefocus>
-        <texturenofocus border="20" colordiffuse="B30C1930">av-round.png</texturenofocus>
+        <texturefocus border="20" colordiffuse="FF0663CC">av-round.png</texturefocus>
+        <texturenofocus border="20" colordiffuse="B3070F1F">av-round.png</texturenofocus>
         <label>$INFO[Window.Property(related_label)]</label>
         <visible>!String.IsEmpty(Window.Property(has_related))</visible>
         <animation effect="zoom" start="100" end="105" time="120" center="auto">Focus</animation>
@@ -107,8 +107,8 @@
         <width>420</width><height>80</height>
         <font>font30_title</font><align>center</align><aligny>center</aligny>
         <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-        <texturefocus border="20" colordiffuse="FF087BFF">av-round.png</texturefocus>
-        <texturenofocus border="20" colordiffuse="B30C1930">av-round.png</texturenofocus>
+        <texturefocus border="20" colordiffuse="FF0663CC">av-round.png</texturefocus>
+        <texturenofocus border="20" colordiffuse="B3070F1F">av-round.png</texturenofocus>
         <label>$INFO[Window.Property(mal_label)]</label>
         <visible>!String.IsEmpty(Window.Property(mal_label))</visible>
         <animation effect="zoom" start="100" end="105" time="120" center="auto">Focus</animation>
@@ -117,7 +117,7 @@
     <!-- availability of the Play episode -->
     <control type="image">
       <left>360</left><top>630</top><width>12</width><height>12</height>
-      <texture colordiffuse="FF00CFFF">av-dot.png</texture>
+      <texture colordiffuse="FF00A6D6">av-dot.png</texture>
       <visible>String.IsEqual(Window.Property(avail),available)</visible>
     </control>
     <control type="image">
@@ -127,12 +127,12 @@
     </control>
     <control type="image">
       <left>360</left><top>630</top><width>12</width><height>12</height>
-      <texture colordiffuse="FF5A8BFF">av-dot.png</texture>
+      <texture colordiffuse="FF4A72D9">av-dot.png</texture>
       <visible>String.IsEqual(Window.Property(avail),sub_only)</visible>
     </control>
     <control type="image">
       <left>360</left><top>630</top><width>12</width><height>12</height>
-      <texture colordiffuse="FFA855F7">av-dot.png</texture>
+      <texture colordiffuse="FF8B3FE0">av-dot.png</texture>
       <visible>String.IsEqual(Window.Property(avail),unavailable)</visible>
     </control>
     <control type="image">
@@ -174,18 +174,18 @@
         </control>
         <control type="image">
           <left>20</left><top>20</top><width>360</width><height>203</height>
-          <texture border="14" colordiffuse="405A6BFF">av-round-border.png</texture>
+          <texture border="14" colordiffuse="404A58D9">av-round-border.png</texture>
         </control>
         <control type="image">
           <left>336</left><top>32</top><width>36</width><height>36</height>
-          <texture colordiffuse="FF00CFFF">av-icon-check_circle.png</texture>
+          <texture colordiffuse="FF00A6D6">av-icon-check_circle.png</texture>
           <visible>String.IsEqual(ListItem.Property(watched),true)</visible>
         </control>
         <control type="progress">
           <left>34</left><top>205</top><width>332</width><height>8</height>
           <info>ListItem.PercentPlayed</info>
-          <texturebg border="4" colordiffuse="FF1A2747">av-progress.png</texturebg>
-          <midtexture border="4" colordiffuse="FFA855F7">av-progress.png</midtexture>
+          <texturebg border="4" colordiffuse="FF111B33">av-progress.png</texturebg>
+          <midtexture border="4" colordiffuse="FF8B3FE0">av-progress.png</midtexture>
           <visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
         </control>
         <control type="label">
@@ -195,7 +195,7 @@
         </control>
         <control type="image">
           <left>20</left><top>282</top><width>12</width><height>12</height>
-          <texture colordiffuse="FF00CFFF">av-dot.png</texture>
+          <texture colordiffuse="FF00A6D6">av-dot.png</texture>
           <visible>String.IsEqual(ListItem.Property(avail),available)</visible>
         </control>
         <control type="image">
@@ -205,12 +205,12 @@
         </control>
         <control type="image">
           <left>20</left><top>282</top><width>12</width><height>12</height>
-          <texture colordiffuse="FF5A8BFF">av-dot.png</texture>
+          <texture colordiffuse="FF4A72D9">av-dot.png</texture>
           <visible>String.IsEqual(ListItem.Property(avail),sub_only)</visible>
         </control>
         <control type="image">
           <left>20</left><top>282</top><width>12</width><height>12</height>
-          <texture colordiffuse="FFA855F7">av-dot.png</texture>
+          <texture colordiffuse="FF8B3FE0">av-dot.png</texture>
           <visible>String.IsEqual(ListItem.Property(avail),unavailable)</visible>
         </control>
         <control type="image">
@@ -246,7 +246,7 @@
           <animation effect="zoom" start="100" end="106" time="120" center="200,120">Focus</animation>
           <control type="image">
             <left>-10</left><top>-10</top><width>420</width><height>263</height>
-            <texture border="40" colordiffuse="FF00CFFF">av-glow.png</texture>
+            <texture border="40" colordiffuse="FF00A6D6">av-glow.png</texture>
           </control>
           <control type="image">
             <left>20</left><top>20</top><width>360</width><height>203</height>
@@ -255,18 +255,18 @@
           </control>
           <control type="image">
             <left>20</left><top>20</top><width>360</width><height>203</height>
-            <texture border="14" colordiffuse="FF00CFFF">av-round-border.png</texture>
+            <texture border="14" colordiffuse="FF00A6D6">av-round-border.png</texture>
           </control>
           <control type="image">
             <left>336</left><top>32</top><width>36</width><height>36</height>
-            <texture colordiffuse="FF00CFFF">av-icon-check_circle.png</texture>
+            <texture colordiffuse="FF00A6D6">av-icon-check_circle.png</texture>
             <visible>String.IsEqual(ListItem.Property(watched),true)</visible>
           </control>
           <control type="progress">
             <left>34</left><top>205</top><width>332</width><height>8</height>
             <info>ListItem.PercentPlayed</info>
-            <texturebg border="4" colordiffuse="FF1A2747">av-progress.png</texturebg>
-            <midtexture border="4" colordiffuse="FFA855F7">av-progress.png</midtexture>
+            <texturebg border="4" colordiffuse="FF111B33">av-progress.png</texturebg>
+            <midtexture border="4" colordiffuse="FF8B3FE0">av-progress.png</midtexture>
             <visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
           </control>
         </control>
@@ -277,7 +277,7 @@
         </control>
         <control type="image">
           <left>20</left><top>282</top><width>12</width><height>12</height>
-          <texture colordiffuse="FF00CFFF">av-dot.png</texture>
+          <texture colordiffuse="FF00A6D6">av-dot.png</texture>
           <visible>String.IsEqual(ListItem.Property(avail),available)</visible>
         </control>
         <control type="image">
@@ -287,12 +287,12 @@
         </control>
         <control type="image">
           <left>20</left><top>282</top><width>12</width><height>12</height>
-          <texture colordiffuse="FF5A8BFF">av-dot.png</texture>
+          <texture colordiffuse="FF4A72D9">av-dot.png</texture>
           <visible>String.IsEqual(ListItem.Property(avail),sub_only)</visible>
         </control>
         <control type="image">
           <left>20</left><top>282</top><width>12</width><height>12</height>
-          <texture colordiffuse="FFA855F7">av-dot.png</texture>
+          <texture colordiffuse="FF8B3FE0">av-dot.png</texture>
           <visible>String.IsEqual(ListItem.Property(avail),unavailable)</visible>
         </control>
         <control type="image">

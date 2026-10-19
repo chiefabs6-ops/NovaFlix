@@ -38,29 +38,29 @@ ICON_PATHS = {"/icon.png", "/apple-touch-icon.png", "/apple-touch-icon-precompos
 
 EXPIRED = ('<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" '
            'content="width=device-width, initial-scale=1"><title>NovaFlix</title></head>'
-           '<body style="font-family:sans-serif;background:#050b18;color:#f5f7ff;text-align:center;'
+           '<body style="font-family:sans-serif;background:#02050d;color:#f5f7ff;text-align:center;'
            'padding:48px 16px"><h1>NovaFlix</h1><p>This page no longer works. Choose '
            '"Use phone to type" on your TV and scan the new QR code.</p></body></html>')
 
 PAGE = """<!DOCTYPE html><html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>NovaFlix</title>
-<meta name="theme-color" content="#050b18"><meta name="apple-mobile-web-app-title" content="NovaFlix">
+<meta name="theme-color" content="#02050d"><meta name="apple-mobile-web-app-title" content="NovaFlix">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <link rel="manifest" href="MANIFEST_URL">
 <style>
-body{margin:0;font-family:sans-serif;background:#050b18;color:#f5f7ff;padding:32px 16px}
-h1{font-size:24px;margin:0 0 4px;background:linear-gradient(90deg,#a855f7,#00cfff);
+body{margin:0;font-family:sans-serif;background:#02050d;color:#f5f7ff;padding:32px 16px}
+h1{font-size:24px;margin:0 0 4px;background:linear-gradient(90deg,#8b3fe0,#00a6d6);
 -webkit-background-clip:text;background-clip:text;color:transparent}
 p{color:#a8b5d1;margin:0 0 20px}
 input{box-sizing:border-box;width:100%;font-size:20px;padding:14px;border-radius:12px;
-border:2px solid #5a6bff;background:#0c1930;color:#f5f7ff;outline:none}
-input:focus{border-color:#00cfff}
+border:2px solid #4a58d9;background:#070f1f;color:#f5f7ff;outline:none}
+input:focus{border-color:#00a6d6}
 .row{display:flex;gap:12px;margin-top:16px}
-button{flex:1;font-size:18px;padding:14px;border:0;border-radius:12px;color:#fff;background:#132443}
-#go{background:linear-gradient(90deg,#702cff,#087bff)}
+button{flex:1;font-size:18px;padding:14px;border:0;border-radius:12px;color:#fff;background:#0c1730}
+#go{background:linear-gradient(90deg,#5b1fd6,#0663cc)}
 button:disabled{opacity:.4}
-#state{margin-top:20px;min-height:24px;color:#00cfff}
+#state{margin-top:20px;min-height:24px;color:#00a6d6}
 .tip{margin-top:28px;font-size:14px}
 </style></head><body>
 <h1>NovaFlix</h1><p>Type an anime title, then press Search on TV.</p>
@@ -102,7 +102,7 @@ class _Server(ThreadingHTTPServer):
 def manifest(code):
     return json.dumps({
         "name": "NovaFlix", "short_name": "NovaFlix", "start_url": f"/p/{code}", "scope": f"/p/{code}",
-        "display": "standalone", "background_color": "#050b18", "theme_color": "#050b18",
+        "display": "standalone", "background_color": "#02050d", "theme_color": "#02050d",
         "icons": [{"src": "/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}],
     })
 

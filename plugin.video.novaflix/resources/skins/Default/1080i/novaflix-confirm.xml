@@ -7,21 +7,21 @@
   <controls>
     <control type="image">
       <left>0</left><top>0</top><width>1920</width><height>1080</height>
-      <texture colordiffuse="B3050B18">av-white.png</texture>
+      <texture colordiffuse="B302050D">av-white.png</texture>
     </control>
     <control type="group">
       <left>510</left><top>320</top>
       <control type="image">
         <left>-40</left><top>-40</top><width>980</width><height>520</height>
-        <texture border="40" colordiffuse="40702CFF">av-glow.png</texture>
+        <texture border="40" colordiffuse="405B1FD6">av-glow.png</texture>
       </control>
       <control type="image">
         <width>900</width><height>440</height>
-        <texture border="20" colordiffuse="FF0C1930">av-round.png</texture>
+        <texture border="20" colordiffuse="FF070F1F">av-round.png</texture>
       </control>
       <control type="image">
         <width>900</width><height>440</height>
-        <texture border="20" colordiffuse="405A6BFF">av-round-border.png</texture>
+        <texture border="20" colordiffuse="404A58D9">av-round-border.png</texture>
       </control>
       <control type="label">
         <left>50</left><top>36</top><width>800</width><height>56</height>
@@ -38,7 +38,7 @@
         <font>font30_title</font><align>center</align><aligny>center</aligny>
         <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <texturefocus border="20">av-gradient.png</texturefocus>
-        <texturenofocus border="20" colordiffuse="FF132443">av-round.png</texturenofocus>
+        <texturenofocus border="20" colordiffuse="FF0c1730">av-round.png</texturenofocus>
         <label>$INFO[Window.Property(yes)]</label>
         <onleft>701</onleft><onright>701</onright>
       </control>
@@ -47,7 +47,7 @@
         <font>font30_title</font><align>center</align><aligny>center</aligny>
         <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <texturefocus border="20">av-gradient.png</texturefocus>
-        <texturenofocus border="20" colordiffuse="FF132443">av-round.png</texturenofocus>
+        <texturenofocus border="20" colordiffuse="FF0c1730">av-round.png</texturenofocus>
         <label>$INFO[Window.Property(no)]</label>
         <onleft>700</onleft><onright>700</onright>
       </control>

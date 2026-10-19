@@ -19,12 +19,13 @@ FONT_BASE = "https://raw.githubusercontent.com/google/material-design-icons/mast
 FONT_FILE = "variablefont/MaterialSymbolsRounded%5BFILL,GRAD,opsz,wght%5D"
 LICENSE_URL = FONT_BASE + "LICENSE"
 
-BG = (5, 11, 24)
-PANEL = (12, 25, 48)
-PURPLE = (112, 44, 255)
-BLUE = (8, 123, 255)
-VIOLET = (168, 85, 247)
-CYAN = (0, 207, 255)
+# NovaFlix: darker than AniVerse's palette (owner, 2026-10-19).
+BG = (2, 5, 13)
+PANEL = (7, 15, 31)
+PURPLE = (91, 31, 214)
+BLUE = (6, 99, 204)
+VIOLET = (139, 63, 224)
+CYAN = (0, 166, 214)
 WHITE = (255, 255, 255)
 
 ICONS = ["home", "search", "play_circle", "format_list_bulleted", "star", "schedule", "calendar_month",
@@ -142,12 +143,35 @@ def icons():
 def placeholder():
     img = Image.new("RGBA", (230, 345), PANEL + (255,))
     draw = ImageDraw.Draw(img)
-    draw.rounded_rectangle((85, 142, 145, 202), 12, outline=(90, 107, 255, 120), width=4)
+    draw.rounded_rectangle((85, 142, 145, 202), 12, outline=(74, 88, 217, 120), width=4)
     return img
 
 
-LOGO_INSIDE = (252, 37, 1273, 977)  # 10 px outside the neon frame line (line: x 262-1262, y 47-966)
-LOGO_RADIUS = 159                   # the frame's own corner radius (~149 px) + the 10 px margin
+LOGO_INSIDE = (50, 65, 1203, 1187)  # ~8 px outside the neon frame's glow (frame: x 58-1195, y 73-1179)
+LOGO_RADIUS = 150                   # the frame's rounded corners; the drawn checkerboard outside goes
+
+
+def _backdrop(image):
+    """Mask of the drawn grey checkerboard reachable from the edges (the source PNG has no
+    transparency). Grey = low saturation and light; the neon glow is saturated, so it stops there."""
+    rgb = image.convert("RGB")
+    w, h = rgb.size
+    px = rgb.load()
+    mask = Image.new("L", (w, h), 0)
+    out = mask.load()
+
+    def grey(xy):
+        r, g, b = px[xy]
+        return max(r, g, b) - min(r, g, b) < 28 and min(r, g, b) > 140
+
+    stack = [(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)]
+    while stack:
+        x, y = stack.pop()
+        if out[x, y] or not grey((x, y)):
+            continue
+        out[x, y] = 255
+        stack.extend(n for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)) if 0 <= n[0] < w and 0 <= n[1] < h)
+    return mask
 
 
 def logo():
@@ -155,7 +179,9 @@ def logo():
     frame's rounded shape and the padding to a square are transparent."""
     inside = Image.open(LOGO_SOURCE).convert("RGBA").crop(LOGO_INSIDE)
     w, h = inside.size
-    inside.putalpha(rounded((w, h), LOGO_RADIUS).getchannel("A"))
+    alpha = rounded((w, h), LOGO_RADIUS).getchannel("A")
+    alpha.paste(0, mask=_backdrop(inside))
+    inside.putalpha(alpha)
     side = max(w, h)
     square = Image.new("RGBA", (side, side), (0, 0, 0, 0))
     square.alpha_composite(inside, ((side - w) // 2, (side - h) // 2))
@@ -164,6 +190,19 @@ def logo():
     # New file name: Kodi caches icons by path, so the new logo shows without waiting a day.
     for addon in ("plugin.video.novaflix", "script.novaflix", "repository.novaflix"):
         icon.save(os.path.join(ROOT, addon, "novaflix-icon.png"), optimize=True)
+
+
+def fanart():
+    """1920x1080 add-on background: BG with a soft violet glow top left and a cyan glow bottom right.
+    Drawn small and scaled up, so the glows stay smooth."""
+    small = Image.new("RGB", (192, 108), BG)
+    for colour, box in ((VIOLET, (-50, -45, 110, 75)), (CYAN, (90, 40, 250, 160))):
+        layer = Image.new("L", small.size, 0)
+        ImageDraw.Draw(layer).ellipse(box, fill=80)
+        small = Image.composite(Image.new("RGB", small.size, colour), small, layer.filter(ImageFilter.GaussianBlur(28)))
+    image = small.resize((1920, 1080), Image.BICUBIC)
+    for addon in ("plugin.video.novaflix", "repository.novaflix"):
+        image.save(os.path.join(ROOT, addon, "fanart.png"), optimize=True)
 
 
 def main():
@@ -187,6 +226,7 @@ def main():
     save(placeholder(), "av-placeholder.png")
     icons()
     logo()
+    fanart()
     print(f"assets written to {MEDIA}")
 
 

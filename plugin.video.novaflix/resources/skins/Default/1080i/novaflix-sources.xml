@@ -6,21 +6,21 @@
   <controls>
     <control type="image">
       <left>0</left><top>0</top><width>1920</width><height>1080</height>
-      <texture colordiffuse="CC050B18">av-white.png</texture>
+      <texture colordiffuse="CC02050D">av-white.png</texture>
     </control>
     <control type="group">
       <left>260</left><top>110</top>
       <control type="image">
         <left>-40</left><top>-40</top><width>1480</width><height>940</height>
-        <texture border="40" colordiffuse="33702CFF">av-glow.png</texture>
+        <texture border="40" colordiffuse="335B1FD6">av-glow.png</texture>
       </control>
       <control type="image">
         <width>1400</width><height>860</height>
-        <texture border="20" colordiffuse="FF0C1930">av-round.png</texture>
+        <texture border="20" colordiffuse="FF070F1F">av-round.png</texture>
       </control>
       <control type="image">
         <width>1400</width><height>860</height>
-        <texture border="20" colordiffuse="405A6BFF">av-round-border.png</texture>
+        <texture border="20" colordiffuse="404A58D9">av-round-border.png</texture>
       </control>
       <control type="label">
         <left>50</left><top>30</top><width>1300</width><height>60</height>
@@ -35,12 +35,12 @@
         <itemlayout height="112" width="1340">
           <control type="image">
             <left>20</left><top>30</top><width>8</width><height>52</height>
-            <texture border="3" colordiffuse="FF00CFFF">av-pill.png</texture>
+            <texture border="3" colordiffuse="FF00A6D6">av-pill.png</texture>
             <visible>String.IsEqual(ListItem.Property(status),ready)</visible>
           </control>
           <control type="image">
             <left>20</left><top>30</top><width>8</width><height>52</height>
-            <texture border="3" colordiffuse="FFA855F7">av-pill.png</texture>
+            <texture border="3" colordiffuse="FF8B3FE0">av-pill.png</texture>
             <visible>String.IsEqual(ListItem.Property(status),download)</visible>
           </control>
           <control type="image">
@@ -61,7 +61,7 @@
           </control>
           <control type="label">
             <left>48</left><top>30</top><width>1250</width><height>52</height>
-            <font>font13</font><textcolor>FFA855F7</textcolor>
+            <font>font13</font><textcolor>FF8B3FE0</textcolor>
             <label>$INFO[ListItem.Label]</label>
             <visible>String.IsEqual(ListItem.Property(status),action)</visible>
           </control>
@@ -69,20 +69,20 @@
         <focusedlayout height="112" width="1340">
           <control type="image">
             <left>0</left><top>4</top><width>1340</width><height>104</height>
-            <texture border="20" colordiffuse="1A00CFFF">av-round.png</texture>
+            <texture border="20" colordiffuse="1A00A6D6">av-round.png</texture>
           </control>
           <control type="image">
             <left>0</left><top>4</top><width>1340</width><height>104</height>
-            <texture border="20" colordiffuse="FF00CFFF">av-round-border.png</texture>
+            <texture border="20" colordiffuse="FF00A6D6">av-round-border.png</texture>
           </control>
           <control type="image">
             <left>20</left><top>30</top><width>8</width><height>52</height>
-            <texture border="3" colordiffuse="FF00CFFF">av-pill.png</texture>
+            <texture border="3" colordiffuse="FF00A6D6">av-pill.png</texture>
             <visible>String.IsEqual(ListItem.Property(status),ready)</visible>
           </control>
           <control type="image">
             <left>20</left><top>30</top><width>8</width><height>52</height>
-            <texture border="3" colordiffuse="FFA855F7">av-pill.png</texture>
+            <texture border="3" colordiffuse="FF8B3FE0">av-pill.png</texture>
             <visible>String.IsEqual(ListItem.Property(status),download)</visible>
           </control>
           <control type="image">
