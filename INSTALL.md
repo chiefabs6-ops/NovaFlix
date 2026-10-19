@@ -18,6 +18,10 @@ and TMDB key stay in Kodi's settings on each device.
 4. **Install NovaFlix:** Add-ons → **Install from repository** → NovaFlix Repository →
    Video add-ons → **NovaFlix** → Install. Kodi also installs the QR-code helper it needs.
 
+5. **Add your keys:** Add-ons → My add-ons → Video add-ons → NovaFlix → **Configure**:
+   - **TorBox** tab: your TorBox API key.
+   - **TMDB** tab: your TMDB API key or Read Access Token (free at themoviedb.org → Settings → API).
+
 NovaFlix and AniVerse are separate add-ons: each has its own settings, history and update repository.
 
 If NovaFlix is already installed from a zip, step 4 is still worth doing: Kodi then knows NovaFlix

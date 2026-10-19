@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.novaflix" name="NovaFlix" version="0.1.0" provider-name="NovaFlix">
+<addon id="plugin.video.novaflix" name="NovaFlix" version="0.2.0" provider-name="NovaFlix">
   <requires>
     <import addon="xbmc.python" version="3.0.1"/>
     <import addon="script.module.pyqrcode" version="1.2.1"/>
@@ -15,7 +15,7 @@
     <description lang="en_GB">Browse TV shows and movies, choose a source yourself and play it through your own TorBox account. For personal use.</description>
     <platform>all</platform>
     <license>Personal use</license>
-    <news>0.1.0: First NovaFlix build.</news>
+    <news>0.2.0: TV shows and movies from TMDB. Seasons, Continue Watching, My List and More like this. Plays English releases through TorBox; titles without an English release list their own-language releases and say so. 0.1.0: First NovaFlix build.</news>
     <assets>
       <icon>novaflix-icon.png</icon>
       <fanart>fanart.png</fanart>
