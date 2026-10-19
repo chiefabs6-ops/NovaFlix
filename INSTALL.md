@@ -2,10 +2,10 @@
 
 NovaFlix is installed from its own Kodi repository, served by GitHub Pages at
 `https://chiefabs6-ops.github.io/novaflix-repo/`. Install the repository once; after that Kodi
-tells you when an NovaFlix update is available (DEC-039).
+tells you when a NovaFlix update is available (DEC-039).
 
-The repository holds only the built add-on zips. It contains no logins or keys: your TorBox key,
-Real-Debrid login and MyAnimeList details stay in Kodi's settings on each device.
+The repository holds only the built add-on zips. It contains no logins or keys: your TorBox key
+and TMDB key stay in Kodi's settings on each device.
 
 ## First install (Fire TV Stick and Windows, Kodi 21)
 
@@ -17,6 +17,8 @@ Real-Debrid login and MyAnimeList details stay in Kodi's settings on each device
    `repository.novaflix` → `repository.novaflix-1.0.0.zip`. Wait for "NovaFlix Repository installed".
 4. **Install NovaFlix:** Add-ons → **Install from repository** → NovaFlix Repository →
    Video add-ons → **NovaFlix** → Install. Kodi also installs the QR-code helper it needs.
+
+NovaFlix and AniVerse are separate add-ons: each has its own settings, history and update repository.
 
 If NovaFlix is already installed from a zip, step 4 is still worth doing: Kodi then knows NovaFlix
 comes from this repository and offers its updates. Settings, history and favourites are kept.
