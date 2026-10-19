@@ -6,7 +6,7 @@ Releases are found by IMDb id (Torrentio), only English ones are listed (sources
 the owner picks (DEC-004) and TorBox plays it through the shared resolver.
 """
 
-from resources.lib import errors, router
+from resources.lib import errors, media, router
 from resources.lib.debrid import service
 from resources.lib.debrid.resolver import Resolver
 from resources.lib.kodi import log, paths, ui
@@ -99,15 +99,29 @@ def _choose(request):
     candidates, outcomes = _find(wanted, title, season, episode, found_settings, params.get("refresh") == "1")
     sources._report(outcomes)
     kept, hidden = language.split(candidates, title=wanted.titles)
+    note = ui.string(30403) % hidden if hidden else None
+    row_note = None
     if candidates and not kept:
-        ui.ok(heading_base, ui.string(30406))
-        return False
+        # Not in English anywhere: list them all and say so plainly (owner, 2026-10-19).
+        kept, row_note = candidates, ui.string(30409)
+        note = ui.string(30408) % _release_language(title, candidates, wanted.titles)
     history = WatchHistory(paths.profile_dir())
     last_group, last_resolution = history.last_choice(media_type, tmdb_id)
-    note = ui.string(30403) % hidden if hidden else None
     return sources.pick_source(
         request, service.client(), wanted, kept, filters, False, last_group, last_resolution, heading_base,
-        lambda rd, picked: _play(request, rd, library, title, season, episode, wanted, picked, heading_base), note)
+        lambda rd, picked: _play(request, rd, library, title, season, episode, wanted, picked, heading_base), note,
+        row_note)
+
+
+def _release_language(title, candidates, titles):
+    """The title's original language, or the most common language the releases state."""
+    if title.original_language and title.original_language != "en":
+        return media.language_name(title.original_language)
+    counts = {}
+    for c in candidates:
+        for code in language.languages_of(c, titles) - {"en", language.MULTI}:
+            counts[code] = counts.get(code, 0) + 1
+    return media.language_name(max(counts, key=counts.get)) if counts else media.language_name("xx")
 
 
 def _episode_name(library, title, season, episode):

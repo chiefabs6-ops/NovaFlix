@@ -30,7 +30,8 @@ def _size(n):
 STATUS_STRINGS = {precheck.READY: 30193, precheck.DOWNLOAD: 30194, precheck.BLOCKED: 30192}
 
 
-def details_line(c, check=None):
+def details_line(c, check=None, extra=None):
+    """One line of source details; `extra` goes just before the status, which stays last."""
     parts = []
     if c.pinned:
         parts.append(ui.string(30140))
@@ -42,6 +43,7 @@ def details_line(c, check=None):
     parts.append(f"{origin} ({c.site})" if c.site and c.origin != "nyaa" else origin)
     if c.seeders is not None:
         parts.append(f"{c.seeders} seeders")
+    parts.append(extra)
     if c.origin == "rdcloud":
         parts.append(ui.string(30144) % service.label())
     else:
@@ -195,7 +197,7 @@ def _choose(request):
 
 
 def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, last_resolution, heading_base, play_fn,
-                note=None):
+                note=None, row_note=None):
     """The source list (DEC-004, DEC-021..025, DEC-053) until the owner plays one or leaves.
     play_fn(rd, picked) -> play.PLAYED | play.BACK | play.STOP. `note` is added to the heading
     (e.g. how many other-language releases were hidden). True when something plays."""
@@ -223,7 +225,7 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
         else:
             listed = [(c, None) for c in result.shown]
             unchecked, blocked = [], []
-        rows = [(c.file_name or c.release_name, details_line(c, status)) for c, status in listed]
+        rows = [(c.file_name or c.release_name, details_line(c, status, row_note)) for c, status in listed]
         actions = []
         if unchecked:
             actions.append(("more", ui.string(30197) % len(unchecked)))

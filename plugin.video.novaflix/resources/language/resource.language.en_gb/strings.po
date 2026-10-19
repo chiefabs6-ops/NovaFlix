@@ -1072,3 +1072,11 @@ msgstr ""
 msgctxt "#30407"
 msgid "Next: %s"
 msgstr ""
+
+msgctxt "#30408"
+msgid "No English audio track — %s releases"
+msgstr ""
+
+msgctxt "#30409"
+msgid "No English audio"
+msgstr ""

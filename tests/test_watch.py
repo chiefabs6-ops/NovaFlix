@@ -107,11 +107,23 @@ def test_other_language_releases_hidden_with_count(monkeypatch):
     assert not any("PT-BR" in label for label, _ in rows)
 
 
-def test_all_other_language_says_so():
-    Net(FakeTorBox(), [stream(OTHER_HASH, "Breaking Bad Full 1080p PT-BR", "Breaking.Bad.S02E03.1080p.mkv", "🇵🇹")])
+def test_non_english_title_lists_original_language_releases():
+    tv = dict(fixture("tmdb/tv_1396.json"), original_language="ko")
+    Net(FakeTorBox(), [stream(OTHER_HASH, "Show.S02E03.1080p.WEB-DL.KOREAN", "Show.S02E03.1080p.mkv", "🇰🇷")], tv=tv)
     router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
-    assert "No English release found" in xbmcgui.ok_calls[-1][1]
-    assert xbmcplugin.resolved[-1][1] is False
+    heading, rows = xbmcgui.select_calls[-1]
+    assert "No English audio track — Korean releases" in heading
+    assert rows and "No English audio" in rows[0][1].split(" · ")[-2]  # the status stays last (gui/cards.source_row)
+    assert not xbmcgui.ok_calls
+
+
+def test_english_releases_still_hide_others(monkeypatch):
+    monkeypatch.setattr(test_torbox, "FILE_NAME", EPISODE_FILE)
+    Net(FakeTorBox(), [stream(HASH, "Breaking.Bad.S02.1080p.BluRay.x264-GRP", EPISODE_FILE),
+                       stream(OTHER_HASH, "Breaking Bad Full 1080p PT-BR", "Breaking.Bad.S02E03.1080p.mkv", "🇵🇹")])
+    router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
+    heading, rows = xbmcgui.select_calls[-1]
+    assert "No English audio" not in heading and len([r for r in rows if r[1]]) == 1
 
 
 def test_cached_sources_open_without_network():
