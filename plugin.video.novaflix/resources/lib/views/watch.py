@@ -34,7 +34,8 @@ def _heading(title, season, episode):
     return title.title if title.is_movie else f"{title.title} — {ui.string(30404) % (season, episode)}"
 
 
-def _discover(wanted, title, season, episode, found_settings, cache, cancelled):
+def discover_and_save(wanted, title, season, episode, found_settings, cache, cancelled):
+    """Search the providers and save the result where the source list and availability read it."""
     outcomes, candidates = discovery.discover(wanted, found_settings, service.client(), cancelled=cancelled)
     # Don't cache an all-failed result: next open should try again.
     if any(v in ("ok", "empty") for v in outcomes.values()):
@@ -50,7 +51,8 @@ def _find(wanted, title, season, episode, found_settings, refresh):
         return [Candidate.from_dict(c) for c in cached["candidates"]], cached["outcomes"]
     progress = ui.Progress(title.title, ui.string(30146))
     try:
-        outcomes, candidates = _discover(wanted, title, season, episode, found_settings, cache, progress.cancelled)
+        outcomes, candidates = discover_and_save(wanted, title, season, episode, found_settings, cache,
+                                                 progress.cancelled)
     finally:
         progress.close()
     return candidates, outcomes
@@ -66,7 +68,7 @@ def presearch(title, season, episode, cancelled=lambda: False):
         if cache.get(_cache_key(title, season, episode)) is not None:
             return
         _, found_settings = sources._settings()
-        _, candidates = _discover(discovery.for_title(title, season, episode), title, season, episode,
+        _, candidates = discover_and_save(discovery.for_title(title, season, episode), title, season, episode,
                                   found_settings, cache, cancelled)
         log.info(f"pre-searched {title.key} S{season}E{episode}: {len(candidates)} sources")
     except Exception as exc:

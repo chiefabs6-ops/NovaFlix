@@ -687,3 +687,39 @@ msgstr ""
 msgctxt "#30441"
 msgid "No English audio track"
 msgstr ""
+
+msgctxt "#30442"
+msgid "S%d E%d · Checking..."
+msgstr ""
+
+msgctxt "#30443"
+msgid "S%d E%d · Available"
+msgstr ""
+
+msgctxt "#30444"
+msgid "S%d E%d · No English audio"
+msgstr ""
+
+msgctxt "#30445"
+msgid "S%d E%d · Airs %s"
+msgstr ""
+
+msgctxt "#30446"
+msgid "S%d E%d · Not aired yet"
+msgstr ""
+
+msgctxt "#30447"
+msgid "S%d E%d · Not available"
+msgstr ""
+
+msgctxt "#30448"
+msgid "S%d E%d · Availability unknown"
+msgstr ""
+
+msgctxt "#30449"
+msgid "S%d E%d · No streams currently available"
+msgstr ""
+
+msgctxt "#30450"
+msgid "S%d E%d · Could not check streams right now (try again later)"
+msgstr ""

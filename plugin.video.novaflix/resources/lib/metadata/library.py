@@ -120,6 +120,15 @@ class Library:
                             lambda: tmdb.collection(self._token, collection_id),
                             lambda c: c.to_dict(), media.Collection.from_dict)
 
+    def season_episodes(self, title, season):
+        """Every episode TMDB lists for the season, aired or not (availability needs the air dates)."""
+        return self._season(title, season)
+
+    def cached_season_episodes(self, title, season):
+        """Saved season only, never the network; None if not saved."""
+        cached = self._cache.get(f"tmdb:season:{title.tmdb_id}:{int(season)}")
+        return [media.Episode.from_dict(e) for e in cached] if cached is not None else None
+
     def episodes(self, title, season):
         """Episodes of a season that have aired (air date today or earlier). Undated episodes are
         listed only when the whole season is undated; next to dated ones they are announced, not aired."""
