@@ -1,31 +1,32 @@
 # plugin.video.novaflix/resources/lib/gui/lists.py
-"""Data for every NovaFlix screen (M12), from the existing catalog, history, favourites,
-MyAnimeList and playback-service code. Returns cards only; no Kodi windows here."""
+"""Data for every NovaFlix screen: TMDB titles (metadata/library.py), watch history, My List,
+searches and My TorBox. Returns cards only; no Kodi windows here."""
 
 import re
 from dataclasses import dataclass, field
 
-from resources.lib import router
+from resources.lib import errors, media, router
 from resources.lib.gui import cards
-from resources.lib.kodi import paths, ui
-from resources.lib.metadata import franchise, mal
-from resources.lib.metadata.catalog import Catalog
-from resources.lib.models import Show
-from resources.lib.myanimelist import progress
-from resources.lib.storage import db
-from resources.lib.storage.favourites import Favourites
-from resources.lib.views import browse, mylists
-from resources.lib.views.show import ROW_STRINGS, entry_details
+from resources.lib.kodi import log, paths, ui
+from resources.lib.metadata.library import Library
+from resources.lib.storage import searches
+from resources.lib.storage.mylist import MyList
+from resources.lib.storage.watching import WatchHistory
 
 ROW_LIMIT = 20
 VIDEO = re.compile(r"\.(mkv|mp4|avi|m4v|webm|ts|mov)$", re.I)
-TITLES = {"trending": 30007, "popular": 30008, "airing": 30005, "upcoming": 30009, "recent": 30006,
-          "continue": 30001, "favourites": 30004, "genres": 30010, "search": 30002, "mal": 30003}
-PAGED = {"trending": "trending", "popular": "popular", "airing": "airing_this_season", "upcoming": "upcoming"}
+TITLES = {"trending": 30007, "popular_movies": 30410, "popular_tv": 30411, "top_movies": 30412, "top_tv": 30413,
+          "airing_today": 30414, "continue": 30001, "mylist": 30415, "genres": 30010, "search": 30002}
+LISTS = ("trending", "popular_movies", "popular_tv", "top_movies", "top_tv", "airing_today")
+GENRE_GROUPS = ((media.MOVIE, 30416), (media.TV, 30417))
 
 
 class ServiceMissing(Exception):
-    """No TorBox API key / Real-Debrid login yet."""
+    """No TorBox API key yet."""
+
+
+class TmdbKeyMissing(Exception):
+    """No TMDB key yet: nothing can be browsed."""
 
 
 @dataclass
@@ -34,67 +35,67 @@ class Page:
     cards: list = field(default_factory=list)
     more: bool = False
     empty: str = ""
-    shows: list = field(default_factory=list)   # raw Show objects of show lists (hero uses Trending's)
+    titles: list = field(default_factory=list)   # raw Titles of title lists (the Home hero uses Trending's)
 
 
 @dataclass
 class RelatedPage:
     title: str
-    rows: list = field(default_factory=list)   # [(row title, [Card])], non-empty rows in franchise.ROWS order
-    notice: str = ""                            # AniList failed mid-walk
-    empty: str = ""                             # no rows at all
+    rows: list = field(default_factory=list)   # [(row title, [Card])], non-empty rows only
+    notice: str = ""
+    empty: str = ""
 
 
-def _shows(catalog, shows):
-    return [cards.show_card(s, catalog.dub_status(s)) for s in shows]
+def _library():
+    library = Library()
+    if not library.has_token:
+        raise TmdbKeyMissing()
+    return library
+
+
+def _titles_page(title, titles, more):
+    return Page(title, [cards.title_card(t) for t in titles], more, ui.string(30039), titles)
 
 
 def load(key, page=1):
-    catalog = Catalog()
     text = ui.string
     name, _, arg = key.partition(":")
-    if name in PAGED:
-        shows, more = getattr(catalog, PAGED[name])(page)
-        return Page(text(TITLES[name]), _shows(catalog, shows), more, text(30039), shows)
-    if name == "recent":
-        rows = [cards.recent_card(s, ep, at, catalog.dub_status(s), text) for s, ep, at in catalog.recently_aired()]
-        return Page(text(30006), rows, False, text(30039))
+    if name in LISTS:
+        titles, more = _library().list(name, page)
+        return _titles_page(text(TITLES[name]), titles, more)
     if name == "continue":
-        return Page(text(30001), _continue_cards(catalog, arg != "local", text), False, text(30226))
-    if name == "favourites":
-        favs = Favourites(paths.profile_dir())
-        try:
-            entries = favs.all()
-        finally:
-            favs.close()
-        rows = [cards.show_card(Show(anilist_id=i, title=t, poster=p, mal_id=m),
-                                catalog.dub_status(Show(anilist_id=i, title=t, mal_id=m)))
-                for i, t, p, m in entries]
-        return Page(text(30004), rows, False, text(30062))
+        return Page(text(30001), _continue_cards(network=arg != "local"), False, text(30226))
+    if name == "mylist":
+        return Page(text(30415), [cards.title_card(t) for t in MyList(paths.profile_dir()).all()], False,
+                    text(30428))
     if name == "genres":
-        return Page(text(30010), [cards.tile(g, ("grid", f"genre:{g}"), icon="grid_view") for g in catalog.genres()])
+        library = _library()
+        tiles = []
+        for media_type, group in GENRE_GROUPS:
+            for genre_id, genre in library.genres(media_type):
+                tile = cards.tile(genre, ("grid", f"genre:{media_type}:{genre_id}"), icon="grid_view")
+                tile.label2 = text(group)
+                tiles.append(tile)
+        return Page(text(30010), tiles)
     if name == "genre":
-        shows, more = catalog.by_genre(arg, page)
-        return Page(arg, _shows(catalog, shows), more, text(30039))
+        media_type, _, genre_id = arg.partition(":")
+        library = _library()
+        names = dict(library.genres(media_type))
+        titles, more = library.by_genre(media_type, int(genre_id), page)
+        group = dict(GENRE_GROUPS)[media_type]
+        return _titles_page(f"{names.get(int(genre_id), '?')} · {text(group)}", titles, more)
     if name == "search" and not arg:
         from resources.lib.net import phone_keyboard
         phone = [cards.tile(text(30318), ("search_phone",), icon="smartphone")]
         if phone_keyboard.load_pairing(paths.profile_dir()):
             phone.append(cards.tile(text(30324), ("phone_unpair",), icon="cancel"))
-        return Page(text(30002), [cards.tile(text(30031), ("search_new",), icon="search")] + phone
-                    + [cards.tile(q, ("grid", f"search:{q}"), icon="history") for q in _recent_searches()])
+        recent = [cards.tile(q, ("grid", f"search:{q}"), icon="history") for q in searches.recent(paths.profile_dir())]
+        return Page(text(30002), [cards.tile(text(30031), ("search_new",), icon="search")] + phone + recent)
     if name == "search":
-        _remember_search(arg)
-        shows, more = catalog.search(arg, page)
-        return Page(text(30245) % arg, _shows(catalog, shows), more, text(30039))
-    if name == "mal" and not arg:
-        client_id, username = mylists._mal_settings()
-        if not mylists._mal_ready(client_id, username):
-            raise mal.MalSetupMissing("MyAnimeList client ID or username missing")
-        return Page(text(30003), [cards.tile(text(mylists.STATUS_STRINGS[s]), ("grid", f"mal:{s}"),
-                                             icon="format_list_bulleted") for s in mal.STATUSES])
-    if name == "mal":
-        return _mal_status(catalog, arg, page, text)
+        library = _library()
+        searches.remember(paths.profile_dir(), arg)
+        titles, more = library.search(arg, page)
+        return _titles_page(text(30245) % arg, titles, more)
     if name == "torbox" and not arg:
         return _service_torrents(text)
     if name == "torbox":
@@ -102,41 +103,27 @@ def load(key, page=1):
     raise KeyError(key)
 
 
-def _check_next(card, show, number, text):
-    """MyAnimeList lists: the label shows whether the next episode can be watched (and with
-    Dub only on, whether it is dubbed). The card still opens the show page."""
-    from resources.lib.sources import availability
-    if show.episodes_total and number > show.episodes_total:
-        return  # caught up with a finished or fully announced series: keep "watched/total"
-    card.label2 = text(30299) % number
-    card.avail, card.check, card.check_play = "checking", (show.anilist_id, number), False
-    known = availability.cached(show.anilist_id, number)
-    if known is not None:
-        cards.apply_availability(card, known, text)
-
-
-def _continue_cards(catalog, network, text):
-    """Started shows only (progress.started), not Completed / Dropped / On Hold on MAL, one card
-    per show, never an episode past the end. Saved availability is applied at once; the rest is
-    checked in the background by the window (card.check)."""
-    from resources.lib.sources import availability
-    out, seen = [], set()
-    for row in progress.continue_rows(network=network):
-        if row["anilist_id"] in seen or not progress.started(row) or progress.inactive(row):
-            continue
-        saved = catalog.cached_show(row["anilist_id"])
-        total = row["episodes_total"] or (saved.episodes_total if saved else None)
-        if row["watched"] and total and row["episode"] + 1 > total:
-            continue  # finished the show
-        card = cards.continue_card(row, saved, text)
-        if card.check:
-            known = availability.cached(*card.check)
-            if known is not None and known.state == availability.FINISHED:
+def _continue_cards(network):
+    """Started titles, newest first. A watched episode offers the next aired one (network) or opens
+    the title page (saved data only); a caught-up show and a watched movie are left out."""
+    library = Library() if network else None
+    out = []
+    for row in WatchHistory(paths.profile_dir()).continue_watching():
+        next_ref = None
+        if row["watched"]:
+            if row["media_type"] == media.MOVIE:
                 continue
-            if known is not None:
-                cards.apply_availability(card, known, text)
-        seen.add(row["anilist_id"])
-        out.append(card)
+            if library is not None and library.has_token:
+                try:
+                    title = library.title(row["media_type"], row["tmdb_id"])
+                    next_ref = library.next_episode(title, row["season"], row["episode"])
+                except errors.NovaFlixError as exc:
+                    log.warning(f"continue watching: next of {row['media_type']}:{row['tmdb_id']} unknown: {exc}")
+                    next_ref = ()  # unknown: open the title page
+                else:
+                    if next_ref is None:
+                        continue  # caught up
+        out.append(cards.title_continue_card(row, next_ref or None, ui.string))
     return out
 
 
@@ -148,69 +135,19 @@ def home_row(key):
     return page
 
 
-def related(anilist_id):
-    """Related & sequels as franchise rows (M14, DEC-062)."""
-    catalog = Catalog()
-    text = ui.string
-    result = catalog.franchise(int(anilist_id))
+def more_like_this(media_type, tmdb_id):
+    """Rows for a title's "More like this": its movie collection first, then TMDB's recommendations."""
+    library = _library()
+    title = library.title(media_type, tmdb_id)
     rows = []
-    for name in franchise.ROWS:
-        entries = result.rows.get(name) or []
-        if entries:
-            rows.append((text(ROW_STRINGS[name]), [
-                cards.Card(label=n.title, label2=entry_details(n), poster=cards.small_cover(n.poster),
-                           dub=catalog.dub_status(n) or "", action=("show", n.anilist_id)) for n in entries]))
-    return RelatedPage(result.title, rows, text(30288) if result.partial else "", "" if rows else text(30231))
-
-
-def _recent_searches():
-    conn = db.open_user_db(paths.profile_dir())
-    try:
-        return browse._recent_queries(conn)
-    finally:
-        conn.close()
-
-
-def _remember_search(text):
-    conn = db.open_user_db(paths.profile_dir())
-    try:
-        browse._remember(conn, text)
-    finally:
-        conn.close()
-
-
-def _mal_status(catalog, status, page, text):
-    client_id, username = mylists._mal_settings()
-    entries, more = mylists._mal_page(client_id, username, status, page)
-    shows = catalog.by_mal_ids([e.mal_id for e in entries])
-    rows = []
-    for entry in entries:
-        found = shows.get(entry.mal_id)
-        if found:
-            card = cards.show_card(found, catalog.dub_status(found))
-            card.label2 = f"{entry.watched}/{found.episodes_total or '?'}"
-            if status != "completed":
-                _check_next(card, found, entry.watched + 1, text)
-        else:
-            card = cards.Card(label=entry.title, label2=text(30078), poster=entry.picture, action=("noop",))
-        rows.append(card)
-    return Page(text(mylists.STATUS_STRINGS[status]), rows, more, text(30256))
-
-
-MAL_COUNT_PAGES = 10  # counts stop at 1000 entries per status ("1000+")
-
-
-def mal_count(status):
-    """(entries with this status on the user's MyAnimeList, True when there are more than counted).
-    Uses the same cached pages as the status grid, so opening a status afterwards is instant."""
-    client_id, username = mylists._mal_settings()
-    total = 0
-    for page in range(1, MAL_COUNT_PAGES + 1):
-        entries, more = mylists._mal_page(client_id, username, status, page)
-        total += len(entries)
-        if not more:
-            return total, False
-    return total, True
+    if title.collection:
+        collection = library.collection(title.collection[0])
+        if collection.parts:
+            rows.append((collection.name, [cards.title_card(t) for t in collection.parts]))
+    recommended = library.more_like_this(media_type, tmdb_id)
+    if recommended:
+        rows.append((ui.string(30418), [cards.title_card(t) for t in recommended]))
+    return RelatedPage(title.title, rows, "", "" if rows else ui.string(30039))
 
 
 def _client():

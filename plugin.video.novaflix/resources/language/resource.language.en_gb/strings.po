@@ -1080,3 +1080,75 @@ msgstr ""
 msgctxt "#30409"
 msgid "No English audio"
 msgstr ""
+
+msgctxt "#30410"
+msgid "Popular movies"
+msgstr ""
+
+msgctxt "#30411"
+msgid "Popular shows"
+msgstr ""
+
+msgctxt "#30412"
+msgid "Top rated movies"
+msgstr ""
+
+msgctxt "#30413"
+msgid "Top rated shows"
+msgstr ""
+
+msgctxt "#30414"
+msgid "Airing today"
+msgstr ""
+
+msgctxt "#30415"
+msgid "My List"
+msgstr ""
+
+msgctxt "#30416"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#30417"
+msgid "TV shows"
+msgstr ""
+
+msgctxt "#30418"
+msgid "More like this"
+msgstr ""
+
+msgctxt "#30419"
+msgid "%s"
+msgstr ""
+
+msgctxt "#30420"
+msgid "Resume S%d E%d · %s left"
+msgstr ""
+
+msgctxt "#30421"
+msgid "Next: S%d E%d"
+msgstr ""
+
+msgctxt "#30422"
+msgid "Resume · %s left"
+msgstr ""
+
+msgctxt "#30423"
+msgid "Add your TMDB key in Settings to browse."
+msgstr ""
+
+msgctxt "#30428"
+msgid "Nothing in My List yet. Long-press a title to add it."
+msgstr ""
+
+msgctxt "#30429"
+msgid "Movie"
+msgstr ""
+
+msgctxt "#30430"
+msgid "TV series"
+msgstr ""
+
+msgctxt "#30431"
+msgid "%d seasons"
+msgstr ""

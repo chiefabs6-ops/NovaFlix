@@ -36,6 +36,10 @@ class Library:
         self._token = token
         self._cache = Cache(directory)
 
+    @property
+    def has_token(self):
+        return bool((self._token or "").strip())
+
     # -- helpers --------------------------------------------------------------------
 
     def _cached(self, key, ttl, fetch, dump, load):
