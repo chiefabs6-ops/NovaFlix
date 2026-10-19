@@ -106,10 +106,11 @@ def load(key, page=1):
 def _continue_cards(network):
     """Started titles, newest first. A watched episode offers the next aired one (network) or opens
     the title page (saved data only); a caught-up show and a watched movie are left out."""
+    from resources.lib.sources import availability
     library = Library() if network else None
     out = []
     for row in WatchHistory(paths.profile_dir()).continue_watching():
-        next_ref = None
+        next_ref, upcoming = None, None
         if row["watched"]:
             if row["media_type"] == media.MOVIE:
                 continue
@@ -122,9 +123,24 @@ def _continue_cards(network):
                     next_ref = ()  # unknown: open the title page
                 else:
                     if next_ref is None:
-                        continue  # caught up
-        out.append(cards.title_continue_card(row, next_ref or None, ui.string))
+                        upcoming = _next_air(title, row)
+                        if upcoming is None:
+                            continue  # caught up
+        card = cards.title_continue_card(row, next_ref or None, ui.string, upcoming)
+        if card.check:
+            known = availability.cached(*card.check)  # saved result: no search needed
+            if known is not None:
+                cards.apply_availability(card, known, ui.string)
+        out.append(card)
     return out
+
+
+def _next_air(title, row):
+    """(season, episode, air date) of a running show's announced next episode after the watched one, or None."""
+    nxt = title.next_air
+    if nxt and (nxt[0], nxt[1]) > (row["season"], row["episode"]):
+        return nxt
+    return None
 
 
 def home_row(key):

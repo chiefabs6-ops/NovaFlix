@@ -8,6 +8,7 @@ import xbmcgui
 
 from resources.lib import errors, media
 from resources.lib.gui import actions, dialogs, ids, items, lists
+from resources.lib.gui.checks import AvailabilityChecks
 from resources.lib.gui.home import HomeView
 from resources.lib.gui.related import RelatedView
 from resources.lib.gui.loader import Loader, PlaybackWatch, Ticker, report
@@ -64,6 +65,7 @@ class GridView:
 
     def load(self, key):
         self.key, self.cards, self.page, self.more = key, [], 1, False
+        self.app.checks.reset()
         w = self.app.window
         w.getControl(ids.GRID).reset()
         w.setProperty("grid_title", "")
@@ -101,6 +103,8 @@ class GridView:
                 # Kodi's addItems re-binds the whole container and selects the first card; the owner's
                 # card is selected again in the same GUI pass, so the grid stays where it was.
                 control.selectItem(position)
+        position = control.getSelectedPosition()
+        self.app.checks.follow_grid(ids.GRID, self.cards, max(position, 0))  # next-episode availability
         if first:
             w.setProperty("grid_empty", "" if page.cards else (page.empty or ui.string(30256)))
             if page.cards:
@@ -133,6 +137,7 @@ class App:
         self.home = HomeView(self)
         self.grid = GridView(self)
         self.related = RelatedView(self)
+        self.checks = AvailabilityChecks(self)
         self.watch = PlaybackWatch()
         self.explore_open = False
         self._busy = 0  # > 0 while a key press or click is handled (and any dialog it opened)
@@ -265,8 +270,10 @@ class App:
             self.back()
         elif action_id in ids.ACTION_CONTEXT:
             self._context_menu()
-        elif action_id in (ids.ACTION_MOVE_RIGHT, ids.ACTION_MOVE_DOWN) and self.window.getFocusId() == ids.GRID:
-            self.grid.maybe_more()
+        elif action_id in ids.ACTION_MOVES and self.window.getFocusId() == ids.GRID:
+            self.checks.follow_grid(ids.GRID, self.grid.cards, self.window.getControl(ids.GRID).getSelectedPosition())
+            if action_id in (ids.ACTION_MOVE_RIGHT, ids.ACTION_MOVE_DOWN):
+                self.grid.maybe_more()
 
     def on_click(self, control_id):
         if control_id == ids.SIDEBAR:
@@ -311,6 +318,8 @@ class App:
                 self._refresh()  # My List or watched marks may have changed
         elif kind == "watch":
             actions.watch(*action[1:])
+        elif kind == "search":  # next episode not available / not checked: search the providers again
+            actions.search_again(*action[1:])
         elif kind == "search_new":
             text = actions.search_keyboard()
             if text:
@@ -375,7 +384,7 @@ class App:
     def _context_menu(self):
         card = self._focused_card()
         # Title cards open the title page; Continue Watching cards play (media_type, tmdb_id come next).
-        if not card or not card.action or card.action[0] not in ("title", "watch"):
+        if not card or not card.action or card.action[0] not in ("title", "watch", "search"):
             return
         media_type, tmdb_id = card.action[1], card.action[2]
         on_list = MyList(paths.profile_dir()).contains(media_type, tmdb_id)

@@ -28,6 +28,7 @@ class HomeView:
         w = self.app.window
         self.pages, self.failed = {}, set()
         self.continue_final = False
+        self.app.checks.reset()
         w.setProperty("offline", "")
         w.setProperty("featured", ui.string(30234))
         w.setProperty("play_label", ui.string(30235))
@@ -124,3 +125,4 @@ class HomeView:
         control = self.app.window.getControl(control_id)
         control.reset()
         control.addItems(items.to_listitems(page.cards))
+        self.app.checks.watch(control_id, page.cards)  # next-episode availability, in the background

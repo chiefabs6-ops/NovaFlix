@@ -113,7 +113,8 @@ def test_continue_watched_episode_offers_next_across_season():
     net()
     _history(watched=(1, 7))
     card = lists.load("continue").cards[0]
-    assert card.action == ("watch", "tv", 1396, 2, 1, 0) and card.label2 == "Next: S2 E1"
+    assert card.action == ("watch", "tv", 1396, 2, 1, 0) and card.label2 == "S2 E1 · Checking..."
+    assert (card.avail, card.check) == ("checking", ("tv", 1396, 2, 1))
 
 
 def test_continue_local_without_saved_next_opens_title_page():
@@ -156,3 +157,34 @@ def test_torbox_without_key_raises():
     xbmcaddon.settings["torbox_api_key"] = ""
     with pytest.raises(lists.ServiceMissing):
         lists.load("torbox")
+
+
+
+# -- availability (availability plan, Task 3) ------------------------------------------------------------
+
+def test_continue_started_episode_is_available_at_once():
+    _history(started=(2, 3))
+    FakeNet()
+    assert lists.load("continue:local").cards[0].avail == "available"
+
+
+def test_continue_running_show_shows_next_air_date():
+    raw = fixture("tmdb/tv_456.json")
+    last, nxt = raw["last_episode_to_air"], raw["next_episode_to_air"]
+    season = fixture(f"tmdb/tv_456_season_{last['season_number']}.json")
+    FakeNet().route(f"/3/tv/456/season/{last['season_number']}", season).route("/3/tv/456", raw)
+    h = WatchHistory(paths.profile_dir())
+    h.remember_title(media.title_from(raw, media.TV))
+    h.save_position("tv", 456, last["season_number"], last["episode_number"], 1300, 1320)
+    card = lists.load("continue").cards[0]
+    assert card.avail == "upcoming" and card.action == ("title", "tv", 456)
+    assert card.label2.startswith(f"S{nxt['season_number']} E{nxt['episode_number']} · Airs ")
+
+
+def test_continue_uses_saved_availability(monkeypatch):
+    from resources.lib.sources import availability as av
+    monkeypatch.setattr(av, "cached", lambda m, i, s, e, directory=None: av.Availability(av.AVAILABLE))
+    net()
+    _history(watched=(1, 7))
+    card = lists.load("continue").cards[0]
+    assert card.avail == "available" and card.label2 == "S2 E1 · Available"

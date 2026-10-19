@@ -83,19 +83,29 @@ def title_card(title):
                 wide=title.backdrop, action=("title", title.media_type, title.tmdb_id))
 
 
-def title_continue_card(row, next_ref, text):
+def title_continue_card(row, next_ref, text, upcoming=None):
     """Continue Watching from a WatchHistory row. next_ref: (season, episode) after a watched one,
-    or None when not known yet (the card opens the title page). Callers leave out caught-up titles."""
+    or None when not known yet (the card opens the title page). upcoming: (season, episode, air date)
+    of a running show's next episode that has not aired. Callers leave out caught-up titles."""
     movie = row["media_type"] == "movie"
     card = Card(label=row["title"], poster=row["poster"], wide=row["backdrop"])
     ident = (row["media_type"], row["tmdb_id"])
     if row["watched"]:
+        if next_ref is None and upcoming:
+            from resources.lib.sources.availability import UPCOMING, Availability
+            card.avail = UPCOMING
+            card.label2 = availability_text(Availability(UPCOMING, upcoming[2] or ""), upcoming[0], upcoming[1], text)
+            card.action = ("title",) + ident
+            return card
         if next_ref is None:
             card.action = ("title",) + ident
             return card
-        card.label2 = text(30421) % tuple(next_ref)
+        card.label2 = text(30442) % tuple(next_ref)
+        card.avail = "checking"
+        card.check = ident + (next_ref[0], next_ref[1])
         card.action = ("watch",) + ident + (next_ref[0], next_ref[1], 0)
         return card
+    card.avail = "available"  # the episode or film being watched was playing already
     season, episode = (None, None) if movie else (row["season"], row["episode"])
     position, duration = row["position_s"] or 0.0, row["duration_s"] or 0.0
     if position and duration:

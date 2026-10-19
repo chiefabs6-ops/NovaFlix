@@ -146,3 +146,51 @@ def test_continue_row_reloads_fully_after_playback(make_app, monkeypatch):
     xbmc.cond_visibility["Player.HasVideo"] = False
     a.tick()
     assert asked == ["continue:local", "continue"]
+
+
+
+# -- availability (availability plan, Task 3) ------------------------------------------------------------
+
+def checking(tmdb_id):
+    return Card(label=f"T{tmdb_id}", label2="S2 E4 · Checking...", avail="checking", check=("tv", tmdb_id, 2, 4),
+                action=("watch", "tv", tmdb_id, 2, 4, 0))
+
+
+def continue_rows(*made):
+    def row_fn(key):
+        if key.startswith("continue"):
+            return lists.Page("Continue Watching", [Card(**c.__dict__) for c in made])
+        return row(key)
+    return row_fn
+
+
+def test_continue_cards_update_in_place_and_one_failure_stays_on_its_card(make_app, monkeypatch):
+    from resources.lib.sources import availability as av
+    calls = []
+
+    def check(m, i, s, e):
+        calls.append(i)
+        if i == 2:
+            raise RuntimeError("provider exploded")
+        return {1: av.Availability(av.AVAILABLE), 3: av.Availability(av.UPCOMING)}[i]
+    monkeypatch.setattr(av, "check", check)
+    a = make_app(continue_rows(checking(1), checking(2), checking(3)))
+    control = a.window.getControl(ids.HOME_ROWS[0])
+    assert [control.getListItem(i).getLabel2() for i in range(3)] == [
+        "S2 E4 · Available", "S2 E4 · Availability unknown", "S2 E4 · Not aired yet"]
+    assert sorted(calls) == [1, 2, 3]  # "continue:local" and "continue" fill the row; each checked once
+    control.selectItem(1)
+    a.window.onClick(ids.HOME_ROWS[0])
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/watch?type=tv&id=2&s=2&e=4&refresh=1)"
+
+
+def test_upcoming_card_opens_the_title_page_instead_of_playing(make_app, monkeypatch):
+    from resources.lib.gui import title
+    from resources.lib.sources import availability as av
+    monkeypatch.setattr(av, "check", lambda m, i, s, e: av.Availability(av.UPCOMING, "2026-10-24"))
+    opened = []
+    monkeypatch.setattr(title, "open_title", lambda m, i: opened.append((m, i)))
+    a = make_app(continue_rows(checking(3)))
+    a.window.getControl(ids.HOME_ROWS[0]).selectItem(0)
+    a.window.onClick(ids.HOME_ROWS[0])
+    assert opened == [("tv", 3)] and not any("PlayMedia" in b for b in xbmc.builtins_executed)

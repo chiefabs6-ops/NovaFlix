@@ -409,3 +409,27 @@ def test_home_reloads_once_the_tmdb_key_is_added(app, monkeypatch):
     monkeypatch.setattr(ui, "open_settings", lambda: xbmcaddon.settings.update(tmdb_token=TOKEN))
     app.report(lists.TmdbKeyMissing())
     assert reloads == [1] and app.view == "home"
+
+
+
+# -- availability (availability plan, Task 3) ------------------------------------------------------------
+
+def test_grid_checks_availability_of_the_cards_around_the_selection(app, monkeypatch):
+    from resources.lib.sources import availability as av
+    calls = []
+    monkeypatch.setattr(av, "check", lambda m, i, s, e: calls.append(i) or av.Availability(av.AVAILABLE))
+    monkeypatch.setattr(lists, "load", lambda key, page_no=1: lists.Page("Continue Watching", [
+        Card(label=f"T{i}", avail="checking", check=("tv", i, 1, 2), action=("watch", "tv", i, 1, 2, 0))
+        for i in range(40)]))
+    select_sidebar(app, "continue")
+    assert calls == list(range(18))
+    grid = app.window.getControl(ids.GRID)
+    app.window.setFocusId(ids.GRID)
+    grid.selectItem(24)
+    app.window.onAction(xbmcgui.Action(ids.ACTION_MOVE_DOWN))
+    assert calls == list(range(18)) + list(range(24, 40))  # from the selected card's row: 24-39
+
+
+def test_search_action_searches_again(app):
+    app.run(("search", "tv", 1396, 2, 3))
+    assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/watch?type=tv&id=1396&s=2&e=3&refresh=1)"
