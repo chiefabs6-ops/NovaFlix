@@ -54,6 +54,8 @@ ALLOWED = {
     "cdce9a1fb95fff27f3b8d337cece75fd",    # md5 of another add-on's addons.xml, quoted in research notes
     "0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0",  # made-up key in tests/test_build.py (scanner self-test)
     "a1b2c3d4e5f60718293a4b5c6d7e8f90",      # made-up client ID in tests/test_build.py
+    "0123456789abcdef0123456789abcdef",      # made-up TMDB v3 key in tests/test_tmdb.py
+    "eyJTESTTOKEN0000000000.eyJTESTPAYLOAD000000000.TESTSIGNATURE000000000",  # made-up TMDB token in tests
 }
 ALLOWED_PREFIXES = ("TEST", "FAKE", "DEVICECODE", "RDACCESSTOKEN", "RDREFRESH", "ACCESSTOKEN", "REFRESHTOKEN",
                     "TORBOXKEY", "OWNER", "SENTINEL")  # placeholders used in tests
