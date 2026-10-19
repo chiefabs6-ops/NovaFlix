@@ -3,14 +3,19 @@
 Pure timing logic (no Kodi calls) so it can be tested with fake clocks:
 - save the position every SAVE_EVERY_S (DEC-028; crash loses <= 30 s),
 - offer Skip intro / Skip ending inside known intervals (none known yet for movies and shows),
-- offer Up next at the ending's start, or UPNEXT_FALLBACK_S before the end (DEC-030);
+- offer Up next at the ending's start, at a "Credits" chapter or the last chapter near the end
+  (Kodi's chapters, see chapter()), or UPNEXT_FALLBACK_S before the end (DEC-030);
   when Up next uses the ending's start it replaces the Skip ending button.
 """
+
+import re
 
 SAVE_EVERY_S = 30
 UPNEXT_FALLBACK_S = 90
 MIN_UPNEXT_DURATION_S = 5 * 60    # no Up next on very short clips
 SKIP_LEAD_S = 3                   # don't offer a skip in its last seconds
+LAST_CHAPTER_WINDOW_S = 10 * 60   # a last chapter starting earlier than this is still the episode itself
+CREDITS = re.compile(r"\b(?:end\s*)?credits?\b|\bending\b|\boutro\b", re.I)
 
 
 class Session:
@@ -45,6 +50,16 @@ class Session:
                 self.skips = [s for s in self.skips if s is not ending]
             else:
                 self.upnext_at = self.duration - UPNEXT_FALLBACK_S
+
+    def chapter(self, current, count, name, position):
+        """Kodi's chapter now playing (owner, 2026-10-19): a chapter named like "Credits", or the last of
+        several chapters when it starts within LAST_CHAPTER_WINDOW_S of the end, brings Up next forward."""
+        if self.next_episode is None or "upnext" in self._offered or self.upnext_at is None:
+            return
+        credits = bool(CREDITS.search(name or ""))
+        last = count >= 2 and current == count and self.duration - position <= LAST_CHAPTER_WINDOW_S
+        if credits or last:
+            self.upnext_at = min(self.upnext_at, float(position))
 
     def tick(self, position, now):
         """Events due at this moment: ("save",), ("skip", interval), ("upnext", episode)."""

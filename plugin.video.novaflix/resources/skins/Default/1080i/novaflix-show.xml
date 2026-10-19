@@ -85,7 +85,7 @@
         <animation effect="zoom" start="100" end="105" time="120" center="auto">Focus</animation>
       </control>
       <control type="button" id="501">
-        <width>260</width><height>80</height>
+        <width>420</width><height>80</height>
         <font>font30_title</font><align>center</align><aligny>center</aligny>
         <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <texturefocus border="20" colordiffuse="FF0663CC">av-round.png</texturefocus>
@@ -104,7 +104,7 @@
         <animation effect="zoom" start="100" end="105" time="120" center="auto">Focus</animation>
       </control>
       <control type="button" id="503">
-        <width>420</width><height>80</height>
+        <width>300</width><height>80</height>
         <font>font30_title</font><align>center</align><aligny>center</aligny>
         <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <texturefocus border="20" colordiffuse="FF0663CC">av-round.png</texturefocus>

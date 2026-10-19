@@ -83,6 +83,18 @@ def apply_streams(language):
         player.subtitles_off()
 
 
+def _chapter():
+    """(chapter now playing, chapter count, chapter name) from Kodi, or None when the file has no chapters."""
+    try:
+        current = int(xbmc.getInfoLabel("Player.Chapter") or 0)
+        count = int(xbmc.getInfoLabel("Player.ChapterCount") or 0)
+    except ValueError:
+        return None
+    if not current or not count:
+        return None
+    return current, count, xbmc.getInfoLabel("Player.ChapterName")
+
+
 def _title_url(session, season, episode):
     from resources.lib.views import watch
     if session.media_type == "movie":
@@ -156,7 +168,8 @@ class PlaybackMonitor(xbmc.Player):
             log.info(f"resumed at {session.resume_s} s")
         session.prepare(duration, [], self._next_ref(session))  # no skip-intro data for movies and shows yet
         log.info(f"tracking {session.media_type}:{session.tmdb_id} S{session.season}E{session.episode}: "
-                 f"{int(duration)} s, up next {session.next_episode}")
+                 f"{int(duration)} s, up next {session.next_episode}, "
+                 f"chapters {xbmc.getInfoLabel('Player.ChapterCount') or 'none'}")
 
     def _title(self, session):
         from resources.lib.metadata.library import Library
@@ -188,6 +201,9 @@ class PlaybackMonitor(xbmc.Player):
             position = self.getTime()
         except RuntimeError:
             return
+        chapter = _chapter()
+        if chapter:
+            session.chapter(*chapter, position)
         for event in session.tick(position, now):
             if event[0] == "save":
                 self._save(session)

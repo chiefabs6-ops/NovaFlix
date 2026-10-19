@@ -267,3 +267,44 @@ def test_end_episode_returns_to_the_open_novaflix_window(mon):
     mon.tick(1)
     assert not any("PlayMedia" in b or "RunPlugin" in b for b in xbmc.builtins_executed)
     assert states()[(1, 7)][2] is True
+
+
+# -- Up next on the credits / last chapter (owner, 2026-10-19) ------------------------------------
+
+def test_up_next_at_a_credits_chapter():
+    s = Session("tv", 1, 1, 3)
+    s.prepare(LENGTH, [], (1, 4))
+    s.chapter(5, 6, "End Credits", 2400)
+    assert ("upnext", (1, 4)) in s.tick(2400, 1)
+
+
+def test_up_next_at_the_last_chapter_near_the_end():
+    s = Session("tv", 1, 1, 3)
+    s.prepare(LENGTH, [], (1, 4))
+    s.chapter(8, 8, "Chapter 8", 2500)
+    assert ("upnext", (1, 4)) in s.tick(2500, 1)
+
+
+def test_last_chapter_far_from_the_end_waits_for_the_usual_time():
+    s = Session("tv", 1, 1, 3)
+    s.prepare(LENGTH, [], (1, 4))
+    s.chapter(3, 3, "Chapter 3", 1200)  # 26 minutes left: still the episode itself
+    assert s.tick(1200, 1) == [] and s.upnext_at == LENGTH - 90
+
+
+def test_single_chapter_or_no_next_episode_changes_nothing():
+    s = Session("tv", 1, 1, 3)
+    s.prepare(LENGTH, [], (1, 4))
+    s.chapter(1, 1, "", 2700)
+    assert s.upnext_at == LENGTH - 90
+    s = Session("movie", 1, 0, 0)
+    s.prepare(LENGTH, [], None)
+    s.chapter(8, 8, "Credits", 2700)
+    assert s.upnext_at is None
+
+
+def test_monitor_offers_up_next_when_kodi_enters_the_credits_chapter(mon):
+    start(mon)
+    xbmc.info_labels.update({"Player.Chapter": "7", "Player.ChapterCount": "8", "Player.ChapterName": "Credits"})
+    play_to(mon, 2450, 0)
+    assert xbmcgui.xml_dialogs and xbmcgui.xml_dialogs[-1].properties["text"] == "Next: S2 E1"

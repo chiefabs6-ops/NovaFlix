@@ -100,3 +100,14 @@ def test_conditions_do_not_embed_infolabels(name):
         texts = [el.get("condition") or ""] + ([el.text or ""] if el.tag == "visible" else [])
         for text in texts:
             assert "$INFO[" not in text, f"{name}: infolabel inside condition {text}"
+
+
+def test_title_page_buttons_fit_and_my_list_label_has_room():
+    # "Remove from My List" needs ~400 px at font30_title; the four buttons share one 1500 px row.
+    import re
+    xml = open(os.path.join(os.path.dirname(__file__), "..", "plugin.video.novaflix", "resources", "skins", "Default",
+                            "1080i", "novaflix-show.xml"), encoding="utf-8").read()
+    widths = {i: int(re.search(r'<control type="button" id="%d">\s*<width>(\d+)</width>' % i, xml).group(1))
+              for i in (500, 501, 502, 503)}
+    assert widths[501] >= 400
+    assert sum(widths.values()) + 3 * 24 <= 1500
