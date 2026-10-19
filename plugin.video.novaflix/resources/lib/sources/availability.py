@@ -55,9 +55,12 @@ def _titles(title, episode):
     return [title.title] + ([episode.title] if episode is not None and episode.title else [])
 
 
-def _verdict(candidates, outcomes, titles):
+def _filters():
     from resources.lib.views import sources
-    filters, _ = sources._settings()
+    return sources._settings()[0]
+
+
+def _verdict(candidates, outcomes, titles, filters):
     kept, _ = language.split(candidates, title=titles)
     if ranking.build(kept, filters, False).shown:
         return AVAILABLE
@@ -80,7 +83,7 @@ def _air_state(title, season_episodes, episode):
     return None
 
 
-def _saved(title, season_episodes, season, episode, cache):
+def _saved(title, season_episodes, season, episode, cache, filters):
     from resources.lib.views import watch
     upcoming = _air_state(title, season_episodes, episode)
     if upcoming:
@@ -88,7 +91,8 @@ def _saved(title, season_episodes, season, episode, cache):
     found = cache.get(watch._cache_key(title, season or None, episode or None))
     if found is not None:
         titles = _titles(title, _episode(season_episodes, episode))
-        return Availability(_verdict([Candidate.from_dict(c) for c in found["candidates"]], found["outcomes"], titles))
+        return Availability(_verdict([Candidate.from_dict(c) for c in found["candidates"]], found["outcomes"], titles,
+                                     filters))
     if cache.get(_failed_key(title.media_type, title.tmdb_id, season, episode)) is not None:
         return Availability(UNKNOWN)
     return None
@@ -100,8 +104,16 @@ def cached(media_type, tmdb_id, season, episode, directory=None):
 
 
 def cached_episodes(media_type, tmdb_id, season, numbers, directory=None):
-    """{episode: Availability} from saved data only, for the episodes that need no search."""
-    directory = directory or paths.profile_dir()
+    """{episode: Availability} from saved data only, for the episodes that need no search. A failing read
+    (locked cache.db, an old saved format) means no saved results, never an error for the screen."""
+    try:
+        return _cached_episodes(media_type, tmdb_id, season, numbers, directory or paths.profile_dir())
+    except Exception as exc:
+        log.warning(f"saved availability of {media_type}:{tmdb_id} unreadable: {type(exc).__name__}: {exc}")
+        return {}
+
+
+def _cached_episodes(media_type, tmdb_id, season, numbers, directory):
     lib = Library(directory, token="")  # saved data only: never the network
     title = lib.cached_title(media_type, tmdb_id)
     if title is None:
@@ -111,9 +123,9 @@ def cached_episodes(media_type, tmdb_id, season, numbers, directory=None):
         return {}
     cache = Cache(directory)
     try:
-        out = {}
+        out, filters = {}, _filters()  # settings read once for the whole season
         for number in numbers:
-            known = _saved(title, season_episodes, season, number, cache)
+            known = _saved(title, season_episodes, season, number, cache, filters)
             if known is not None:
                 out[number] = known
         return out
@@ -146,6 +158,8 @@ def _check(media_type, tmdb_id, season, episode, directory):
     upcoming = _air_state(title, season_episodes, episode)
     if upcoming:
         return upcoming
+    if not title.imdb_id:
+        return Availability(UNAVAILABLE)  # the watch route cannot search it either (string 30405)
     found = _episode(season_episodes, episode)
     with _slots:
         known = cached(media_type, tmdb_id, season, episode, directory)  # another card may have searched it meanwhile
@@ -161,6 +175,6 @@ def _check(media_type, tmdb_id, season, episode, directory):
                 cache.set(_failed_key(media_type, tmdb_id, season, episode), True, FAILED_TTL)
         finally:
             cache.close()
-    state = _verdict(candidates, outcomes, _titles(title, found))
+    state = _verdict(candidates, outcomes, _titles(title, found), _filters())
     log.info(f"availability of {media_type}:{tmdb_id} S{season}E{episode}: {state} ({len(candidates)} sources)")
     return Availability(state)

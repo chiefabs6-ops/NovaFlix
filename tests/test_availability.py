@@ -99,3 +99,34 @@ def test_check_never_raises():
             return super().__call__(method, url, headers, body, timeout, context)
     Broken(FakeTorBox(), english())
     assert av.check("tv", 1396, 2, 3).state == av.UNKNOWN
+
+
+# -- review fixes --------------------------------------------------------------------------------
+
+def test_a_failing_saved_read_gives_no_results_not_an_error(monkeypatch):
+    import sqlite3
+    Net(FakeTorBox(), english())
+    library.Library().title("tv", 1396)
+    monkeypatch.setattr(Cache, "get", lambda self, key, default=None: (_ for _ in ()).throw(
+        sqlite3.OperationalError("database is locked")))
+    assert av.cached_episodes("tv", 1396, 2, [1, 2, 3]) == {}
+
+
+def test_title_without_imdb_id_is_unavailable_without_searching():
+    tv = dict(fixture("tmdb/tv_1396.json"), external_ids={})
+    net = Net(FakeTorBox(), english(), tv=tv)
+    assert av.check("tv", 1396, 2, 3).state == av.UNAVAILABLE and net.count("torrentio") == 0
+
+
+def test_settings_are_read_once_for_a_whole_season(monkeypatch):
+    from resources.lib import media
+    from resources.lib.views import sources, watch
+    Net(FakeTorBox(), english())
+    title = library.Library().title("tv", 1396)
+    library.Library().season_episodes(title, 2)
+    for episode in (1, 2, 3):
+        watch.presearch(title, 2, episode)
+    reads = []
+    real = sources._settings
+    monkeypatch.setattr(sources, "_settings", lambda: reads.append(1) or real())
+    assert len(av.cached_episodes("tv", 1396, 2, [1, 2, 3])) == 3 and len(reads) == 1

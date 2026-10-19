@@ -53,9 +53,10 @@ class AvailabilityChecks:
             return  # checked for a screen load that has been reset since
         result = result if error is None else availability.Availability(availability.UNKNOWN)
         self.results[key] = result
-        if self.target is None:
+        target = self.target  # reset() on the GUI thread may clear it meanwhile
+        if target is None:
             return
-        control_id, page_cards = self.target
+        control_id, page_cards = target
         for index, card in enumerate(page_cards):
             if card.check == key and card.avail == "checking":
                 self._apply(control_id, index, card, result)
