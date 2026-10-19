@@ -27,10 +27,24 @@ class Wanted:
     absolute: Optional[int] = None
     tvdb: Optional[tuple] = None
     kitsu_id: Optional[int] = None
+    imdb_id: Optional[str] = None     # NovaFlix titles (TMDB); anime entries use kitsu_id
+    season: Optional[int] = None
 
     @property
     def is_movie(self):
         return self.show.is_movie
+
+    @property
+    def is_title(self):
+        return hasattr(self.show, "tmdb_id")
+
+
+def for_title(title, season=None, episode=None):
+    """What to look for: a TMDB movie, or one episode of a TMDB show (TMDB season/episode numbers)."""
+    if title.is_movie:
+        return Wanted(show=title, number=1, imdb_id=title.imdb_id)
+    return Wanted(show=title, number=int(episode), tvdb=(int(season), int(episode)), imdb_id=title.imdb_id,
+                  season=int(season))
 
 
 @dataclass
@@ -41,14 +55,21 @@ class Settings:
 
 
 def from_torrentio(wanted, settings):
-    if not wanted.kitsu_id:
+    if wanted.is_title:
+        if not wanted.imdb_id:
+            return SKIPPED, []
+        url = torrentio.imdb_url(settings.torrentio_url, wanted.imdb_id, wanted.season, wanted.number, wanted.is_movie)
+    elif wanted.kitsu_id:
+        url = torrentio.url(settings.torrentio_url, wanted.kitsu_id, wanted.number, wanted.is_movie)
+    else:
         return SKIPPED, []
-    resp = http.get(torrentio.url(settings.torrentio_url, wanted.kitsu_id, wanted.number, wanted.is_movie),
-                    timeout=PROVIDER_TIMEOUT)
+    resp = http.get(url, timeout=PROVIDER_TIMEOUT)
     return OK, torrentio.parse_streams(resp.json(), wanted.number, wanted.absolute, wanted.tvdb, wanted.is_movie)
 
 
 def from_nyaa(wanted, settings):
+    if wanted.is_title:
+        return SKIPPED, []  # Nyaa is an anime tracker
     title = wanted.show.title_romaji or wanted.show.title
     resp = http.get(nyaa.URL, params={"page": "rss", "q": nyaa.query_for(title, wanted.number, wanted.is_movie),
                                       "c": "1_2", "f": "0"}, timeout=PROVIDER_TIMEOUT)

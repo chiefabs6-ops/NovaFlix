@@ -18,7 +18,9 @@ def _compact(text):
 
 
 def title_keys(show):
-    keys = {_compact(t) for t in [show.title_english, show.title_romaji, show.title, *show.synonyms[:3]] if t}
+    names = [getattr(show, "title_english", None), getattr(show, "title_romaji", None), show.title,
+             getattr(show, "original_title", None), *(getattr(show, "synonyms", None) or [])[:3]]
+    keys = {_compact(t) for t in names if t}
     return {k for k in keys if len(k) >= 4}
 
 
