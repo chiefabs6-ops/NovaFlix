@@ -1040,3 +1040,15 @@ msgstr ""
 msgctxt "#30326"
 msgid "Phone unpaired"
 msgstr ""
+
+msgctxt "#30400"
+msgid "TMDB"
+msgstr ""
+
+msgctxt "#30401"
+msgid "TMDB API key or Read Access Token"
+msgstr ""
+
+msgctxt "#30402"
+msgid "This product uses the TMDB API but is not endorsed or certified by TMDB. Get a free key at themoviedb.org → Settings → API."
+msgstr ""

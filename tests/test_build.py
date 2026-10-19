@@ -198,3 +198,17 @@ def test_publish_refuses_a_checkout_of_another_repository(tmp_path, monkeypatch)
     with pytest.raises(build.ReleaseError, match="aniverse-repo"):
         build.publish(repo, pages)
     assert pushed == []
+
+
+def test_scanner_finds_jwt_tokens():
+    fake = "eyJ" + "a" * 20 + "." + "b" * 20 + "." + "c" * 20
+    assert [kind for kind, _ in build.find_secrets(f"x = {fake}")] == ["JWT-style token (TMDB read token)"]
+
+
+def test_recorded_tmdb_fixtures_hold_no_secrets():
+    folder = os.path.join(build.ROOT, "tests", "fixtures", "tmdb")
+    names = sorted(os.listdir(folder))
+    assert len(names) == 20
+    for name in names:
+        with open(os.path.join(folder, name), encoding="utf-8") as f:
+            assert build.find_secrets(f.read()) == [], name

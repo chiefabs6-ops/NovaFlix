@@ -1,0 +1,135 @@
+{
+ "page": 1,
+ "results": [
+  {
+   "adult": false,
+   "backdrop_path": "/caBIySpwuFi2i7ynvHIlnxJLOdN.jpg",
+   "genre_ids": [
+    16,
+    28,
+    12,
+    18
+   ],
+   "id": 1560520,
+   "title": "Batman: Knightfall Part 1: Knightfall",
+   "original_language": "en",
+   "original_title": "Batman: Knightfall Part 1: Knightfall",
+   "overview": "Arkham Asylum has been destroyed, and all its inmates have been unleashed upon Gotham City. As Batman races to round up some of his greatest enemies, he is pushed to his physical and mental limits and into a final confrontation with a new threat: the man called Bane!",
+   "popularity": 46.5652,
+   "poster_path": "/360qdtu2hLnqMu8SVHMywn420w1.jpg",
+   "release_date": "2026-06-23",
+   "softcore": false,
+   "video": false,
+   "vote_average": 9.099,
+   "vote_count": 470
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/ezbrL1dMymKQZw7mDEWa2ZTzN7d.jpg",
+   "genre_ids": [
+    16,
+    12,
+    14,
+    28
+   ],
+   "id": 980431,
+   "title": "Avatar Aang: The Last Airbender",
+   "original_language": "en",
+   "original_title": "Avatar Aang: The Last Airbender",
+   "overview": "Avatar Aang, the world's last Airbender, learns of an ancient power that could save his culture from extinction. With the help of his friends, he embarks on a global quest to find it before it falls into the wrong hands and threatens to upend the peace they sacrificed everything to achieve.",
+   "popularity": 74.9589,
+   "poster_path": "/3sgnSfNT27Bx5O5ukr7B26mhEQq.jpg",
+   "release_date": "2026-07-24",
+   "softcore": false,
+   "video": false,
+   "vote_average": 9.058,
+   "vote_count": 1349
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/zMwhWailP1WY7sb6AoE6b8ugoy.jpg",
+   "genre_ids": [
+    12,
+    16,
+    10751,
+    14
+   ],
+   "id": 1007757,
+   "title": "Swapped",
+   "original_language": "en",
+   "original_title": "Swapped",
+   "overview": "A small woodland creature and a majestic bird, two natural sworn enemies of the Valley, magically trade places and set off on an adventure of a lifetime to switch back. Their journey soon uncovers a greater threat—one that could endanger not only their species, but the entire valley they call home.",
+   "popularity": 48.0621,
+   "poster_path": "/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg",
+   "release_date": "2026-05-01",
+   "softcore": false,
+   "video": false,
+   "vote_average": 8.9,
+   "vote_count": 2258
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/iCML6fBe3X0y06P33bM7dyYXPKZ.jpg",
+   "genre_ids": [
+    35,
+    10749
+   ],
+   "id": 1632181,
+   "title": "Accidental Partners",
+   "original_language": "es",
+   "original_title": "Socias por accidente",
+   "overview": "Two women discover they were both scammed by the same man (who also got them pregnant). They form an alliance to take revenge.",
+   "popularity": 13.4735,
+   "poster_path": "/j0CIVzeR7hRAPBPGR54qDZoOQpp.jpg",
+   "release_date": "2026-03-12",
+   "softcore": false,
+   "video": false,
+   "vote_average": 8.823,
+   "vote_count": 403
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/1RgPyOhN4DRs225BGTlHJqCudII.jpg",
+   "genre_ids": [
+    16,
+    28,
+    14
+   ],
+   "id": 1311031,
+   "title": "Demon Slayer: Kimetsu no Yaiba Infinity Castle",
+   "original_language": "ja",
+   "original_title": "劇場版「鬼滅の刃」無限城編 第一章 猗窩座再来",
+   "overview": "The Demon Slayer Corps are drawn into the Infinity Castle, where Tanjiro, Nezuko, and the Hashira face terrifying Upper Rank demons in a desperate fight as the final battle against Muzan Kibutsuji begins.",
+   "popularity": 58.2343,
+   "poster_path": "/fWVSwgjpT2D78VUh6X8UBd2rorW.jpg",
+   "release_date": "2025-07-18",
+   "softcore": false,
+   "video": false,
+   "vote_average": 8.805,
+   "vote_count": 2307
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/c4U96GrPRfnNrS01mBtqnocvlLJ.jpg",
+   "genre_ids": [
+    80,
+    28,
+    53
+   ],
+   "id": 1621552,
+   "title": "Facing El Chapo",
+   "original_language": "es",
+   "original_title": "La captura",
+   "overview": "Two Mexican officers must survive the final hours of their shift after crossing a ruthless cartel boss.",
+   "popularity": 48.7141,
+   "poster_path": "/alpf5v4UqSFawPmG9RX03Or4BDk.jpg",
+   "release_date": "2026-08-21",
+   "softcore": false,
+   "video": false,
+   "vote_average": 8.78,
+   "vote_count": 945
+  }
+ ],
+ "total_pages": 567,
+ "total_results": 11331
+}

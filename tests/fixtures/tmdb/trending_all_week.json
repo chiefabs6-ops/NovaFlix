@@ -1,0 +1,142 @@
+{
+ "page": 1,
+ "results": [
+  {
+   "adult": false,
+   "backdrop_path": "/w3agwUSMpJ4X9t1jGrDtqqRPjDQ.jpg",
+   "id": 123542,
+   "name": "LINK CLICK",
+   "original_name": "时光代理人",
+   "overview": "Using superpowers to enter their clientele’s photos one by one, Cheng Xiaoshi and Lu Guang take their work seriously at “Time Photo Studio,” a small photography shop set in the backdrop of a modern metropolis. Each job can be full of danger, but nothing is more important than fulfilling every order, no matter the scale…or peril involved!",
+   "poster_path": "/wo9jwu5qMvXzhW2cyy5E6hOVs92.jpg",
+   "media_type": "tv",
+   "original_language": "zh",
+   "genre_ids": [
+    16,
+    10765,
+    9648,
+    18
+   ],
+   "popularity": 51.3293,
+   "first_air_date": "2021-04-30",
+   "softcore": false,
+   "vote_average": 8.1,
+   "vote_count": 141,
+   "origin_country": [
+    "CN"
+   ]
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/wxiBsKFEOOFK8eQStWOykNORlXY.jpg",
+   "id": 213562,
+   "name": "Crystal Lake",
+   "original_name": "Crystal Lake",
+   "overview": "Single mother Pam Voorhees has been unable to shake her grief after her young, sickly son Jason tragically drowned in the town lake almost a year before. When two strangers arrive at Pam's door digging into her past, a disturbing chain of events is set into motion, leaving the townspeople of Crystal Lake wondering: just who is Pam Voorhees?",
+   "poster_path": "/3ENhExiD2fcjk5FX0AcAXcvLu9N.jpg",
+   "media_type": "tv",
+   "original_language": "en",
+   "genre_ids": [
+    18,
+    9648
+   ],
+   "popularity": 195.0093,
+   "first_air_date": "2026-10-15",
+   "softcore": false,
+   "vote_average": 8.409,
+   "vote_count": 110,
+   "origin_country": [
+    "US"
+   ]
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/uoXXbN2PrOxH6UKyP7kYwmGpAAP.jpg",
+   "id": 213375,
+   "name": "VisionQuest",
+   "original_name": "VisionQuest",
+   "overview": "With a bounty on his head, Vision must confront his nature and resist Ultron's influence to survive.",
+   "poster_path": "/WGyAyBPncfuu8MZhLY9RtfZPM0.jpg",
+   "media_type": "tv",
+   "original_language": "en",
+   "genre_ids": [
+    10765,
+    18
+   ],
+   "popularity": 314.4651,
+   "first_air_date": "2026-10-13",
+   "softcore": false,
+   "vote_average": 8.841,
+   "vote_count": 107,
+   "origin_country": [
+    "US"
+   ]
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/qqHFLg90IUSoTmSMpKOOW5RyqN3.jpg",
+   "id": 1058424,
+   "title": "Hope",
+   "original_title": "호프",
+   "overview": "In the remote South Korean village of Hope Harbor, police chief Bum-seok and officer Sung-ae are called to investigate a mysterious creature wreaking havoc on the community. But all is not as it seems, and perceptions can be misleading. What begins as ignorance plants the seed of disaster, escalating through human conflict into a tragedy of cosmic proportions.",
+   "poster_path": "/1n37BJchWHLiSYQkuFxe5KjB951.jpg",
+   "media_type": "movie",
+   "original_language": "ko",
+   "genre_ids": [
+    878,
+    9648,
+    28
+   ],
+   "popularity": 368.4952,
+   "release_date": "2026-07-15",
+   "softcore": false,
+   "video": false,
+   "vote_average": 6.859,
+   "vote_count": 266
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/6GXqVvL20Y0MpyVP30WoI2NPK69.jpg",
+   "id": 1288069,
+   "title": "Tenzing",
+   "original_title": "Tenzing",
+   "overview": "A determined man embarks on a high-stakes quest—and defies seemingly impossible odds—to fulfill his dream of being the first to reach the summit of Mount Everest.",
+   "poster_path": "/eI0QW02PYqhnmIvLRdn9vrfVVP7.jpg",
+   "media_type": "movie",
+   "original_language": "en",
+   "genre_ids": [
+    18,
+    36
+   ],
+   "popularity": 108.4074,
+   "release_date": "2026-10-09",
+   "softcore": false,
+   "video": false,
+   "vote_average": 8.329,
+   "vote_count": 85
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/5H5YphHsQmkQhrw13Wv1whCZKtN.jpg",
+   "id": 1153576,
+   "title": "Street Fighter",
+   "original_title": "Street Fighter",
+   "overview": "In 1993, estranged Street Fighters Ryu and Ken Masters are thrown back into combat when the mysterious Chun-Li recruits them for the next World Warrior Tournament: a brutal clash of fists, fate, and fury. But behind this battle royale lies a deadly conspiracy that forces them to face off against each other and the demons of their past. And if they don't, it's GAME OVER!",
+   "poster_path": "/pwUb3gdkSrlyMZWs0MFOQg3N5s7.jpg",
+   "media_type": "movie",
+   "original_language": "en",
+   "genre_ids": [
+    28,
+    14
+   ],
+   "popularity": 225.4202,
+   "release_date": "2026-10-13",
+   "softcore": false,
+   "video": false,
+   "vote_average": 6.283,
+   "vote_count": 92
+  }
+ ],
+ "total_pages": 500,
+ "total_results": 10000
+}

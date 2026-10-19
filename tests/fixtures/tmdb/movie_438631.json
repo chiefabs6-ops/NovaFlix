@@ -1,0 +1,206 @@
+{
+ "adult": false,
+ "backdrop_path": "/qVgZu5BTx6pu4owCvVOm4zjTfOi.jpg",
+ "belongs_to_collection": {
+  "id": 726871,
+  "name": "Dune Collection",
+  "poster_path": "/lxIGYkpvYjLtYtZH684AQft0FhD.jpg",
+  "backdrop_path": "/fahk0Fu7VUUfK6IkTt1R3waOD9F.jpg"
+ },
+ "budget": 165000000,
+ "genres": [
+  {
+   "id": 878,
+   "name": "Science Fiction"
+  },
+  {
+   "id": 12,
+   "name": "Adventure"
+  }
+ ],
+ "homepage": "https://www.warnerbros.com/movies/dune",
+ "id": 438631,
+ "imdb_id": "tt1160419",
+ "origin_country": [
+  "US"
+ ],
+ "original_language": "en",
+ "original_title": "Dune",
+ "overview": "Paul Atreides, a brilliant and gifted young man born into a great destiny beyond his understanding, must travel to the most dangerous planet in the universe to ensure the future of his family and his people. As malevolent forces explode into conflict over the planet's exclusive supply of the most precious resource in existence - a commodity capable of unlocking humanity's greatest potential - only those who can conquer their fear will survive.",
+ "popularity": 53.0984,
+ "poster_path": "/v1tRXZ4JtD2Iv6fjkPvT4GiwslV.jpg",
+ "production_companies": [
+  {
+   "id": 923,
+   "logo_path": "/5UQsZrfbfG2dYJbx8DxfoTr2Bvu.png",
+   "name": "Legendary Pictures",
+   "origin_country": "US"
+  }
+ ],
+ "production_countries": [
+  {
+   "iso_3166_1": "US",
+   "name": "United States of America"
+  }
+ ],
+ "release_date": "2021-09-15",
+ "revenue": 410668500,
+ "runtime": 155,
+ "softcore": false,
+ "spoken_languages": [
+  {
+   "english_name": "English",
+   "iso_639_1": "en",
+   "name": "English"
+  }
+ ],
+ "status": "Released",
+ "tagline": "It begins.",
+ "title": "Dune",
+ "video": false,
+ "vote_average": 7.785,
+ "vote_count": 15738,
+ "external_ids": {
+  "imdb_id": "tt1160419",
+  "wikidata_id": "Q60834962",
+  "facebook_id": "dune",
+  "instagram_id": "dunemovie",
+  "twitter_id": "dunemovie"
+ },
+ "recommendations": {
+  "page": 1,
+  "results": [
+   {
+    "adult": false,
+    "backdrop_path": "/eZ239CUp1d6OryZEBPnO2n87gMG.jpg",
+    "id": 693134,
+    "title": "Dune: Part Two",
+    "original_title": "Dune: Part Two",
+    "overview": "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
+    "poster_path": "/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg",
+    "media_type": "movie",
+    "original_language": "en",
+    "genre_ids": [
+     878,
+     12
+    ],
+    "popularity": 63.4129,
+    "release_date": "2024-02-27",
+    "softcore": false,
+    "video": false,
+    "vote_average": 8.142,
+    "vote_count": 8761
+   },
+   {
+    "adult": false,
+    "backdrop_path": "/qCPLtXrTB10UsgAFxsWOB44gDPu.jpg",
+    "id": 412656,
+    "title": "Chaos Walking",
+    "original_title": "Chaos Walking",
+    "overview": "Two unlikely companions embark on a perilous adventure through the badlands of an unexplored planet as they try to escape a dangerous and disorienting reality, where all inner thoughts are seen and heard by everyone.",
+    "poster_path": "/xAYGdGBGptNkisXRpmhZSry6SPF.jpg",
+    "media_type": "movie",
+    "original_language": "en",
+    "genre_ids": [
+     14,
+     878,
+     12
+    ],
+    "popularity": 12.3106,
+    "release_date": "2021-02-24",
+    "softcore": false,
+    "video": false,
+    "vote_average": 6.541,
+    "vote_count": 2722
+   },
+   {
+    "adult": false,
+    "backdrop_path": "/zWvOs6lepfOI0dPa1ANVcdbkBuY.jpg",
+    "id": 80274,
+    "title": "Ender's Game",
+    "original_title": "Ender's Game",
+    "overview": "Based on the classic novel by Orson Scott Card, Ender's Game is the story of the Earth's most gifted children training to defend their homeplanet in the space wars of the future.",
+    "poster_path": "/pVcRI5YKnkkgaAD876jBeKb189d.jpg",
+    "media_type": "movie",
+    "original_language": "en",
+    "genre_ids": [
+     878,
+     28,
+     12
+    ],
+    "popularity": 11.3777,
+    "release_date": "2013-10-24",
+    "softcore": false,
+    "video": false,
+    "vote_average": 6.593,
+    "vote_count": 6469
+   },
+   {
+    "adult": false,
+    "backdrop_path": "/5rYnygKCkmqWuMv1O5yAnzGF8gV.jpg",
+    "id": 339964,
+    "title": "Valerian and the City of a Thousand Planets",
+    "original_title": "Valerian and the City of a Thousand Planets",
+    "overview": "In the 28th century, Valerian and Laureline are special operatives charged with keeping order throughout the human territories. On assignment from the Minister of Defense, the two undertake a mission to Alpha, an ever-expanding metropolis where species from across the universe have converged over centuries to share knowledge, intelligence, and cultures. At the center of Alpha is a mysterious dark force which threatens the peaceful existence of the City of a Thousand Planets, and Valerian and Laureline must race to identify the menace and safeguard not just Alpha, but the future of the universe.",
+    "poster_path": "/vlc95gl3PtrjxSEuM8RhTtSm2xU.jpg",
+    "media_type": "movie",
+    "original_language": "en",
+    "genre_ids": [
+     12,
+     878,
+     28
+    ],
+    "popularity": 15.431,
+    "release_date": "2017-07-19",
+    "softcore": false,
+    "video": false,
+    "vote_average": 6.7,
+    "vote_count": 8273
+   },
+   {
+    "adult": false,
+    "backdrop_path": "/rm2oMykm5nX6SzXFr7TGHkO6r8Z.jpg",
+    "id": 428078,
+    "title": "Mortal Engines",
+    "original_title": "Mortal Engines",
+    "overview": "Many thousands of years in the future, Earth’s cities roam the globe on huge wheels, devouring each other in a struggle for ever diminishing resources. On one of these massive traction cities, the old London, Tom Natsworthy has an unexpected encounter with a mysterious young woman from the wastelands who will change the course of his life forever.",
+    "poster_path": "/gLhYg9NIvIPKVRTtvzCWnp1qJWG.jpg",
+    "media_type": "movie",
+    "original_language": "en",
+    "genre_ids": [
+     12,
+     878
+    ],
+    "popularity": 18.9862,
+    "release_date": "2018-11-27",
+    "softcore": false,
+    "video": false,
+    "vote_average": 6.255,
+    "vote_count": 5366
+   },
+   {
+    "adult": false,
+    "backdrop_path": "/bk1TitfD4YIGrM6AvljonMCtfnl.jpg",
+    "id": 695721,
+    "title": "The Hunger Games: The Ballad of Songbirds & Snakes",
+    "original_title": "The Hunger Games: The Ballad of Songbirds & Snakes",
+    "overview": "64 years before he becomes the tyrannical president of Panem, Coriolanus Snow sees a chance for a change in fortunes when he mentors Lucy Gray Baird, the female tribute from District 12.",
+    "poster_path": "/mBaXZ95R2OxueZhvQbcEWy2DqyO.jpg",
+    "media_type": "movie",
+    "original_language": "en",
+    "genre_ids": [
+     878,
+     28
+    ],
+    "popularity": 36.9124,
+    "release_date": "2023-11-15",
+    "softcore": false,
+    "video": false,
+    "vote_average": 6.953,
+    "vote_count": 3723
+   }
+  ],
+  "total_pages": 29,
+  "total_results": 572
+ }
+}

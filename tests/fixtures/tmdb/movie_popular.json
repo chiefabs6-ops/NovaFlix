@@ -1,0 +1,132 @@
+{
+ "page": 1,
+ "results": [
+  {
+   "adult": false,
+   "backdrop_path": "/r08LxMJCbf1SiJIWeyH9aJmdqwC.jpg",
+   "genre_ids": [
+    878,
+    28,
+    12
+   ],
+   "id": 969681,
+   "title": "Spider-Man: Brand New Day",
+   "original_language": "en",
+   "original_title": "Spider-Man: Brand New Day",
+   "overview": "Fighting crime full-time as Spider-Man in a world that doesn't remember him—and the pressure of seeing his old friends move on without him—sparks a change in Peter Parker he may not have the power to control. But that transformation might also be the only thing that can stop a shocking new threat to the city and those he loves - a powerful villain no one can even see.",
+   "popularity": 655.4447,
+   "poster_path": "/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg",
+   "release_date": "2026-07-29",
+   "softcore": false,
+   "video": false,
+   "vote_average": 8.471,
+   "vote_count": 5734
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/jdJsnhHfkIi3J7jwfiCFT4gXNx5.jpg",
+   "genre_ids": [
+    28,
+    35,
+    12
+   ],
+   "id": 1148365,
+   "title": "Matchbox the Movie",
+   "original_language": "en",
+   "original_title": "Matchbox the Movie",
+   "overview": "When a group of former childhood friends reconnect, their reunion takes a wild turn as they stumble upon a dangerous international plot—and must save the world.",
+   "popularity": 363.6573,
+   "poster_path": "/lFKA4GMz36dImEy3DQPdPF7G4V9.jpg",
+   "release_date": "2026-10-05",
+   "softcore": false,
+   "video": false,
+   "vote_average": 7.811,
+   "vote_count": 415
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/p40lmrdI4blcAPZQMTPaiy5v5Ym.jpg",
+   "genre_ids": [
+    27,
+    53
+   ],
+   "id": 1291595,
+   "title": "Insidious: Out of the Further",
+   "original_language": "en",
+   "original_title": "Insidious: Out of the Further",
+   "overview": "Gemma, a young mother raising her daughter in the house she grew up in, discovers she can travel into The Further, where she possesses an ability to bring what lives there back to the real world.",
+   "popularity": 358.6021,
+   "poster_path": "/4tTrW9dXCByS5wt2pXVWb58zNjz.jpg",
+   "release_date": "2026-08-19",
+   "softcore": false,
+   "video": false,
+   "vote_average": 7.711,
+   "vote_count": 820
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/nVBzWBqHTB3XD0iqWiJLfKLo5fq.jpg",
+   "genre_ids": [
+    12,
+    28,
+    14
+   ],
+   "id": 1368337,
+   "title": "The Odyssey",
+   "original_language": "en",
+   "original_title": "The Odyssey",
+   "overview": "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+   "popularity": 342.3471,
+   "poster_path": "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg",
+   "release_date": "2026-07-15",
+   "softcore": false,
+   "video": false,
+   "vote_average": 8.0,
+   "vote_count": 4167
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/qqHFLg90IUSoTmSMpKOOW5RyqN3.jpg",
+   "genre_ids": [
+    878,
+    9648,
+    28
+   ],
+   "id": 1058424,
+   "title": "Hope",
+   "original_language": "ko",
+   "original_title": "호프",
+   "overview": "In the remote South Korean village of Hope Harbor, police chief Bum-seok and officer Sung-ae are called to investigate a mysterious creature wreaking havoc on the community. But all is not as it seems, and perceptions can be misleading. What begins as ignorance plants the seed of disaster, escalating through human conflict into a tragedy of cosmic proportions.",
+   "popularity": 368.4952,
+   "poster_path": "/qW1m7bcsRb2lo8xG2v0p4mARyH8.jpg",
+   "release_date": "2026-07-15",
+   "softcore": false,
+   "video": false,
+   "vote_average": 6.907,
+   "vote_count": 257
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/3icyRAqgakNcQn6aDVz9libFmBA.jpg",
+   "genre_ids": [
+    27,
+    878,
+    12
+   ],
+   "id": 1423191,
+   "title": "Resident Evil",
+   "original_language": "en",
+   "original_title": "Resident Evil",
+   "overview": "Medical courier Bryan unwittingly finds himself fighting for survival as one fateful, horrifying night collapses around him in chaos.",
+   "popularity": 230.1312,
+   "poster_path": "/i7UyjfPio0VFHB9rBUZSFyhOoM8.jpg",
+   "release_date": "2026-09-16",
+   "softcore": false,
+   "video": false,
+   "vote_average": 7.3,
+   "vote_count": 984
+  }
+ ],
+ "total_pages": 1001,
+ "total_results": 20001
+}

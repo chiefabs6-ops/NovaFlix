@@ -45,6 +45,7 @@ EXCLUDED_SUFFIXES = (".pyc", ".pyo")
 SECRET_PATTERNS = [
     ("UUID-style API key (TorBox format)", re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.I)),
     ("32-hex client ID or key (MAL format)", re.compile(r"(?<![0-9a-f])[0-9a-f]{32}(?![0-9a-f])", re.I)),
+    ("JWT-style token (TMDB read token)", re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}")),
     ("assigned token/secret/key", re.compile(
         r"(?:api_?key|token|secret|client_id|password)\s*[=:]\s*[\"']([A-Za-z0-9_\-]{20,})[\"']", re.I)),
 ]

@@ -1,0 +1,133 @@
+{
+ "dates": {
+  "maximum": "2026-10-21",
+  "minimum": "2026-09-09"
+ },
+ "page": 1,
+ "results": [
+  {
+   "adult": false,
+   "backdrop_path": "/qqHFLg90IUSoTmSMpKOOW5RyqN3.jpg",
+   "genre_ids": [
+    878,
+    9648,
+    28
+   ],
+   "id": 1058424,
+   "title": "Hope",
+   "original_language": "ko",
+   "original_title": "호프",
+   "overview": "In the remote South Korean village of Hope Harbor, police chief Bum-seok and officer Sung-ae are called to investigate a mysterious creature wreaking havoc on the community. But all is not as it seems, and perceptions can be misleading. What begins as ignorance plants the seed of disaster, escalating through human conflict into a tragedy of cosmic proportions.",
+   "popularity": 368.4952,
+   "poster_path": "/1n37BJchWHLiSYQkuFxe5KjB951.jpg",
+   "release_date": "2026-09-25",
+   "softcore": false,
+   "video": false,
+   "vote_average": 6.9,
+   "vote_count": 263
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/3icyRAqgakNcQn6aDVz9libFmBA.jpg",
+   "genre_ids": [
+    27,
+    878,
+    12
+   ],
+   "id": 1423191,
+   "title": "Resident Evil",
+   "original_language": "en",
+   "original_title": "Resident Evil",
+   "overview": "Medical courier Bryan unwittingly finds himself fighting for survival as one fateful, horrifying night collapses around him in chaos.",
+   "popularity": 230.1312,
+   "poster_path": "/i7UyjfPio0VFHB9rBUZSFyhOoM8.jpg",
+   "release_date": "2026-09-18",
+   "softcore": false,
+   "video": false,
+   "vote_average": 7.3,
+   "vote_count": 984
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/npXZNWjOEYrqdMDPQ11SGBrXqAG.jpg",
+   "genre_ids": [
+    28,
+    35
+   ],
+   "id": 1377237,
+   "title": "Runner",
+   "original_language": "en",
+   "original_title": "Runner",
+   "overview": "A former soldier is thrown into a brutal race against time when a critical medical delivery makes him and his unlikely partner the targets of a ruthless cartel. As the mission spirals into a deadly manhunt, every detour, delay, and bullet pushes them closer to failure. With betrayal closing in from every side, they must survive the chase and deliver their cargo to save the life of a little girl.",
+   "popularity": 233.4374,
+   "poster_path": "/yBKMAIj7clP42UkFejhGDBBoTpb.jpg",
+   "release_date": "2026-09-11",
+   "softcore": false,
+   "video": false,
+   "vote_average": 8.345,
+   "vote_count": 656
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/nGau0KBOaRILSK5MqFcuTfv7GMl.jpg",
+   "genre_ids": [
+    53
+   ],
+   "id": 1101412,
+   "title": "Fall 2: Deadpoint",
+   "original_language": "en",
+   "original_title": "Fall 2: Deadpoint",
+   "overview": "On a perilous climb across Thailand's Mount Kwan, two climbers become trapped thousands of feet above the ground, where vertigo-inducing heights, sheer exposure, and impossible odds turn every moment into a fight for survival.",
+   "popularity": 281.6226,
+   "poster_path": "/fgSm5ylwiXbIHn8UbUXDjk9RRu4.jpg",
+   "release_date": "2026-09-09",
+   "softcore": false,
+   "video": false,
+   "vote_average": 7.259,
+   "vote_count": 598
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/5H5YphHsQmkQhrw13Wv1whCZKtN.jpg",
+   "genre_ids": [
+    28,
+    14
+   ],
+   "id": 1153576,
+   "title": "Street Fighter",
+   "original_language": "en",
+   "original_title": "Street Fighter",
+   "overview": "In 1993, estranged Street Fighters Ryu and Ken Masters are thrown back into combat when the mysterious Chun-Li recruits them for the next World Warrior Tournament: a brutal clash of fists, fate, and fury. But behind this battle royale lies a deadly conspiracy that forces them to face off against each other and the demons of their past. And if they don't, it's GAME OVER!",
+   "popularity": 225.4202,
+   "poster_path": "/pwUb3gdkSrlyMZWs0MFOQg3N5s7.jpg",
+   "release_date": "2026-10-16",
+   "softcore": false,
+   "video": false,
+   "vote_average": 6.348,
+   "vote_count": 89
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/oIglj0Jy9duG4LnrRUpH8n001Pk.jpg",
+   "genre_ids": [
+    10749,
+    14,
+    35
+   ],
+   "id": 1302904,
+   "title": "Practical Magic 2",
+   "original_language": "en",
+   "original_title": "Practical Magic 2",
+   "overview": "The Owens sisters must confront the dark curse that threatens to unravel their family once and for all.",
+   "popularity": 186.5087,
+   "poster_path": "/ogwQOLbCfncjvBhFb5l0OmQH8KC.jpg",
+   "release_date": "2026-09-11",
+   "softcore": false,
+   "video": false,
+   "vote_average": 6.99,
+   "vote_count": 239
+  }
+ ],
+ "total_pages": 4,
+ "total_results": 77
+}

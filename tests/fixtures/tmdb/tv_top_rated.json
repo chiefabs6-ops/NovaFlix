@@ -1,0 +1,143 @@
+{
+ "page": 1,
+ "results": [
+  {
+   "adult": false,
+   "backdrop_path": "/8phLVFEXOe02JgFmH9ldn3j4tXW.jpg",
+   "genre_ids": [
+    16,
+    10759,
+    10765
+   ],
+   "id": 312359,
+   "origin_country": [
+    "JP"
+   ],
+   "original_language": "ja",
+   "original_name": "ドラゴンボール超 ビルス",
+   "overview": "When Beerus, the God of Destruction, awakens in search of a worthy rival, Goku and his friends face an epic battle to stop him from destroying Earth.\n\nRemastered and re-edited version of Dragon Ball Super.",
+   "popularity": 154.423,
+   "poster_path": "/AojgldgsOlzZV8ahyOzaiAjJWvV.jpg",
+   "first_air_date": "2026-10-11",
+   "softcore": false,
+   "name": "Dragon Ball Super: Beerus",
+   "vote_average": 9.743,
+   "vote_count": 243
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/vyG93jhmPL7tBIhRtCLa5mdBKob.jpg",
+   "genre_ids": [
+    10759,
+    18,
+    35
+   ],
+   "id": 276161,
+   "origin_country": [
+    "KR"
+   ],
+   "original_language": "ko",
+   "original_name": "Teach You a Lesson",
+   "overview": "An inspector from the Educational Rights Protection Bureau (ERPB) who is authorized by the government to use physical intervention and unconventional methods to discipline delinquent students and reform the educational system.",
+   "popularity": 56.2249,
+   "poster_path": "/fMECSPrTmRClSViMsXFYmiYIcWP.jpg",
+   "first_air_date": "2026-06-05",
+   "softcore": false,
+   "name": "Teach You a Lesson",
+   "vote_average": 9.361,
+   "vote_count": 987
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/ewlmL0nxo2lLqBj69upgp2gjHpV.jpg",
+   "genre_ids": [
+    37,
+    18
+   ],
+   "id": 299167,
+   "origin_country": [
+    "US"
+   ],
+   "original_language": "en",
+   "original_name": "Dutton Ranch",
+   "overview": "Rip Wheeler and Beth Dutton gamble everything on a new life in South Texas, but the promise of building a future far from the ghosts of Yellowstone quickly collides with brutal new realities and a rival ranch that will stop at nothing to protect its empire.",
+   "popularity": 41.4855,
+   "poster_path": "/xsiecCxd8lkcAluw0wWwbW5CwSv.jpg",
+   "first_air_date": "2026-05-15",
+   "softcore": false,
+   "name": "Dutton Ranch",
+   "vote_average": 9.1,
+   "vote_count": 632
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/zoa11EvyuasC3j7PmH1QGftrSvf.jpg",
+   "genre_ids": [
+    16,
+    35,
+    9648,
+    10765
+   ],
+   "id": 229544,
+   "origin_country": [
+    "US"
+   ],
+   "original_language": "en",
+   "original_name": "Among Us",
+   "overview": "Eccentric, monochromatic crewmates of a ship transporting junk across the galaxy must root out an Impostor in their midst before they fall victim to its villainous designs.",
+   "popularity": 13.9661,
+   "poster_path": "/ourBbG4B1dAjfFUCzuUYEZpR101.jpg",
+   "first_air_date": "2026-06-05",
+   "softcore": false,
+   "name": "Among Us",
+   "vote_average": 9.037,
+   "vote_count": 202
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/6ekykPwvAywJRjFEnUoCFWTO9O3.jpg",
+   "genre_ids": [
+    35,
+    18
+   ],
+   "id": 278573,
+   "origin_country": [
+    "KR"
+   ],
+   "original_language": "ko",
+   "original_name": "21세기 대군부인",
+   "overview": "In 21st-century Korea under a constitutional monarchy, a chaebol heiress with everything but status tries to take control of her future after crossing paths with a lonely prince with nothing but his title. Together, bound by a contract marriage, they begin a class-defying romance to rewrite destiny.",
+   "popularity": 52.4457,
+   "poster_path": "/ocXkHSslrSWMz2ZJGl5MjF6dQr3.jpg",
+   "first_air_date": "2026-04-10",
+   "softcore": false,
+   "name": "Perfect Crown",
+   "vote_average": 8.978,
+   "vote_count": 228
+  },
+  {
+   "adult": false,
+   "backdrop_path": "/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
+   "genre_ids": [
+    18,
+    80
+   ],
+   "id": 1396,
+   "origin_country": [
+    "US"
+   ],
+   "original_language": "en",
+   "original_name": "Breaking Bad",
+   "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an unrelenting desire to secure his family's financial future at any cost as he enters the dangerous world of drugs and crime.",
+   "popularity": 246.9512,
+   "poster_path": "/anFx9aTOOYqgS3v7x3R84Kz67ly.jpg",
+   "first_air_date": "2008-01-20",
+   "softcore": false,
+   "name": "Breaking Bad",
+   "vote_average": 8.956,
+   "vote_count": 18873
+  }
+ ],
+ "total_pages": 130,
+ "total_results": 2592
+}

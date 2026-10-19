@@ -54,3 +54,17 @@ def test_settings_have_no_real_debrid():
     path = os.path.join(paths.__file__, "..", "..", "..", "settings.xml")
     text = open(os.path.abspath(path), encoding="utf-8").read()
     assert "playback_service" not in text and "realdebrid" not in text and "rd/account" not in text
+
+
+def test_tmdb_settings_category():
+    import xml.etree.ElementTree as ET
+    import xbmcaddon
+    root = ET.parse(os.path.join(xbmcaddon.ADDON_DIR, "resources", "settings.xml")).getroot()
+    category = root.find(".//category[@id='tmdb']")
+    assert category is not None and category.get("label") == "30400"
+    setting = category.find(".//setting[@id='tmdb_token']")
+    assert setting.get("type") == "string" and (setting.get("label"), setting.get("help")) == ("30401", "30402")
+    assert setting.find("control/hidden").text == "true"
+    addon = xbmcaddon.Addon()
+    assert addon.getLocalizedString(30400) == "TMDB"
+    assert "not endorsed or certified by TMDB" in addon.getLocalizedString(30402)
