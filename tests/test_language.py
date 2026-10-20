@@ -1,4 +1,4 @@
-"""English-only release filter (Plan 3, Task 3). Polish is added later by widening RELEASE_LANGUAGES."""
+"""English-only release filter (Plan 3, Task 3) and the English / Polish source list tabs."""
 
 import pytest
 
@@ -73,3 +73,27 @@ def test_episode_name_words_are_not_audio():
                                   "Some.Movie.Spa.Weekend.2020.1080p", "Show.S01E02.Ita.Story.1080p"])
 def test_group_tags_and_title_case_words_are_not_audio(name):
     assert language.allowed(cand(name))
+
+
+# -- language tabs -----------------------------------------------------------------------
+
+@pytest.mark.parametrize("name,languages,tabs", [
+    ("Dune.2021.1080p.BluRay.x264-GRP", [], {"en"}),                          # no evidence: English
+    ("Inception (2010) [PL] [BRRip] [XviD] [Lektor PL]", ["pl"], {"pl"}),
+    ("Film.2021.PL.1080p.WEB-DL", [], {"pl"}),
+    ("Film.2021.Dubbing.PL.Napisy.PL.1080p", [], {"pl"}),
+    ("Oppenheimer.2023.Eng.Fre.Ger.Ita.Spa.Cze.Pol.2160p.BluRay.Remux-SGF", [], {"en", "pl"}),
+    ("Film.2021.1080p.WEB-DL.Napisy.PL", [], {"en"}),                         # Polish subtitles only
+    ("Film.2021.1080p.WEB-DL.PLSUBBED", [], {"en"}),
+    ("Film.2021.1080p.ITA.AC3", [], set()),
+    ("Dune.2021.4K.MULTi.VFF.2160p.HDR.WEB", [], {"en"}),                     # MULTi without Polish stated
+])
+def test_language_tabs(name, languages, tabs):
+    c = cand(name, languages)
+    assert {t for t in language.TABS if language.in_tab(c, t)} == tabs
+
+
+def test_tabs_count_releases_in_no_tab():
+    en, pl, both, ita = cand("A.1080p"), cand("B PL", ["pl"]), cand("C", ["en", "pl"]), cand("D.ITA")
+    found, hidden = language.tabs([en, pl, both, ita])
+    assert found == {"en": [en, both], "pl": [pl, both]} and hidden == 1

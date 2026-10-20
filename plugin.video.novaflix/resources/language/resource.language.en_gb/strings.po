@@ -817,6 +817,10 @@ msgctxt "#30478"
 msgid "Says %d: may be another film"
 msgstr ""
 
+msgctxt "#30479"
+msgid "Language: %s (%d) — %s"
+msgstr ""
+
 # Explore lists: filter & sort (30480-30499)
 msgctxt "#30480"
 msgid "Filter & sort"

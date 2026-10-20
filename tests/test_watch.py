@@ -151,16 +151,16 @@ def test_watch_url():
 
 
 def test_episode_name_is_passed_to_the_language_filter(monkeypatch):
-    # "Bit by a Dead Bee": no language words, so check the hook with a spy on language.split.
+    # "Bit by a Dead Bee": no language words, so check the hook with a spy on language.tabs.
     from resources.lib.sources import language
     seen = {}
-    real = language.split
+    real = language.tabs
 
-    def spy(candidates, wanted=language.RELEASE_LANGUAGES, title=None):
+    def spy(candidates, title=None):
         seen["title"] = title
-        return real(candidates, wanted, title)
+        return real(candidates, title)
 
-    monkeypatch.setattr(language, "split", spy)
+    monkeypatch.setattr(language, "tabs", spy)
     Net(FakeTorBox(), [stream(HASH, "Breaking.Bad.S02.1080p.BluRay.x264-GRP", EPISODE_FILE)])
     router.dispatch([BASE + "watch", "5", "?type=tv&id=1396&s=2&e=3"])
     episode = fixture("tmdb/tv_1396_season_2.json")["episodes"][2]["name"]
@@ -238,3 +238,33 @@ def test_only_cinema_recordings_explains_the_setting():
     router.dispatch([BASE + "watch", "5", "?type=movie&id=438631"])
     assert "Only cinema recordings found (1 hidden)" in xbmcgui.ok_calls[-1][1]
     assert not xbmcgui.select_calls
+
+
+def test_english_and_polish_tabs_never_mix(monkeypatch):
+    english, polish, multi = "c" * 40, "d" * 40, "e" * 40
+    Net(FakeTorBox(cached=(english, polish, multi)), [
+        stream(english, "Dune.2021.1080p.BluRay.x264-GRP", "Dune.2021.1080p.BluRay.x264-GRP.mkv"),
+        stream(polish, "Dune (2021) [PL] [1080p] [Lektor PL]", "Dune.2021.PL.1080p.mkv", "🇵🇱"),
+        stream(multi, "Dune.2021.Eng.Pol.2160p.BluRay.Remux-SGF", "Dune.2021.Eng.Pol.2160p.Remux.mkv", "🇬🇧 / 🇵🇱")])
+    # Language row -> Polish tab -> back (English again) -> back (leave).
+    xbmcgui.select_answers.extend([0, -1, -1])
+    router.dispatch([BASE + "watch", "5", "?type=movie&id=438631"])
+    (en_heading, en_rows), (pl_heading, pl_rows), (again_heading, _) = xbmcgui.select_calls
+    assert en_rows[0][0] == "Language: English (2) — Polish 2"
+    assert en_heading.endswith("· English") and "other languages hidden" not in en_heading
+    en_files = [label for label, details in en_rows if details]
+    assert sorted(en_files) == ["Dune.2021.1080p.BluRay.x264-GRP.mkv", "Dune.2021.Eng.Pol.2160p.Remux.mkv"]
+    assert pl_rows[0][0] == "Language: Polish (2) — English 2" and pl_heading.endswith("· Polish")
+    pl_files = [label for label, details in pl_rows if details]
+    assert sorted(pl_files) == ["Dune.2021.Eng.Pol.2160p.Remux.mkv", "Dune.2021.PL.1080p.mkv"]
+    assert again_heading == en_heading
+    assert xbmcplugin.resolved[-1][1] is False
+
+
+def test_only_polish_releases_open_the_polish_tab(monkeypatch):
+    monkeypatch.setattr(test_torbox, "FILE_NAME", "Dune.2021.PL.1080p.mkv")
+    Net(FakeTorBox(), [stream(HASH, "Dune (2021) [PL] [1080p] [Lektor PL]", "Dune.2021.PL.1080p.mkv", "🇵🇱")])
+    router.dispatch([BASE + "watch", "5", "?type=movie&id=438631"])
+    heading, rows = xbmcgui.select_calls[-1]
+    assert not any(label.startswith("Language:") for label, _ in rows)  # no other language: no row
+    assert "No English audio" not in heading and rows[0][0] == "Dune.2021.PL.1080p.mkv"

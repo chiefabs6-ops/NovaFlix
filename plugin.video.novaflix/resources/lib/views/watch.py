@@ -2,8 +2,8 @@
 
 Params: type (movie | tv), id (TMDB id), s / e (TMDB season / episode; not for movies),
 resume (seconds), refresh=1 (search again instead of using saved sources).
-Releases are found by IMDb id (Torrentio), only English ones are listed (sources/language.py),
-the owner picks (DEC-004) and TorBox plays it through the shared resolver.
+Releases are found by IMDb id (Torrentio) and listed in an English and a Polish tab that never
+mix (sources/language.py), the owner picks (DEC-004) and TorBox plays it through the shared resolver.
 """
 
 from resources.lib import errors, media, router
@@ -100,12 +100,13 @@ def _choose(request):
     filters, found_settings = sources._settings()
     candidates, outcomes = _find(wanted, title, season, episode, found_settings, params.get("refresh") == "1")
     sources._report(outcomes)
-    kept, hidden = language.split(candidates, title=wanted.titles)
+    tabs, hidden = language.tabs(candidates, title=wanted.titles)
+    kept = tabs[language.ENGLISH]
     note = ui.string(30403) % hidden if hidden else None
     row_note = None
-    if candidates and not kept:
-        # Not in English anywhere: list them all and say so plainly (owner, 2026-10-19).
-        kept, row_note = candidates, ui.string(30409)
+    if candidates and not any(tabs.values()):
+        # Not in English or Polish anywhere: list them all and say so plainly (owner, 2026-10-19).
+        kept, tabs, row_note = candidates, None, ui.string(30409)
         spoken = _release_language(title, candidates, wanted.titles)
         note = ui.string(30408) % spoken if spoken else ui.string(30441)
     history = WatchHistory(paths.profile_dir())
@@ -113,7 +114,7 @@ def _choose(request):
     return sources.pick_source(
         request, service.client(), wanted, kept, filters, False, last_group, last_resolution, heading_base,
         lambda rd, picked: _play(request, rd, library, title, season, episode, wanted, picked, heading_base), note,
-        row_note)
+        row_note, tabs)
 
 
 def _release_language(title, candidates, titles):

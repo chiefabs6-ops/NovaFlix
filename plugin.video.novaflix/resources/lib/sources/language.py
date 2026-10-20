@@ -3,7 +3,11 @@
 Evidence: Torrentio's flag line (Candidate.languages) and words in the release / file name.
 Subtitle mentions are removed first; they say nothing about the audio. A release with no
 evidence at all is kept: most plain English releases carry none. "MULTi", "Dual Audio" count
-as possibly wanted. Polish is added later by widening RELEASE_LANGUAGES to ("en", "pl").
+as possibly wanted.
+
+Language tabs: the source list has an English and a Polish tab that never mix languages.
+A release with Polish evidence goes to the Polish tab; one with English audio (by the rule
+above) goes to the English tab; a multi-language release with both is listed in both.
 """
 
 import re
@@ -12,6 +16,8 @@ from resources.lib.sources import matcher
 
 RELEASE_LANGUAGES = ("en",)
 MULTI = "multi"
+ENGLISH, POLISH = "en", "pl"
+TABS = (ENGLISH, POLISH)  # source list language tabs, the first one opens
 
 # Short codes ("EN", "PL", "ITA") only in capitals: lower-case they are ordinary words.
 NAME_LANGUAGES = {
@@ -35,6 +41,9 @@ NAME_LANGUAGES = {
     "hu": re.compile(r"(?i:\bhungarian\b)|\bHUN\b"),
     "cs": re.compile(r"(?i:\bczech\b)|\bCZE\b"),
 }
+# Polish subtitles ("Napisy PL", "PLSUB") say nothing about the audio. A "PL" before "napisy"
+# is kept: it often belongs to the audio ("Dubbing PL Napisy PL").
+_POLISH_SUBTITLES = re.compile(r"(?i:\bnapisy(?:[ ._-]?pl)?\b|\bpl[ ._-]?sub(?:s|bed)?\b)")
 _MULTI = re.compile(r"\bmulti\b|multi[ ._-]?audio|dual[ ._-]?audio|\bdual\b", re.I)
 
 
@@ -42,7 +51,7 @@ def _name_languages(text, title=None):
     # The scene group tag ("-GER", "-HUN") and the title / episode name ("The.Italian.Job",
     # "The.Chinese.Restaurant") are never audio evidence.
     text = matcher.without_titles(matcher.without_group(text).replace("_", " "), title)
-    text = matcher.SUBTITLE_INFO.sub(" ", text)
+    text = matcher.SUBTITLE_INFO.sub(" ", _POLISH_SUBTITLES.sub(" ", text))
     found = {code for code, pattern in NAME_LANGUAGES.items() if pattern.search(text)}
     if _MULTI.search(text):
         found.add(MULTI)
@@ -67,3 +76,17 @@ def split(candidates, wanted=RELEASE_LANGUAGES, title=None):
     """(kept candidates in order, number hidden)."""
     kept = [c for c in candidates if allowed(c, wanted, title)]
     return kept, len(candidates) - len(kept)
+
+
+def in_tab(candidate, tab, title=None):
+    """True when the release belongs in that language tab (see the module doc)."""
+    if tab == POLISH:
+        return POLISH in languages_of(candidate, title)
+    return allowed(candidate, (tab,), title)
+
+
+def tabs(candidates, title=None):
+    """({tab: candidates in order} for every tab in TABS, number in no tab)."""
+    out = {tab: [c for c in candidates if in_tab(c, tab, title)] for tab in TABS}
+    listed = {id(c) for group in out.values() for c in group}
+    return out, sum(1 for c in candidates if id(c) not in listed)

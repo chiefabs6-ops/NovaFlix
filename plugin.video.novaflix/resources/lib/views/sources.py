@@ -5,7 +5,7 @@ The owner always picks. Unknown details are left out, never guessed.
 
 import re
 
-from resources.lib import router
+from resources.lib import media, router
 from resources.lib.debrid import service
 from resources.lib.kodi import log, paths, ui
 from resources.lib.sources import discovery, precheck, quality, ranking
@@ -134,17 +134,31 @@ def _report(outcomes):
 
 
 def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, last_resolution, heading_base, play_fn,
-                note=None, row_note=None):
+                note=None, row_note=None, language_tabs=None):
     """The source list (DEC-004, DEC-021..025, DEC-053) until the owner plays one or leaves.
     play_fn(rd, picked) -> play.PLAYED | play.BACK | play.STOP. `note` is added to the heading
-    (e.g. how many other-language releases were hidden). True when something plays."""
+    (e.g. how many other-language releases were hidden). language_tabs: {language: candidates}
+    (sources/language.py); the languages never mix, `candidates` is then unused. True when something plays."""
     needed, show_blocked = 2, False  # DEC-053: check until 2 playable
     tier, sort = ALL_TIERS, ranking.BEST  # quality tab and order the owner picked
     cache = Cache(paths.profile_dir())
 
+    def build(found):
+        return ranking.build(found, filters, dub_only, last_group, last_resolution,
+                             getattr(wanted, "titles", None), sort, _movie_year(wanted))
+
+    # Language tab: the first one with sources left after the filters, else the first one with any.
+    lang = first_lang = None
+    if language_tabs:
+        lang_counts = {t: len(build(found).shown) for t, found in language_tabs.items()}
+        lang = first_lang = next((t for t, n in lang_counts.items() if n),
+                                 next((t for t, found in language_tabs.items() if found), None))
+
     while True:
-        result = ranking.build(candidates, filters, dub_only, last_group, last_resolution,
-                               getattr(wanted, "titles", None), sort, _movie_year(wanted))
+        if lang is not None:
+            candidates = language_tabs[lang]
+            lang_counts = {t: len(build(found).shown) for t, found in language_tabs.items()}
+        result = build(candidates)
         if dub_only and not result.shown and result.hidden_non_dub:
             if ui.confirm(heading_base, ui.string(30149)):
                 dub_only = False
@@ -159,7 +173,9 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
                 message = ui.string(30150)
             ui.ok(heading_base, message)
             return False
-        heading = heading_base + (f" · {note}" if note else "")
+        # Language tabs: one row on top, only when another language has sources too.
+        lang_row = lang is not None and any(n for t, n in lang_counts.items() if t != lang)
+        heading = heading_base + (f" · {media.language_name(lang)}" if lang_row else "") + (f" · {note}" if note else "")
         if result.hidden_cam:
             heading += " · " + ui.string(30474) % result.hidden_cam
         if result.hidden_by_filters > result.hidden_cam:
@@ -179,7 +195,8 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
             listed = [(c, status) for c, status in listed if c.quality.tier == tier]
         rows = [(c.file_name or c.release_name, details_line(c, status, row_note)) for c, status in listed]
         # Quality tabs: one row on top, only when the sources are of more than one quality.
-        top = [("tiers", _tiers_label(tier, counts))] if len(counts) > 1 else []
+        top = [("languages", _languages_label(lang, lang_counts))] if lang_row else []
+        top += [("tiers", _tiers_label(tier, counts))] if len(counts) > 1 else []
         actions = []
         if unchecked:
             actions.append(("more", ui.string(30197) % len(unchecked)))
@@ -200,9 +217,15 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
             if tier != ALL_TIERS:
                 tier = ALL_TIERS  # back from a quality tab: all qualities again
                 continue
+            if lang != first_lang and lang_counts.get(first_lang):
+                lang = first_lang  # back from the other language: the first tab again
+                continue
             return False
         if choice < len(top):
-            tier = _pick_tier(heading_base, tier, counts)
+            if top[choice][0] == "languages":
+                lang, tier = _next_language(lang, lang_counts), ALL_TIERS
+            else:
+                tier = _pick_tier(heading_base, tier, counts)
             continue
         choice -= len(top)
         if choice >= len(listed):
@@ -242,6 +265,19 @@ def _tiers_label(tier, counts):
     total = counts.get(tier) if tier != ALL_TIERS else sum(counts.values())
     others = " · ".join(f"{ui.string(TIER_STRINGS[t])} {n}" for t, n in counts.items())
     return ui.string(30476) % (current, total, others)
+
+
+def _languages_label(lang, counts):
+    """"Language: English (23) — Polish 4": the open tab, then the other tabs with sources."""
+    others = " · ".join(f"{media.language_name(t)} {n}" for t, n in counts.items() if t != lang and n)
+    return ui.string(30479) % (media.language_name(lang), counts[lang], others)
+
+
+def _next_language(lang, counts):
+    """The next language tab with sources, round the end (two tabs: the other one)."""
+    order = list(counts)
+    after = order[order.index(lang) + 1:] + order[:order.index(lang)]
+    return next((t for t in after if counts[t]), lang)
 
 
 def _pick_tier(heading, tier, counts):
