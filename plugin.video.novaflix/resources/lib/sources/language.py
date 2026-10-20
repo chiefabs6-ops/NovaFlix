@@ -18,11 +18,12 @@ RELEASE_LANGUAGES = ("en",)
 MULTI = "multi"
 ENGLISH, POLISH = "en", "pl"
 TABS = (ENGLISH, POLISH)  # source list language tabs, the first one opens
+MAX_AUDIO_FLAGS = 3       # longer Torrentio flag lines are subtitle tracks (see _polish)
 
 # Short codes ("EN", "PL", "ITA") only in capitals: lower-case they are ordinary words.
 NAME_LANGUAGES = {
     "en": re.compile(r"(?i:\beng(?:lish)?\b)|\bEN\b"),
-    "pl": re.compile(r"(?i:\b(?:pol(?:ish)?|lektor|dubbing[ ._-]?pl)\b)|\bPL\b"),
+    "pl": re.compile(r"(?i:\b(?:pol(?:ish)?|lektor|dubbing[ ._-]?pl|pl[ ._-]?dub(?:bing)?)\b)|\bPL\b"),
     "ru": re.compile(r"(?i:\brus(?:sian)?\b)"),
     "uk": re.compile(r"(?i:\b(?:ukr|ukrainian)\b)"),
     "it": re.compile(r"(?i:\bital(?:ian|iano)\b)|\bITA\b"),
@@ -78,10 +79,20 @@ def split(candidates, wanted=RELEASE_LANGUAGES, title=None):
     return kept, len(candidates) - len(kept)
 
 
+def _polish(candidate, title=None):
+    """Polish audio: stated in the release / file name, or a 🇵🇱 flag in a short flag line.
+    A long flag line ("en ja it pt es ko zh fr de nl pl cs hu tr" on English-only Disney+
+    WEB-DLs, live 2026-10-20) lists the subtitle tracks, not the audio."""
+    if POLISH in _name_languages(candidate.release_name, title) | _name_languages(candidate.file_name, title):
+        return True
+    flags = candidate.languages or []
+    return POLISH in flags and len(flags) <= MAX_AUDIO_FLAGS
+
+
 def in_tab(candidate, tab, title=None):
     """True when the release belongs in that language tab (see the module doc)."""
     if tab == POLISH:
-        return POLISH in languages_of(candidate, title)
+        return _polish(candidate, title)
     return allowed(candidate, (tab,), title)
 
 

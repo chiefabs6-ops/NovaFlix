@@ -87,6 +87,11 @@ def test_group_tags_and_title_case_words_are_not_audio(name):
     ("Film.2021.1080p.WEB-DL.PLSUBBED", [], {"en"}),
     ("Film.2021.1080p.ITA.AC3", [], set()),
     ("Dune.2021.4K.MULTi.VFF.2160p.HDR.WEB", [], {"en"}),                     # MULTi without Polish stated
+    # VisionQuest, live 2026-10-20: an English-only WEB-DL whose flag line lists its subtitle tracks.
+    ("VisionQuest S01E01 No Strings 2160p DSNP WEB-DL DDP5 1 Atmos DV HDR H 265-FLUX",
+     ["en", "ja", "it", "pt", "es", "ko", "zh", "fr", "de", "nl", "pl", "cs", "hu", "tr"], {"en"}),
+    ("VisionQuest.S01E01-E01.MULTi.2160p.DSNP.WEB-DL.DV.HDR.H.265.DDP5.1.Atmos-K83", ["en", "pl"], {"en", "pl"}),
+    ("VisionQuest (2026) [S01E01-02] PLDUB.480p.DSNP.WEB-DL.H.264.DDP5.1-K83", [], {"pl"}),
 ])
 def test_language_tabs(name, languages, tabs):
     c = cand(name, languages)
