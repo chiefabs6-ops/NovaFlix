@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.novaflix" name="NovaFlix" version="0.3.0" provider-name="NovaFlix">
+<addon id="plugin.video.novaflix" name="NovaFlix" version="0.3.1" provider-name="NovaFlix">
   <requires>
     <import addon="xbmc.python" version="3.0.1"/>
     <import addon="script.module.pyqrcode" version="1.2.1"/>
@@ -15,7 +15,7 @@
     <description lang="en_GB">Browse TV shows and movies, choose a source yourself and play it through your own TorBox account. For personal use.</description>
     <platform>all</platform>
     <license>Personal use</license>
-    <news>0.3.0: Sources are sorted into quality tabs (4K, 1080p, 720p, SD, Other) with a choice of order; cinema recordings (CAM, TS) are hidden, spam and other-year releases are listed last and marked in red. Popular and Top rated lists can be filtered and sorted by genre, year, rating and release date. 0.2.1: Continue Watching and the title page show whether the next episode is available, not available, airs on a date, or has no English audio. 0.2.0: TV shows and movies from TMDB. Seasons, Continue Watching, My List and More like this. Plays English releases through TorBox; titles without an English release list their own-language releases and say so. 0.1.0: First NovaFlix build.</news>
+    <news>0.3.1: Sources have English and Polish tabs that never mix; multi-audio releases with both languages are in both. 0.3.0: Sources are sorted into quality tabs (4K, 1080p, 720p, SD, Other) with a choice of order; cinema recordings (CAM, TS) are hidden, spam and other-year releases are listed last and marked in red. Popular and Top rated lists can be filtered and sorted by genre, year, rating and release date. 0.2.1: Continue Watching and the title page show whether the next episode is available, not available, airs on a date, or has no English audio. 0.2.0: TV shows and movies from TMDB. Seasons, Continue Watching, My List and More like this. Plays English releases through TorBox; titles without an English release list their own-language releases and say so. 0.1.0: First NovaFlix build.</news>
     <assets>
       <icon>novaflix-icon.png</icon>
       <fanart>fanart.png</fanart>
