@@ -808,3 +808,11 @@ msgstr ""
 msgctxt "#30476"
 msgid "Quality: %s (%d) — %s"
 msgstr ""
+
+msgctxt "#30477"
+msgid "Looks like spam"
+msgstr ""
+
+msgctxt "#30478"
+msgid "Says %d: may be another film"
+msgstr ""

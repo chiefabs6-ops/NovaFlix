@@ -56,10 +56,10 @@ def dedupe(candidates):
     return out
 
 
-def quality_of(c, titles=None):
+def quality_of(c, titles=None, year=None):
     """The candidate's quality.Quality, worked out once per candidate."""
     if c.quality is None:
-        c.quality = quality.of_candidate(c, titles)
+        c.quality = quality.of_candidate(c, titles, year)
     return c.quality
 
 
@@ -100,22 +100,24 @@ def _sort_key(sort):
         q = quality_of(c)
         size, points = -(c.size_bytes or 0), -quality.score(q)
         if sort == RESOLUTION:
-            return (q.is_cam, -quality.RESOLUTION_RANK.get(q.resolution, -1), points, size)
+            return (q.suspect, -quality.RESOLUTION_RANK.get(q.resolution, -1), points, size)
         if sort == SOURCE:
-            return (q.is_cam, -w["source"].get(q.source, w["source"][None]), points, size)
+            return (q.suspect, -w["source"].get(q.source, w["source"][None]), points, size)
         if sort == HDR:
-            return (q.is_cam, -max((w["hdr"].get(h, 0) for h in q.hdr), default=-1), points, size)
+            return (q.suspect, -max((w["hdr"].get(h, 0) for h in q.hdr), default=-1), points, size)
         if sort == SIZE:
-            return (size,)
-        return (GROUP_ORDER.get(c.origin, 9), 0 if c.pinned else 1, points, size)
+            return (q.suspect, size)
+        return (q.suspect, GROUP_ORDER.get(c.origin, 9), 0 if c.pinned else 1, points, size)
     return key
 
 
-def build(candidates, filters, dub_only, last_group=None, last_resolution=None, titles=None, sort=BEST):
-    """titles: the movie/show/episode names (their words are never quality tags)."""
+def build(candidates, filters, dub_only, last_group=None, last_resolution=None, titles=None, sort=BEST,
+          year=None):
+    """titles: the movie/show/episode names (their words are never quality tags).
+    year: a movie's release year; releases naming another year are listed last."""
     unique = dedupe(candidates)
     for c in unique:
-        quality_of(c, titles)
+        quality_of(c, titles, year)
         c.pinned = bool(last_group and c.release_group and c.release_group.lower() == last_group.lower()
                         and (not last_resolution or c.resolution == last_resolution))
     filtered = [c for c in unique if passes(c, filters)]

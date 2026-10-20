@@ -72,7 +72,9 @@ class TorBox:
         state = (t.get("download_state") or "").lower()
         if state in ("error", "failed") or state.startswith("failed"):
             return "error"
-        if not t.get("files") and state in ("metadl", "checkingresumedata", ""):
+        if not t.get("files"):
+            # No file list yet: TorBox is still reading the torrent. Live states seen without
+            # files (2026-10-20): "meta", "checking", "uploading" as well as "metadl".
             return "magnet_conversion"
         return "downloading" if state in _DOWNLOADING or state.startswith("stalled") else "queued"
 

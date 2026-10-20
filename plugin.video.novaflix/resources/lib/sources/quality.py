@@ -33,10 +33,18 @@ CAM_TAGS = [
     ("CAM", _tag(r"(?:hd|hq|new )?cam(?: ?rip)?")),
     ("TS", _tag(r"(?:hd ?)?ts(?: ?rip)?|(?:hd ?)?tele ?sync")),
     ("TC", _tag(r"hd ?tc|tele ?cine")),
-    ("PDVD", _tag(r"pre ?dvd(?: ?rip)?|pdvd")),
+    ("PDVD", _tag(r"pre ?dvd(?: ?rip)?|pdvd|(?:hq|hd) ?pre(?: ?rip)?")),
 ]
 # "TS" after these is a container or stream name, never a telesync.
 _TS_CONTEXT = re.compile(_B + r"(?:mpeg|m2|transport) ts" + _E)
+# Fakes and adverts dressed up as the film: betting-site names, "watch ... free" pages.
+SPAM_TAGS = [
+    ("betting", _tag(r"(?:1 ?x ?bet|4 ?ra ?bet|mel ?bet|most ?bet|line ?bet|22 ?bet|bet ?winner|pari ?match)"
+                     r"(?: ?rip)?")),  # "4rabetrip"
+    ("watch free", re.compile(_B + r"(?:watch(?: [a-z0-9]+)* free|free (?:hd|full) (?:movies?|online))" + _E)),
+]
+# Years a release name states; "1920x1080" is a size, not a year.
+_YEARS = re.compile(_B + r"(19[2-9][0-9]|20[0-4][0-9])" + _E + r"(?! ?x ?[0-9])")
 # Subtitles burned into the picture. Not a cinema recording, often on early releases.
 HARDSUB_TAGS = [
     ("KORSUB", _tag(r"kor ?subs?")),
@@ -125,6 +133,8 @@ WEIGHTS = {
     "audio": {"Atmos": 2, "TrueHD": 2, "DTS:X": 2, "DTS-HD MA": 2, "DTS-HD": 1, "DDP": 1, "LPCM": 2,
               "FLAC": 1},                                              # the best one counts
     "cam": -100,       # a cinema recording sinks below everything, whatever it claims
+    "spam": -100,      # betting adverts and "watch free" pages, too
+    "other_year": -100,  # a movie release naming another year is most likely another film
     "hardsub": -5,
 }
 
@@ -148,6 +158,9 @@ class Quality:
     channels: Optional[str] = None        # e.g. "7.1"
     cam: Optional[str] = None             # cinema-recording tag found: "CAM" | "TS" | "TC" | "PDVD"
     hardsub: Optional[str] = None         # burned-in subtitles: "KORSUB" | "HC"
+    spam: Optional[str] = None            # "betting" | "watch free"
+    years: List[int] = field(default_factory=list)     # years the name states
+    other_year: Optional[int] = None      # movie: the name states this year, not the film's
     warnings: List[str] = field(default_factory=list)  # e.g. "conflicting resolution"
 
     @property
@@ -155,9 +168,14 @@ class Quality:
         return self.cam is not None
 
     @property
+    def suspect(self):
+        """Listed last whatever it claims: a cinema recording, spam, or (movies) another year."""
+        return self.is_cam or bool(self.spam) or self.other_year is not None
+
+    @property
     def tier(self):
-        """The quality tab. A cinema recording's claimed resolution says nothing about its picture."""
-        if self.is_cam:
+        """The quality tab. A cinema recording's or spam's claimed resolution says nothing about its picture."""
+        if self.is_cam or self.spam:
             return OTHER
         return _TIER_OF.get(self.resolution, OTHER)
 
@@ -224,6 +242,8 @@ def parse(name, titles=None):
     _source(text, q)
     q.cam = _cam(text)
     q.hardsub = _first(HARDSUB_TAGS, text)
+    q.spam = _first(SPAM_TAGS, text)
+    q.years = sorted({int(y) for y in _YEARS.findall(text)})
     hdr = _all(HDR_TAGS, text)
     if len(hdr) > 1 and "HDR" in hdr:
         hdr.remove("HDR")  # "HDR10 HDR" says HDR10
@@ -239,24 +259,29 @@ def combine(*qualities):
     """One Quality from several names of the same release (episode file first, then the pack):
     the first one that states a value wins; cinema and subtitle tags in any of them count."""
     out = Quality(title=next((q.title for q in qualities if q.title), ""))
-    for attr in ("resolution", "source", "video_codec", "channels", "cam", "hardsub"):
+    for attr in ("resolution", "source", "video_codec", "channels", "cam", "hardsub", "spam"):
         setattr(out, attr, next((getattr(q, attr) for q in qualities if getattr(q, attr)), None))
     out.resolution_exact = next((q.resolution_exact for q in qualities if q.resolution), False)
     out.hdr = next((q.hdr for q in qualities if q.hdr), [])
     out.audio = next((q.audio for q in qualities if q.audio), [])
+    out.years = sorted({y for q in qualities for y in q.years})
     out.warnings = sorted({w for q in qualities for w in q.warnings})
     if out.resolution and "conflicting resolution" in out.warnings:
         out.warnings.remove("conflicting resolution")  # the other name states it plainly
     return out
 
 
-def of_candidate(candidate, titles=None):
+def of_candidate(candidate, titles=None, year=None):
     """The Quality of a source list entry: its file name, then its release name, then the
-    resolution the provider stated (Torrentio's own label) when no name states one."""
+    resolution the provider stated (Torrentio's own label) when no name states one.
+    year: a movie's release year. Names that state years, none of them within a year of it,
+    get other_year (the closest one); a name without a year is never marked."""
     names = [n for n in (candidate.file_name, candidate.release_name) if n]
     q = combine(*(parse(n, titles) for n in names)) if names else Quality()
     if not q.resolution and "conflicting resolution" not in q.warnings and candidate.resolution in RESOLUTION_RANK:
         q.resolution = candidate.resolution
+    if year and q.years and all(abs(y - year) > 1 for y in q.years):
+        q.other_year = min(q.years, key=lambda y: abs(y - year))
     return q
 
 
@@ -271,6 +296,10 @@ def score(q, weights=None):
     total += _best(w["hdr"], q.hdr) + w["video_codec"].get(q.video_codec, 0) + _best(w["audio"], q.audio)
     if q.is_cam:
         total += w["cam"]
+    if q.spam:
+        total += w["spam"]
+    if q.other_year is not None:
+        total += w["other_year"]
     if q.hardsub:
         total += w["hardsub"]
     return total

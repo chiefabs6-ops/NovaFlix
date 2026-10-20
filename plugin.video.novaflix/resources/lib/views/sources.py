@@ -40,6 +40,10 @@ def details_line(c, check=None, extra=None):
     q = c.quality or quality.Quality()
     if q.is_cam:
         parts.append(ui.string(30472))
+    if q.spam:
+        parts.append(ui.string(30477))
+    if q.other_year is not None:
+        parts.append(ui.string(30478) % q.other_year)
     if q.hardsub:
         parts.append(ui.string(30473) % q.hardsub)
     parts.append(q.resolution or c.resolution)
@@ -135,7 +139,7 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
 
     while True:
         result = ranking.build(candidates, filters, dub_only, last_group, last_resolution,
-                               getattr(wanted, "titles", None), sort)
+                               getattr(wanted, "titles", None), sort, _movie_year(wanted))
         if dub_only and not result.shown and result.hidden_non_dub:
             if ui.confirm(heading_base, ui.string(30149)):
                 dub_only = False
@@ -208,7 +212,9 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
                 dub_only = False
             continue
         picked = listed[choice][0]
-        log.info(f"source chosen: {picked.origin} {picked.resolution or ''} match={picked.match}")
+        q = picked.quality or quality.Quality()
+        log.info(f"source chosen: {picked.origin} {q.resolution or picked.resolution or 'unknown'} "
+                 f"tab={q.tier} source={q.source or '-'} score={quality.score(q)} match={picked.match}")
         rd = _connected_client(request)
         if rd is None:
             return False
@@ -218,6 +224,11 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
         if outcome == play.STOP:
             return False
         # BACK: same list again; the owner picks another source (never automatic).
+
+
+def _movie_year(wanted):
+    show = getattr(wanted, "show", None)
+    return show.year if show is not None and getattr(show, "is_movie", False) else None
 
 
 def _tiers_label(tier, counts):

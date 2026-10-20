@@ -160,3 +160,38 @@ def test_summary_for_the_details_line():
     q = parse("Movie.2026.2160p.BluRay.REMUX.DV.HDR10.TrueHD.7.1.Atmos-GRP")
     assert quality.summary(q) == ["REMUX", "DV HDR10", "TrueHD Atmos 7.1"]
     assert quality.summary(quality.Quality()) == []
+
+
+# Live names, 2026-10-20 (Street Fighter / The Odyssey source lists).
+@pytest.mark.parametrize("name,kind", [
+    ("street.fighter.2026.4rabetrip.mp4", "betting"),
+    ("street.fighter.2026.1xbet.rip.mp4", "betting"),
+    ("Movie 2026 MelBet 1080p", "betting"),
+    ("Watch_Street_Fighter_(2026)_Free_HD___Movies_-_Fli.mp4", "watch free"),
+    ("Movie 2026 Free HD Movies Online", "watch free"),
+])
+def test_spam(name, kind):
+    q = parse(name)
+    assert q.spam == kind and q.suspect and q.tier == quality.OTHER
+
+
+@pytest.mark.parametrize("name", ["Watchmen.2009.1080p.BluRay", "Free.Guy.2021.1080p.WEB-DL",
+                                  "Movie.2026.1080p.WEB-DL.DDP5.1-BETTER"])
+def test_not_spam(name):
+    assert parse(name).spam is None
+
+
+def test_hq_pre_is_a_cinema_copy():
+    assert parse("Street Fighter 2026.1080p.HQ Pre.Multi.AAC 2.0.x264").cam == "PDVD"
+
+
+def test_other_year_for_movies():
+    def year_of(name, year):
+        return quality.of_candidate(Candidate(origin="torrentio", release_name=name), year=year).other_year
+    assert year_of("15 Filmow z Jean-Claude Van Damme 1988-1998 [1080p.BluRay]", 2026) == 1998
+    assert year_of("The Odyssey - Prologue (2025) IMAX 4K", 2026) is None   # a year either side is fine
+    assert year_of("Dune.1984.1080p.BluRay", 2021) == 1984
+    assert year_of("Blade.Runner.1982.Final.Cut.2007.Remaster.1080p", 1982) is None  # its own year is there
+    assert year_of("Movie.1080p.WEB-DL", 2026) is None          # no year stated: never marked
+    assert year_of("Movie.2026.1920x1080.WEB", 2026) is None    # a size is not a year
+    assert year_of("Dune.1984.1080p.BluRay", None) is None      # TV / unknown year: never marked

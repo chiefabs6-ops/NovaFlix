@@ -210,3 +210,8 @@ def test_pick_file_keeps_files_named_like_extras():
              {"id": 2, "path": "/Sample/ed.wood.sample.mkv", "bytes": 1}]
     picked = resolver.pick_file(files, Candidate(origin="torrentio", release_name="x"), discovery.for_title(title))
     assert picked == 1
+
+
+def test_prologue_is_an_extra_unless_it_is_the_title():
+    assert parse("The.Odyssey.Prologue.2025.IMAX.2D.4K.ProRes.4444.mov").is_extra
+    assert not parse("Prologue.2026.1080p.WEB-DL.mkv", ["Prologue"]).is_extra

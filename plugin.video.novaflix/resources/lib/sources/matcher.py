@@ -31,7 +31,7 @@ _SUBTITLE_INFO = re.compile(
     r"\b(?:eng(?:lish)?|multi|soft|matching(?: soft)?)[ ._-]?subs?\b"
     r"|\bsub(?:s|titles?)?\b[ :]*(?:[a-z-]{2,6}[ ,/+&]*)*", re.I)
 _EXTRA = re.compile(r"\b(NC ?OP\d*|NC ?ED\d*|OP\d*|ED\d*|PV\d*|CM\d*|Preview|Trailer|Teaser|Menu|Recap|"
-                    r"Specials?|SP\d*|OVA|OAD|ONA|Extras?|Bonus|Creditless)\b", re.I)
+                    r"Specials?|SP\d*|OVA|OAD|ONA|Extras?|Bonus|Creditless|Prologue)\b", re.I)
 # Sample clips inside scene releases: a "Sample" folder or the word in the file name.
 _SAMPLE = re.compile(r"(?:^|[\\/])sample[\\/]|\bsample\b", re.I)
 

@@ -117,3 +117,21 @@ def test_quality_is_never_saved_with_the_candidate():
     result = ranking.build(fresh(), ranking.Filters(), False)
     data = result.shown[0].to_dict()
     assert "quality" not in data and Candidate.from_dict(data).quality is None
+
+
+def test_spam_and_other_year_are_listed_last_not_hidden():
+    sources = [cand("street.fighter.2026.4rabetrip", "a" * 40, 4),
+               cand("Van Damme Collection 1988-1998 1080p BluRay", "b" * 40, 9),
+               cand("Street.Fighter.2026.720p.WEBRip", "c" * 40, 1),
+               cand("Street fighter 2026", "d" * 40, 2)]
+    for sort in ranking.SORTS:
+        fresh_sources = [Candidate.from_dict(c.to_dict()) for c in sources]
+        result = ranking.build(fresh_sources, ranking.Filters(), False, titles=["Street Fighter"], sort=sort,
+                               year=2026)
+        assert len(result.shown) == 4 and result.hidden_by_filters == 0
+        assert {c.info_hash[0] for c in result.shown[-2:]} == {"a", "b"}, sort
+
+
+def test_year_is_only_checked_when_given():
+    c = cand("Van Damme Collection 1988-1998 1080p BluRay", "a" * 40)
+    assert ranking.build([c], ranking.Filters(), False).shown[0].quality.other_year is None

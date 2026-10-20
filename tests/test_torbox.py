@@ -164,3 +164,13 @@ def test_missing_key_prompts_settings():
     router.dispatch([BASE + "rd/cloud", "1", ""])
     assert "TorBox API key" in xbmcgui.yesno_calls[-1][1]
     assert xbmcaddon.opened_settings == [True]
+
+
+def test_no_file_list_yet_means_still_reading_the_torrent():
+    # Live 2026-10-20: "meta", "checking" and "uploading" came back with no files, and the
+    # source was wrongly reported as "no video files in this torrent".
+    for state in ("meta", "metadl", "checking", "uploading", "downloading", ""):
+        assert TorBox._status({"download_state": state, "files": []}) == "magnet_conversion", state
+    assert TorBox._status({"download_state": "checking", "files": [{"id": 0}]}) == "downloading"
+    assert TorBox._status({"download_state": "error", "files": []}) == "error"
+    assert TorBox._status({"download_finished": True, "files": []}) == "downloaded"
