@@ -47,7 +47,7 @@ def _manifest(addon_id):
 
 def test_addon_ids_and_versions():
     found = {_manifest(a).get("id"): _manifest(a).get("version") for a in PACKAGES}
-    assert found == {"plugin.video.novaflix": "0.2.1", "script.novaflix": "0.1.0", "repository.novaflix": "1.0.0"}
+    assert found == {"plugin.video.novaflix": "0.3.0", "script.novaflix": "0.1.0", "repository.novaflix": "1.0.0"}
     imports = {i.get("addon"): i.get("version") for i in _manifest("plugin.video.novaflix").iter("import")}
     assert imports["script.novaflix"] == "0.1.0"
     launcher = open(os.path.join(ROOT, "script.novaflix", "launcher.py"), encoding="utf-8").read()
