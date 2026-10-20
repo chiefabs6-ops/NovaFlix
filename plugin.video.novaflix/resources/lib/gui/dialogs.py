@@ -49,11 +49,14 @@ class _ListWindow(_Modal):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.entries = []
+        self.focus = 0
 
     def onInit(self):
         control = self.getControl(self.list_id)
         control.reset()
         control.addItems(self.entries)
+        if 0 < self.focus < len(self.entries):
+            control.selectItem(self.focus)
         self.setFocusId(self.list_id)
 
     def onClick(self, control_id):
@@ -70,10 +73,11 @@ class _MenuWindow(_ListWindow):
     list_id = ids.MENU_LIST
 
 
-def pick_source(heading, rows):
+def pick_source(heading, rows, focus=0):
     window = _SourcesWindow("novaflix-sources.xml", _path(), "Default", "1080i")
     window.setProperty("heading", heading)
     window.entries = items.to_listitems([cards.source_row(a, b, ui.string) for a, b in rows])
+    window.focus = focus
     window.doModal()
     return -1 if window.result is None else window.result
 

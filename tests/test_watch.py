@@ -205,3 +205,36 @@ def test_unknown_release_language_has_no_name():
     from resources.lib.views import watch
     title = media.Title(media_type="tv", tmdb_id=1, title="X")
     assert watch._release_language(title, [], ["X"]) == ""
+
+
+def test_quality_tabs_and_cinema_recordings(monkeypatch):
+    uhd, fhd, cam = "c" * 40, "d" * 40, "e" * 40
+    xbmcaddon.settings["hide_cam"] = True
+    Net(FakeTorBox(cached=(uhd, fhd, cam)), [
+        stream(fhd, "Dune.2021.1080p.BluRay.x264-GRP", "Dune.2021.1080p.BluRay.x264-GRP.mkv"),
+        stream(uhd, "Dune.2021.2160p.WEB-DL.DV.x265-GRP", "Dune.2021.2160p.WEB-DL.DV.x265-GRP.mkv"),
+        stream(cam, "Dune.2021.HDCAM.2160p-GRP", "Dune.2021.HDCAM.2160p-GRP.mkv")])
+    # Quality row -> menu: All / 4K / 1080p -> 1080p tab -> back (All again) -> back (leave).
+    xbmcgui.select_answers.extend([0, 2, -1, -1])
+    router.dispatch([BASE + "watch", "5", "?type=movie&id=438631"])
+    (all_heading, all_rows), (_, menu), (tab_heading, tab_rows), (again_heading, _) = xbmcgui.select_calls
+    assert "1 cinema recordings hidden" in all_heading
+    assert all_rows[0][0] == "Quality: All (2) — 4K / UHD 1 · 1080p 1"
+    assert [label for label, _ in all_rows[1:3]] == ["Dune.2021.2160p.WEB-DL.DV.x265-GRP.mkv",
+                                                    "Dune.2021.1080p.BluRay.x264-GRP.mkv"]
+    assert "WEB-DL · DV" in all_rows[1][1] and all_rows[-1][0] == "Order: Best quality"
+    assert not any("HDCAM" in label for label, _ in all_rows)
+    assert menu == ["All (2)", "4K / UHD (1)", "1080p (1)"]
+    assert tab_heading.endswith("· 1080p") and [r[0] for r in tab_rows][1] == "Dune.2021.1080p.BluRay.x264-GRP.mkv"
+    assert len([r for r in tab_rows if r[1]]) == 1
+    assert again_heading == all_heading
+    assert xbmcplugin.resolved[-1][1] is False
+
+
+def test_only_cinema_recordings_explains_the_setting():
+    cam = "e" * 40
+    xbmcaddon.settings["hide_cam"] = True
+    Net(FakeTorBox(cached=(cam,)), [stream(cam, "Dune.2021.TELESYNC-GRP", "Dune.2021.TELESYNC-GRP.mkv")])
+    router.dispatch([BASE + "watch", "5", "?type=movie&id=438631"])
+    assert "Only cinema recordings found (1 hidden)" in xbmcgui.ok_calls[-1][1]
+    assert not xbmcgui.select_calls

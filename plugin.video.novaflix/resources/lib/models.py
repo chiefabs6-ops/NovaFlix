@@ -26,9 +26,13 @@ class Candidate:
     rd_file_id: Optional[int] = None
     pinned: bool = False
     languages: List[str] = field(default_factory=list)  # codes from Torrentio's flag line ("en", "ru", ...)
+    # sources.quality.Quality from the names, set by the source list; never saved (worked out again on load).
+    quality: Optional[object] = field(default=None, repr=False, compare=False)
 
     def to_dict(self):
-        return asdict(self)
+        data = asdict(self)
+        data.pop("quality", None)
+        return data
 
     @classmethod
     def from_dict(cls, data):

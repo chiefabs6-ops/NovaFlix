@@ -322,6 +322,22 @@ msgctxt "#30175"
 msgid "2160p"
 msgstr ""
 
+msgctxt "#30176"
+msgid "Hide cinema recordings (CAM, TS, TELESYNC)"
+msgstr ""
+
+msgctxt "#30177"
+msgid "Leave out releases whose name says they were filmed or recorded in a cinema. Their picture and sound are poor whatever resolution the name claims."
+msgstr ""
+
+msgctxt "#30178"
+msgid "Hide burned-in subtitles (KORSUB, HC)"
+msgstr ""
+
+msgctxt "#30179"
+msgid "Leave out releases whose name says the subtitles are part of the picture and can't be turned off."
+msgstr ""
+
 msgctxt "#30200"
 msgid "TorBox"
 msgstr ""
@@ -722,4 +738,73 @@ msgstr ""
 
 msgctxt "#30450"
 msgid "S%d E%d · Could not check streams right now (try again later)"
+msgstr ""
+
+# Source list quality tabs (30460-30479)
+msgctxt "#30460"
+msgid "All"
+msgstr ""
+
+msgctxt "#30461"
+msgid "4K / UHD"
+msgstr ""
+
+msgctxt "#30462"
+msgid "1080p"
+msgstr ""
+
+msgctxt "#30463"
+msgid "720p"
+msgstr ""
+
+msgctxt "#30464"
+msgid "SD"
+msgstr ""
+
+msgctxt "#30465"
+msgid "Other / unknown"
+msgstr ""
+
+msgctxt "#30466"
+msgid "Order: %s"
+msgstr ""
+
+msgctxt "#30467"
+msgid "Best quality"
+msgstr ""
+
+msgctxt "#30468"
+msgid "Resolution"
+msgstr ""
+
+msgctxt "#30469"
+msgid "Source (Remux, Blu-ray, WEB...)"
+msgstr ""
+
+msgctxt "#30470"
+msgid "HDR / Dolby Vision"
+msgstr ""
+
+msgctxt "#30471"
+msgid "Size"
+msgstr ""
+
+msgctxt "#30472"
+msgid "Cinema recording"
+msgstr ""
+
+msgctxt "#30473"
+msgid "Burned-in subs (%s)"
+msgstr ""
+
+msgctxt "#30474"
+msgid "%d cinema recordings hidden"
+msgstr ""
+
+msgctxt "#30475"
+msgid "Only cinema recordings found (%d hidden). They usually look and sound poor. To list them anyway, turn off \"Hide cinema recordings\" in NovaFlix settings."
+msgstr ""
+
+msgctxt "#30476"
+msgid "Quality: %s (%d) — %s"
 msgstr ""

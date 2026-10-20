@@ -8,7 +8,7 @@ import re
 from resources.lib import router
 from resources.lib.debrid import service
 from resources.lib.kodi import log, paths, ui
-from resources.lib.sources import discovery, precheck, ranking
+from resources.lib.sources import discovery, precheck, quality, ranking
 from resources.lib.views import play
 from resources.lib.storage.cache import Cache
 
@@ -24,6 +24,10 @@ def _size(n):
 
 
 STATUS_STRINGS = {precheck.READY: 30193, precheck.DOWNLOAD: 30194, precheck.BLOCKED: 30192}
+TIER_STRINGS = {quality.UHD: 30461, quality.FHD: 30462, quality.HD: 30463, quality.SD: 30464, quality.OTHER: 30465}
+SORT_STRINGS = {ranking.BEST: 30467, ranking.RESOLUTION: 30468, ranking.SOURCE: 30469, ranking.HDR: 30470,
+                ranking.SIZE: 30471}
+ALL_TIERS = "all"
 
 
 def details_line(c, check=None, extra=None):
@@ -33,7 +37,14 @@ def details_line(c, check=None, extra=None):
         parts.append(ui.string(30140))
     if c.match == "best_guess":
         parts.append(ui.string(30141))
-    parts += [c.resolution, _size(c.size_bytes), c.codec]
+    q = c.quality or quality.Quality()
+    if q.is_cam:
+        parts.append(ui.string(30472))
+    if q.hardsub:
+        parts.append(ui.string(30473) % q.hardsub)
+    parts.append(q.resolution or c.resolution)
+    parts += quality.summary(q)
+    parts += [_size(c.size_bytes), q.video_codec or c.codec]
     parts.append({"dub": ui.string(30142), "dual": ui.string(30143)}.get(c.audio))
     origin = ORIGIN_LABELS.get(c.origin, c.origin)
     parts.append(f"{origin} ({c.site})" if c.site else origin)
@@ -50,8 +61,9 @@ def details_line(c, check=None, extra=None):
 _STATUS_ORDER = {precheck.READY: 0, precheck.DOWNLOAD: 1}
 
 
-def _arrange(shown, cache):
-    """(playable, unchecked, blocked) — playable keeps ranking order, ready before download."""
+def _arrange(shown, cache, ready_first=True):
+    """(playable, unchecked, blocked) — playable keeps ranking order, ready before download
+    unless the owner picked another order."""
     playable, unchecked, blocked = [], [], []
     for c in shown:
         status = precheck.cached_status(cache, c)
@@ -61,7 +73,8 @@ def _arrange(shown, cache):
             blocked.append((c, status))
         else:
             unchecked.append((c, status))
-    playable.sort(key=lambda pair: _STATUS_ORDER[pair[1]])
+    if ready_first:
+        playable.sort(key=lambda pair: _STATUS_ORDER[pair[1]])
     return playable, unchecked, blocked
 
 
@@ -82,6 +95,8 @@ def _settings():
         min_resolution=MIN_RESOLUTIONS[min_index] if 0 <= min_index < len(MIN_RESOLUTIONS) else None,
         max_size_gb=float(a.getSettingInt("max_size_gb")),
         excluded_codecs=excluded,
+        hide_cam=a.getSettingBool("hide_cam"),
+        hide_hardsubs=a.getSettingBool("hide_hardsubs"),
     )
     found = discovery.Settings(
         torrentio_enabled=a.getSettingBool("torrentio_enabled"),
@@ -115,30 +130,47 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
     play_fn(rd, picked) -> play.PLAYED | play.BACK | play.STOP. `note` is added to the heading
     (e.g. how many other-language releases were hidden). True when something plays."""
     needed, show_blocked = 2, False  # DEC-053: check until 2 playable
+    tier, sort = ALL_TIERS, ranking.BEST  # quality tab and order the owner picked
     cache = Cache(paths.profile_dir())
 
     while True:
-        result = ranking.build(candidates, filters, dub_only, last_group, last_resolution)
+        result = ranking.build(candidates, filters, dub_only, last_group, last_resolution,
+                               getattr(wanted, "titles", None), sort)
         if dub_only and not result.shown and result.hidden_non_dub:
             if ui.confirm(heading_base, ui.string(30149)):
                 dub_only = False
                 continue
             return False
         if not result.shown:
-            ui.ok(heading_base, ui.string(30150) if not result.hidden_by_filters
-                  else ui.string(30151) % result.hidden_by_filters)
+            if result.hidden_cam and result.hidden_cam == result.hidden_by_filters:
+                message = ui.string(30475) % result.hidden_cam
+            elif result.hidden_by_filters:
+                message = ui.string(30151) % result.hidden_by_filters
+            else:
+                message = ui.string(30150)
+            ui.ok(heading_base, message)
             return False
         heading = heading_base + (f" · {note}" if note else "")
-        if result.hidden_by_filters:
-            heading += " · " + ui.string(30152) % result.hidden_by_filters
+        if result.hidden_cam:
+            heading += " · " + ui.string(30474) % result.hidden_cam
+        if result.hidden_by_filters > result.hidden_cam:
+            heading += " · " + ui.string(30152) % (result.hidden_by_filters - result.hidden_cam)
         if rd is not None:
             _precheck(rd, result.shown, wanted, cache, needed, heading_base)  # DEC-053
-            playable, unchecked, blocked = _arrange(result.shown, cache)
+            playable, unchecked, blocked = _arrange(result.shown, cache, ready_first=sort == ranking.BEST)
             listed = playable + (blocked if show_blocked else [])
         else:
             listed = [(c, None) for c in result.shown]
             unchecked, blocked = [], []
+        counts = ranking.tier_counts(c for c, _ in listed)
+        if tier not in counts:
+            tier = ALL_TIERS  # nothing of that quality left (e.g. blocked ones hidden again)
+        if tier != ALL_TIERS:
+            heading += " · " + ui.string(TIER_STRINGS[tier])
+            listed = [(c, status) for c, status in listed if c.quality.tier == tier]
         rows = [(c.file_name or c.release_name, details_line(c, status, row_note)) for c, status in listed]
+        # Quality tabs: one row on top, only when the sources are of more than one quality.
+        top = [("tiers", _tiers_label(tier, counts))] if len(counts) > 1 else []
         actions = []
         if unchecked:
             actions.append(("more", ui.string(30197) % len(unchecked)))
@@ -146,17 +178,29 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
             actions.append(("blocked", ui.string(30198) % len(blocked)))
         if dub_only and result.hidden_non_dub:
             actions.append(("all", ui.string(30153) % result.hidden_non_dub))
+        if len(listed) > 1:
+            actions.append(("sort", ui.string(30466) % ui.string(SORT_STRINGS[sort])))
         if not listed and not actions:
             ui.ok(heading_base, ui.string(30199))
             return False
         if not listed:
             heading = f"{heading_base} · {ui.string(30199)}"
-        choice = ui.select_details(heading, rows + [(label, "") for _, label in actions])
+        choice = ui.select_details(heading, [(label, "") for _, label in top] + rows
+                                   + [(label, "") for _, label in actions], focus=len(top) if rows else 0)
         if choice < 0:
+            if tier != ALL_TIERS:
+                tier = ALL_TIERS  # back from a quality tab: all qualities again
+                continue
             return False
+        if choice < len(top):
+            tier = _pick_tier(heading_base, tier, counts)
+            continue
+        choice -= len(top)
         if choice >= len(listed):
             action = actions[choice - len(listed)][0]
-            if action == "more":
+            if action == "sort":
+                sort = _pick_sort(heading_base, sort)
+            elif action == "more":
                 needed += 2
             elif action == "blocked":
                 show_blocked = True
@@ -174,6 +218,28 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
         if outcome == play.STOP:
             return False
         # BACK: same list again; the owner picks another source (never automatic).
+
+
+def _tiers_label(tier, counts):
+    """"Quality: All (23) — 4K / UHD 5 · 1080p 12 · Other / unknown 6": the open tab, then every tab's count."""
+    current = ui.string(30460) if tier == ALL_TIERS else ui.string(TIER_STRINGS[tier])
+    total = counts.get(tier) if tier != ALL_TIERS else sum(counts.values())
+    others = " · ".join(f"{ui.string(TIER_STRINGS[t])} {n}" for t, n in counts.items())
+    return ui.string(30476) % (current, total, others)
+
+
+def _pick_tier(heading, tier, counts):
+    """The quality tab the owner picks; the current one when they back out."""
+    keys = [ALL_TIERS] + list(counts)
+    options = [f"{ui.string(30460)} ({sum(counts.values())})"]
+    options += [f"{ui.string(TIER_STRINGS[t])} ({n})" for t, n in counts.items()]
+    choice = ui.menu(heading, options)
+    return keys[choice] if 0 <= choice < len(keys) else tier
+
+
+def _pick_sort(heading, sort):
+    choice = ui.menu(heading, [ui.string(SORT_STRINGS[s]) for s in ranking.SORTS])
+    return ranking.SORTS[choice] if 0 <= choice < len(ranking.SORTS) else sort
 
 
 def _connected_client(request):

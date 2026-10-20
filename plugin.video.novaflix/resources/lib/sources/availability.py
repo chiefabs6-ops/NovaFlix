@@ -62,9 +62,9 @@ def _filters():
 
 def _verdict(candidates, outcomes, titles, filters):
     kept, _ = language.split(candidates, title=titles)
-    if ranking.build(kept, filters, False).shown:
+    if ranking.build(kept, filters, False, titles=titles).shown:
         return AVAILABLE
-    if not kept and ranking.build(candidates, filters, False).shown:
+    if not kept and ranking.build(candidates, filters, False, titles=titles).shown:
         return NO_ENGLISH  # the source list shows these with "No English audio"
     answered = any(v in ("ok", "empty") for v in outcomes.values())
     failed = any(v == "failed" for v in outcomes.values())

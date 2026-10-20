@@ -98,16 +98,25 @@ def select(heading, options):
     return xbmcgui.Dialog().select(heading, options)
 
 
-def select_details(heading, rows):
-    """Two-line select dialog (DEC-021). rows: [(line1, line2)]. Returns index or -1."""
+def menu(heading, options):
+    """One-line choice; NovaFlix's own popup with the NovaFlix look. Index of the choice, or -1."""
     if styled():
         from resources.lib.gui import dialogs
-        return dialogs.pick_source(heading, rows)
+        return dialogs.menu(heading, options)
+    return select(heading, options)
+
+
+def select_details(heading, rows, focus=0):
+    """Two-line select dialog (DEC-021). rows: [(line1, line2)]; focus: the row selected first.
+    Returns index or -1."""
+    if styled():
+        from resources.lib.gui import dialogs
+        return dialogs.pick_source(heading, rows, focus)
     items = []
     for line1, line2 in rows:
         item = xbmcgui.ListItem(label=line1, label2=line2, offscreen=True)
         items.append(item)
-    return xbmcgui.Dialog().select(heading, items, useDetails=True)
+    return xbmcgui.Dialog().select(heading, items, preselect=focus, useDetails=True)
 
 
 class _KodiProgress:

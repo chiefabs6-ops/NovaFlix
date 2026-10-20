@@ -84,3 +84,11 @@ def test_look_off_keeps_kodi_dialogs():
     assert ui.select_details("x", [("a", "b")]) == 0
     assert ui.confirm("h", "m") is True  # Kodi fake yesno default
     assert not any(d.xml_file.startswith("novaflix-confirm") for d in xbmcgui.xml_dialogs)
+
+
+def test_source_dialog_focuses_the_requested_row():
+    # The quality row sits on top; the first source is selected so OK still plays the best one.
+    rows = [("Quality: All (2) — 4K / UHD 1 · 1080p 1", ""), ("[A] Movie 2160p", "2160p · Ready to play")]
+    xbmcgui.modal_scripts.append(back)
+    ui.select_details("Movie", rows, focus=1)
+    assert xbmcgui.xml_dialogs[-1].getControl(ids.SOURCES_LIST).getSelectedPosition() == 1

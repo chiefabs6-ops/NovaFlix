@@ -79,6 +79,16 @@
           <default>false</default>
           <control type="toggle"/>
         </setting>
+        <setting id="hide_cam" type="boolean" label="30176" help="30177">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="hide_hardsubs" type="boolean" label="30178" help="30179">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
       </group>
     </category>
     <category id="playback" label="30210">
