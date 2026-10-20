@@ -2,12 +2,14 @@
 """What selecting a card does. Playback always goes through the `watch` route (views/watch.py)."""
 
 import time
+from dataclasses import replace
 
 import xbmc
 
 from resources.lib import media, router
 from resources.lib.gui import dialogs
 from resources.lib.kodi import log, paths, ui
+from resources.lib.metadata import browse
 from resources.lib.metadata.library import Library
 from resources.lib.storage.mylist import MyList
 from resources.lib.storage.watching import WatchHistory
@@ -203,6 +205,44 @@ def phone_search():
 def add_magnet():
     from resources.lib.views import sources
     sources.add_magnet(router.Request(handle=-1, path="rd/add_magnet"))
+
+
+def choose_filter(list_name, encoded):
+    """Filter & sort on a Popular / Top rated list: the owner changes one choice.
+    Returns the list's new grid key, or None when nothing changed."""
+    from resources.lib.gui import lists
+    text = ui.string
+    filters = browse.parse(encoded)
+    media_type = browse.LISTS[list_name][0]
+    genres = Library().genres(media_type)
+    any_ = text(30492)
+    rows = [("sort", text(30482), text(lists.SORT_STRINGS[browse.sort_of(list_name, filters)])),
+            ("genre", text(30483), dict(genres).get(filters.genre, any_) if filters.genre else any_),
+            ("year", text(30484), lists.year_label(filters.year) if filters.year else any_),
+            ("rating", text(30485), text(30495) % filters.rating if filters.rating else any_)]
+    labels = [f"{label}: {value}" for _, label, value in rows]
+    if filters.active:
+        rows.append(("clear", "", ""))
+        labels.append(text(30486))
+    choice = dialogs.menu(text(30480), labels)
+    if not 0 <= choice < len(rows):
+        return None
+    what, heading = rows[choice][0], rows[choice][1]
+    if what == "clear":
+        new = browse.Filters()
+    elif what == "sort":
+        pick = dialogs.menu(heading, [text(lists.SORT_STRINGS[s]) for s in browse.SORTS])
+        new = browse.with_sort(list_name, filters, browse.SORTS[pick]) if 0 <= pick < len(browse.SORTS) else filters
+    elif what == "genre":
+        pick = dialogs.menu(heading, [any_] + [name for _, name in genres])
+        new = replace(filters, genre=([0] + [g for g, _ in genres])[pick]) if pick >= 0 else filters
+    elif what == "year":
+        pick = dialogs.menu(heading, [any_] + [lists.year_label(y) for y in browse.YEARS])
+        new = replace(filters, year=([""] + browse.YEARS)[pick]) if pick >= 0 else filters
+    else:
+        pick = dialogs.menu(heading, [any_] + [text(30495) % r for r in browse.RATINGS])
+        new = replace(filters, rating=([0] + browse.RATINGS)[pick]) if pick >= 0 else filters
+    return browse.key(list_name, new) if new != filters else None
 
 
 def open_settings():

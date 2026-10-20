@@ -338,6 +338,17 @@ class App:
             self.grid.load(self.grid.key)
         elif kind == "plugin_play":
             actions.play_url(action[1])
+        elif kind == "filter":
+            try:
+                key = actions.choose_filter(action[1], action[2])
+            except errors.NovaFlixError as exc:
+                self.report(exc)
+                return
+            if key:
+                # The same list with other choices: it replaces the list, so Back still leaves it.
+                if self.stack:
+                    self.stack[-1] = key
+                self.grid.load(key)
 
     def settings_menu(self):
         """Settings: the add-on settings, plus My TorBox."""

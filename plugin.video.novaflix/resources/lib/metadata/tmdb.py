@@ -78,7 +78,13 @@ def list_page(token, name, page=1, genre_names=None):
 
 
 def discover(token, media_type, genre_id, page=1, genre_names=None):
-    data = get(token, f"/discover/{media_type}", with_genres=int(genre_id), sort_by="popularity.desc", page=int(page))
+    return discover_page(token, media_type, {"with_genres": int(genre_id), "sort_by": "popularity.desc"}, page,
+                         genre_names)
+
+
+def discover_page(token, media_type, params, page=1, genre_names=None):
+    """(titles, more pages?) from /discover with the given parameters (metadata/browse.py)."""
+    data = get(token, f"/discover/{media_type}", **dict(params, page=int(page)))
     return _page(data, genres(token, media_type) if genre_names is None else genre_names, media_type)
 
 

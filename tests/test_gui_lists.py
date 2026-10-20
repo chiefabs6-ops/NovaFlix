@@ -51,7 +51,8 @@ def test_list_pages_hold_title_cards(key, path, kind):
     raw = fixture(path)
     page = lists.load(key)
     first = raw["results"][0]
-    assert page.cards[0].action == ("title", kind or first["media_type"], first["id"])
+    titles = [c for c in page.cards if c.action[0] == "title"]
+    assert titles[0].action == ("title", kind or first["media_type"], first["id"])
     assert page.more == (raw["page"] < raw["total_pages"]) and page.titles[0].tmdb_id == first["id"]
     assert page.title
 
@@ -188,3 +189,31 @@ def test_continue_uses_saved_availability(monkeypatch):
     _history(watched=(1, 7))
     card = lists.load("continue").cards[0]
     assert card.avail == "available" and card.label2 == "S2 E1 · Available"
+
+
+def test_popular_list_starts_with_filter_and_sort():
+    n = net()
+    page = lists.load("popular_movies")
+    tile = page.cards[0]
+    assert tile.kind == "tile" and tile.label == "Filter & sort" and tile.action == ("filter", "popular_movies", "")
+    assert tile.label2 == "Sort, genre, year, rating"
+    assert any("/3/movie/popular" in url for _, url, _ in n.calls)
+    assert not lists.load("popular_movies", 2).cards[0].kind == "tile"  # first page only
+
+
+def test_filtered_list_comes_from_discover():
+    n = net()
+    page = lists.load("popular_movies:sort=newest;genre=28;year=2020s;rating=7")
+    url = next(url for _, url, _ in n.calls if "/3/discover/movie" in url)
+    for part in ("sort_by=primary_release_date.desc", "with_genres=28", "primary_release_date.gte=2020-01-01",
+                 "vote_average.gte=7"):
+        assert part in url
+    assert page.title == "Popular movies · Action · 2020s · Rated 7+ · Newest first"
+    assert page.cards[0].label2 == "Action · 2020s · Rated 7+ · Newest first"
+    assert page.cards[0].action == ("filter", "popular_movies", "sort=newest;genre=28;year=2020s;rating=7")
+    assert len(page.cards) > 1 and page.cards[1].action[0] == "title"
+
+
+def test_home_rows_have_no_filter_tile():
+    net()
+    assert all(c.action[0] != "filter" for c in lists.home_row("popular_movies").cards)

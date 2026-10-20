@@ -433,3 +433,39 @@ def test_grid_checks_availability_of_the_cards_around_the_selection(app, monkeyp
 def test_search_action_searches_again(app):
     app.run(("search", "tv", 1396, 2, 3))
     assert xbmc.builtins_executed[-1] == "PlayMedia(plugin://plugin.video.novaflix/watch?type=tv&id=1396&s=2&e=3&refresh=1)"
+
+
+def test_filter_tile_changes_the_list_and_back_still_leaves_it(app, monkeypatch):
+    from resources.lib.gui import actions
+    asked = []
+    monkeypatch.setattr(actions, "choose_filter", lambda name, encoded: asked.append((name, encoded))
+                        or "popular_movies:sort=newest")
+    select_sidebar(app, "popular_movies")
+    app.run(("filter", "popular_movies", ""))
+    assert asked == [("popular_movies", "")]
+    assert app.stack == ["popular_movies:sort=newest"] and app.calls[-1] == ("popular_movies:sort=newest", 1)
+    app.window.onAction(xbmcgui.Action(92))
+    assert app.view == "home" and app.stack == []
+
+
+def test_filter_menu_picks_a_genre(monkeypatch):
+    from resources.lib.gui import actions
+    monkeypatch.setattr(actions.Library, "genres", lambda self, media_type: [(28, "Action"), (18, "Drama")])
+    picks = iter([1, 2])  # "Genre: Any" row, then "Drama" (after "Any", "Action")
+    shown = []
+
+    def script(w):
+        shown.append([i.getLabel() for i in w.entries])
+        w.getControl(ids.MENU_LIST).selectItem(next(picks))
+        w.onClick(ids.MENU_LIST)
+    xbmcgui.modal_scripts.extend([script, script])
+    assert actions.choose_filter("top_tv", "sort=newest") == "top_tv:sort=newest;genre=18"
+    assert shown[0] == ["Sort: Newest first", "Genre: Any", "Year: Any", "Rating: Any", "Clear filters"]
+    assert shown[1] == ["Any", "Action", "Drama"]
+
+
+def test_filter_menu_back_changes_nothing(monkeypatch):
+    from resources.lib.gui import actions
+    monkeypatch.setattr(actions.Library, "genres", lambda self, media_type: [(28, "Action")])
+    xbmcgui.modal_scripts.append(lambda w: w.onAction(xbmcgui.Action(92)))
+    assert actions.choose_filter("popular_movies", "") is None

@@ -7,7 +7,7 @@ so the next open tries again.
 import datetime
 
 from resources.lib import media
-from resources.lib.metadata import tmdb
+from resources.lib.metadata import browse, tmdb
 from resources.lib.storage.cache import Cache
 
 HOUR, DAY = 3600, 24 * 3600
@@ -88,6 +88,14 @@ class Library:
         ttl = FRESH_LIST_TTL if name in FRESH_LISTS else LIST_TTL
         return self._pages(f"tmdb:list:{name}:{int(page)}", ttl,
                            lambda: tmdb.list_page(self._token, name, page, genre_names=self._all_genres()))
+
+    def browse(self, name, filters, page=1):
+        """(titles, more pages?) for a Popular / Top rated list with sort and filter choices."""
+        media_type = browse.LISTS[name][0]
+        params = browse.params(name, filters)
+        return self._pages(f"tmdb:browse:{name}:{browse.encode(filters)}:{int(page)}", LIST_TTL,
+                           lambda: tmdb.discover_page(self._token, media_type, params, page,
+                                                      genre_names=self._genre_map(media_type)))
 
     def genres(self, media_type):
         """[(id, name)] sorted by name."""

@@ -816,3 +816,68 @@ msgstr ""
 msgctxt "#30478"
 msgid "Says %d: may be another film"
 msgstr ""
+
+# Explore lists: filter & sort (30480-30499)
+msgctxt "#30480"
+msgid "Filter & sort"
+msgstr ""
+
+msgctxt "#30481"
+msgid "Sort, genre, year, rating"
+msgstr ""
+
+msgctxt "#30482"
+msgid "Sort"
+msgstr ""
+
+msgctxt "#30483"
+msgid "Genre"
+msgstr ""
+
+msgctxt "#30484"
+msgid "Year"
+msgstr ""
+
+msgctxt "#30485"
+msgid "Rating"
+msgstr ""
+
+msgctxt "#30486"
+msgid "Clear filters"
+msgstr ""
+
+msgctxt "#30487"
+msgid "Most popular"
+msgstr ""
+
+msgctxt "#30488"
+msgid "Highest rated"
+msgstr ""
+
+msgctxt "#30489"
+msgid "Newest first"
+msgstr ""
+
+msgctxt "#30490"
+msgid "Oldest first"
+msgstr ""
+
+msgctxt "#30491"
+msgid "Title A-Z"
+msgstr ""
+
+msgctxt "#30492"
+msgid "Any"
+msgstr ""
+
+msgctxt "#30493"
+msgid "This year"
+msgstr ""
+
+msgctxt "#30494"
+msgid "Before 1980"
+msgstr ""
+
+msgctxt "#30495"
+msgid "Rated %d+"
+msgstr ""

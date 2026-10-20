@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from resources.lib import errors, media, router
 from resources.lib.gui import cards
 from resources.lib.kodi import log, paths, ui
+from resources.lib.metadata import browse
 from resources.lib.metadata.library import Library
 from resources.lib.storage import searches
 from resources.lib.storage.mylist import MyList
@@ -60,6 +61,8 @@ def _titles_page(title, titles, more):
 def load(key, page=1):
     text = ui.string
     name, _, arg = key.partition(":")
+    if name in browse.LISTS:
+        return _browse_page(name, browse.parse(arg), page)
     if name in LISTS:
         titles, more = _library().list(name, page)
         return _titles_page(text(TITLES[name]), titles, more)
@@ -101,6 +104,41 @@ def load(key, page=1):
     if name == "torbox":
         return _service_files(arg)
     raise KeyError(key)
+
+
+SORT_STRINGS = {"popular": 30487, "rating": 30488, "newest": 30489, "oldest": 30490, "title": 30491}
+
+
+def year_label(year):
+    return {"this_year": ui.string(30493), "older": ui.string(30494)}.get(year, year)
+
+
+def filter_summary(name, filters, genre_names):
+    """"Action · 2020s · Rated 7+ · Newest first": the choices made, the list's own order left out."""
+    parts = [genre_names.get(filters.genre, "?") if filters.genre else None,
+             year_label(filters.year) if filters.year else None,
+             ui.string(30495) % filters.rating if filters.rating else None,
+             ui.string(SORT_STRINGS[filters.sort]) if filters.sort else None]
+    return " · ".join(p for p in parts if p)
+
+
+def _browse_page(name, filters, page):
+    """A Popular / Top rated list, with a Filter & sort tile first; TMDB's own list until a choice is made."""
+    library = _library()
+    title = ui.string(TITLES[name])
+    if filters.active:
+        titles, more = library.browse(name, filters, page)
+        summary = filter_summary(name, filters, dict(library.genres(browse.LISTS[name][0])))
+        title = f"{title} · {summary}"
+    else:
+        titles, more = library.list(name, page)
+        summary = ""
+    result = _titles_page(title, titles, more)
+    if page == 1:
+        tile = cards.tile(ui.string(30480), ("filter", name, browse.encode(filters)), icon="format_list_bulleted")
+        tile.label2 = summary or ui.string(30481)
+        result.cards.insert(0, tile)
+    return result
 
 
 def _continue_cards(network):
@@ -145,6 +183,7 @@ def _next_air(title, row):
 
 def home_row(key):
     page = load(key)
+    page.cards = [c for c in page.cards if not (c.action and c.action[0] == "filter")]  # grid only
     if len(page.cards) > ROW_LIMIT or page.more:
         grid_key = "continue" if key == "continue:local" else key
         page.cards = page.cards[:ROW_LIMIT] + [cards.more_card(grid_key, ui.string)]
