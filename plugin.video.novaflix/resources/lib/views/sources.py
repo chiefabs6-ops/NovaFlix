@@ -28,6 +28,11 @@ TIER_STRINGS = {quality.UHD: 30461, quality.FHD: 30462, quality.HD: 30463, quali
 SORT_STRINGS = {ranking.BEST: 30467, ranking.RESOLUTION: 30468, ranking.SOURCE: 30469, ranking.HDR: 30470,
                 ranking.SIZE: 30471}
 ALL_TIERS = "all"
+WARNING_COLOR = "FFFF4D6D"  # the skin's "blocked" red, so warnings stand out on the details line
+
+
+def _warning(text):
+    return f"[COLOR {WARNING_COLOR}]{text}[/COLOR]"
 
 
 def details_line(c, check=None, extra=None):
@@ -39,13 +44,13 @@ def details_line(c, check=None, extra=None):
         parts.append(ui.string(30141))
     q = c.quality or quality.Quality()
     if q.is_cam:
-        parts.append(ui.string(30472))
+        parts.append(_warning(ui.string(30472)))
     if q.spam:
-        parts.append(ui.string(30477))
+        parts.append(_warning(ui.string(30477)))
     if q.other_year is not None:
-        parts.append(ui.string(30478) % q.other_year)
+        parts.append(_warning(ui.string(30478) % q.other_year))
     if q.hardsub:
-        parts.append(ui.string(30473) % q.hardsub)
+        parts.append(_warning(ui.string(30473) % q.hardsub))
     parts.append(q.resolution or c.resolution)
     parts += quality.summary(q)
     parts += [_size(c.size_bytes), q.video_codec or c.codec]
