@@ -228,3 +228,18 @@ def test_hero_plot_shows_whole_lines_only():
     box = next(c for c in root.iter("control") if c.get("type") == "textbox"
                and "hero_plot" in (c.findtext("label") or ""))
     assert int(box.findtext("height")) == 102  # three font12 lines
+
+
+def test_focused_cards_have_room_for_their_ring_and_zoom():
+    """The ring sits 6 px outside the card and the zoom adds ~8 px: rows clip anything beyond their edge."""
+    for name in ("novaflix-app.xml", "novaflix-show.xml"):
+        root = ET.parse(os.path.join(LAYOUTS, name)).getroot()
+        for container in root.iter("control"):
+            if container.get("type") not in ("list", "panel"):
+                continue
+            for layout in container.findall("focusedlayout"):
+                card = layout.find("control")
+                if card is None or card.get("type") != "group":
+                    continue
+                assert int(card.findtext("left")) >= 16 and int(card.findtext("top")) >= 14, \
+                    f"{name} {container.get('id')}"

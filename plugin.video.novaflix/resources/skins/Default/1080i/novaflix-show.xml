@@ -52,9 +52,9 @@
 <control type="label"><left>206</left><top>670</top><width>1500</width><height>36</height><font>font12</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(avail_line)]</label></control>
 <control type="label"><left>184</left><top>716</top><width>1200</width><height>44</height><font>font30_title</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(episodes_title)]</label></control>
 <control type="label"><left>184</left><top>770</top><width>1500</width><height>44</height><font>font13</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[Window.Property(no_episodes)]</label></control>
-<control type="list" id="510"><left>178</left><top>758</top><width>1742</width><height>250</height><orientation>horizontal</orientation><onup>500</onup><scrolltime tween="quadratic" easing="out">200</scrolltime>
+<control type="list" id="510"><left>166</left><top>758</top><width>1754</width><height>250</height><orientation>horizontal</orientation><onup>500</onup><scrolltime tween="quadratic" easing="out">200</scrolltime>
 <itemlayout width="400" height="250">
-<control type="group"><left>0</left><top>12</top><width>380</width><height>214</height>
+<control type="group"><left>18</left><top>16</top><width>380</width><height>214</height>
 <control type="image"><left>0</left><top>0</top><width>380</width><height>214</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
 <control type="image"><left>0</left><top>0</top><width>380</width><height>214</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(thumb)]</texture><aspectratio>scale</aspectratio><visible>!String.IsEmpty(ListItem.Property(has_wide))</visible></control>
 <control type="image"><left>0</left><top>0</top><width>380</width><height>214</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>String.IsEmpty(ListItem.Property(has_wide))</visible></control>
@@ -75,7 +75,7 @@
 </control>
 </itemlayout>
 <focusedlayout width="400" height="250">
-<control type="group"><left>0</left><top>12</top><width>380</width><height>214</height><animation effect="zoom" start="100" end="104" time="150" center="auto" condition="Control.HasFocus(510)" reversible="true">Conditional</animation>
+<control type="group"><left>18</left><top>16</top><width>380</width><height>214</height><animation effect="zoom" start="100" end="104" time="150" center="auto" condition="Control.HasFocus(510)" reversible="true">Conditional</animation>
 <control type="image"><left>-6</left><top>-6</top><width>392</width><height>226</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture><visible>Control.HasFocus(510)</visible></control>
 <control type="image"><left>0</left><top>0</top><width>380</width><height>214</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
 <control type="image"><left>0</left><top>0</top><width>380</width><height>214</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(thumb)]</texture><aspectratio>scale</aspectratio><visible>!String.IsEmpty(ListItem.Property(has_wide))</visible></control>

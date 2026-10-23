@@ -173,6 +173,7 @@ def menu_push():
 # -- shared pieces -------------------------------------------------------------------------------------
 
 X = 184             # content left edge on every app-window view
+PAD = 18            # room around a card inside its row for the focus ring and zoom (rows clip)
 PULSE = '<animation effect="fade" start="55" end="100" time="900" pulse="true" condition="true">Conditional</animation>'
 SPIN = '<animation effect="rotate" end="-360" center="auto" time="900" loop="true" condition="true">Conditional</animation>'
 
@@ -271,8 +272,8 @@ def wide_card(width, height, focused, episode=False, cid=None):
     if focused:
         body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10,
                            visible=f"Control.HasFocus({cid})"))
-        return group(0, 12, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
-    return group(0, 12, width, height, "\n".join(body))
+        return group(PAD, 16, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
+    return group(PAD, 16, width, height, "\n".join(body))
 
 
 def poster_card(width, height, focused, cid=None):
@@ -300,8 +301,8 @@ def poster_card(width, height, focused, cid=None):
     if focused:
         body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10,
                            visible=f"Control.HasFocus({cid})"))
-        return group(0, 14, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
-    return group(0, 14, width, height, "\n".join(body))
+        return group(PAD, 16, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
+    return group(PAD, 16, width, height, "\n".join(body))
 
 
 def card_list(control_id, left, top, width, kind, nav, item_gap=20):
@@ -378,15 +379,15 @@ def home():
         _hero_dots(),
     )
     rows = lines(
-        group(0, 0, 1920, 330, lines(_row_title(0, 6), card_list(300, X - 6, 50, 1920 - X + 6, "wide",
+        group(0, 0, 1920, 330, lines(_row_title(0, 6), card_list(300, X - PAD, 50, 1920 - X + PAD, "wide",
                                                                  _nav(left=100, up=201, down=310))),
               visible=HAS_CONTINUE),
         group(0, 0, 1920, 420, lines(_row_title(1, 16), card_list(
-            310, X - 6, 60, 1920 - X + 6, "poster",
+            310, X - PAD, 60, 1920 - X + PAD, "poster",
             _nav(left=100, up=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 201)], down=320)))),
-        group(0, 0, 1920, 420, lines(_row_title(2, 16), card_list(320, X - 6, 60, 1920 - X + 6, "poster",
+        group(0, 0, 1920, 420, lines(_row_title(2, 16), card_list(320, X - PAD, 60, 1920 - X + PAD, "poster",
                                                                   _nav(left=100, up=310, down=330)))),
-        group(0, 0, 1920, 420, lines(_row_title(3, 16), card_list(330, X - 6, 60, 1920 - X + 6, "poster",
+        group(0, 0, 1920, 420, lines(_row_title(3, 16), card_list(330, X - PAD, 60, 1920 - X + PAD, "poster",
                                                                   _nav(left=100, up=320)))),
     )
     skeleton = lines(*[img(l, t, w, h, "av-r10.png", S2, border=10, extra=PULSE) for l, t, w, h in (
@@ -464,8 +465,8 @@ def genre_card(width, height, focused, cid=None):
     if focused:
         body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10,
                            visible=f"Control.HasFocus({cid})"))
-        return group(0, 14, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
-    return group(0, 14, width, height, "\n".join(body))
+        return group(PAD, 16, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
+    return group(PAD, 16, width, height, "\n".join(body))
 
 
 GENRES_SHOWN = "!String.IsEmpty(Window.Property(grid_genre_tab))"
@@ -497,17 +498,17 @@ def genre_tabs():
 def grid():
     peek_on = "!String.IsEmpty(Window.Property(grid_peek))"
     cw, ch = 180, 270
-    gw, gh = 400, 180
+    gw, gh = 400, 176
     panel = lines(
-        '<control type="panel" id="400"><left>178</left><top>440</top><width>1742</width><height>612</height>',
+        f'<control type="panel" id="400"><left>{X - PAD}</left><top>440</top><width>{1920 - X + PAD}</width><height>612</height>',
         '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>',
         f'<onleft>100</onleft><onup condition="{GENRES_SHOWN}">411</onup>',
         # pages without films or shows (Search, Genres, My TorBox) have no peek: the grid moves up
         f'<animation effect="slide" start="0,0" end="0,-290" time="0" condition="{neg(peek_on)}">Conditional</animation>',
         # Genres: four wide picture tiles across (a panel takes one cell size, so the layout is chosen by page)
-        f'<itemlayout width="{gw + 22}" height="{gh + 24}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, False, cid=400),
+        f'<itemlayout width="{gw + 22}" height="{gh + 28}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, False, cid=400),
         "</itemlayout>",
-        f'<focusedlayout width="{gw + 22}" height="{gh + 24}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, True, cid=400),
+        f'<focusedlayout width="{gw + 22}" height="{gh + 28}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, True, cid=400),
         "</focusedlayout>",
         f'<itemlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, False, cid=400), "</itemlayout>",
         f'<focusedlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, True, cid=400), "</focusedlayout>",
@@ -549,7 +550,7 @@ def related():
             moves["down"] = rows_ids[n + 1]
         rows.append(group(0, 0, 1920, 380, lines(
             lbl(X, 0, 1200, 44, "font30_title", INK2, f"$INFO[Window.Property(rel{n}_title)]"),
-            card_list(rid, X - 6, 44, 1920 - X + 6, kind, _nav(**moves))),
+            card_list(rid, X - PAD, 44, 1920 - X + PAD, kind, _nav(**moves))),
             visible=f"Integer.IsGreater(Container({rid}).NumItems,0)"))
     return lines(
         "\n".join(peeks),
@@ -627,7 +628,7 @@ def show():
             lbl(X, 716, 1200, 44, "font30_title", INK2, "$INFO[Window.Property(episodes_title)]"),
             lbl(X, 770, 1500, 44, "font13", INK3, "$INFO[Window.Property(no_episodes)]"),
             lines(
-                f'<control type="list" id="510"><left>{X - 6}</left><top>758</top><width>{1920 - X + 6}</width>'
+                f'<control type="list" id="510"><left>{X - PAD}</left><top>758</top><width>{1920 - X + PAD}</width>'
                 '<height>250</height><orientation>horizontal</orientation><onup>500</onup>'
                 '<scrolltime tween="quadratic" easing="out">200</scrolltime>',
                 '<itemlayout width="400" height="250">', wide_card(380, 214, False, episode=True, cid=510), "</itemlayout>",
