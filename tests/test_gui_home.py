@@ -206,3 +206,28 @@ def test_hero_without_logo_shows_text(make_app, monkeypatch):
     monkeypatch.setattr(lists, "hero_logos", lambda featured: {})
     w = make_app().window
     assert w.properties["hero_logo"] == "" and w.properties["hero_title"] == "Show 1"
+
+
+def test_dots_step_through_the_featured_titles(make_app):
+    a = make_app()
+    w = a.window
+    w.setFocusId(ids.HERO_DOTS)
+    w.onAction(xbmcgui.Action(2))  # right
+    assert w.properties["hero_index"] == "1" and w.properties["hero_title"] == "Show 2"
+    w.onAction(xbmcgui.Action(1))  # left
+    assert w.properties["hero_index"] == "0"
+    w.onAction(xbmcgui.Action(1))  # left on the first: the menu
+    assert w.getFocusId() == ids.SIDEBAR and w.properties["hero_index"] == "0"
+    w.setFocusId(ids.HERO_DOTS)
+    for _ in range(5):
+        w.onAction(xbmcgui.Action(2))
+    assert w.properties["hero_index"] == "0"  # past the last: back to the first
+
+
+def test_hero_stays_while_its_plot_or_dots_have_focus(make_app):
+    a = make_app()
+    start = a.home.hero_since
+    for focus in (ids.HERO_PLOT, ids.HERO_DOTS):
+        a.window.setFocusId(focus)
+        a.tick(start + 60)
+        assert a.window.properties["hero_index"] == "0"

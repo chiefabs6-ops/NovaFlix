@@ -7,6 +7,9 @@ SIDEBAR_SETTINGS = 101
 MENU_GROUP = 9100      # group around 100 + 101: the menu is open while it has focus (Cinematic UI)
 HERO_PLAY = 201
 HERO_INFO = 202
+HERO_PLOT = 203     # the hero plot: focusable so it can scroll through
+HERO_DOTS = 204     # the hero dots: Left / Right step through the featured titles
+HERO_FOCUS = (201, 202, 203, 204)
 HOME_ROWS = (300, 310, 320, 330)
 HOME_RETRY = 340
 GRID = 400               # title pages: two rows under the focused-title peek
@@ -46,7 +49,7 @@ WINDOW_IDS = {
     "novaflix-sources.xml": [SOURCES_LIST],
     "novaflix-menu.xml": [MENU_LIST],
     "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_SEASON, SHOW_EPISODES, SHOW_PLOT],
-    "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, GRID_TILES, GRID_EMPTY_ACTION,
+    "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, HERO_PLOT, HERO_DOTS, *HOME_ROWS, HOME_RETRY, GRID, GRID_TILES, GRID_EMPTY_ACTION,
                          GENRE_TAB_FILMS, GENRE_TAB_SHOWS,
                          *RELATED_ROWS],
 }

@@ -334,6 +334,11 @@ def _nav(**moves):
 
 
 HAS_CONTINUE = "Integer.IsGreater(Container(300).NumItems,0)"
+MANY_HEROES = "Integer.IsGreater(Window.Property(hero_count),1)"
+# from the hero buttons: the dots when there are several featured titles, else the first row
+HERO_DOWN = [(MANY_HEROES, 204), (f"!{MANY_HEROES} + {HAS_CONTINUE}", 300), (f"!{MANY_HEROES} + !{HAS_CONTINUE}", 310)]
+HERO_UP = [(MANY_HEROES, 204), ("!" + MANY_HEROES, 201)]
+HAS_HERO_PLOT = "!String.IsEmpty(Window.Property(hero_plot))"
 HERO_FOCUS = "[Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(300)]"
 
 
@@ -344,9 +349,20 @@ def _hero_dots():
         exists = f"Integer.IsGreater(Window.Property(hero_count),{n})"
         items.append(img(0, 0, 28, 8, "av-bar.png", INK, border=3, visible=f"{here} + {exists}"))
         items.append(img(0, 0, 8, 8, "av-dot.png", "47FFFFFF", visible=f"!{here} + {exists}"))
-    return lines(f'<control type="grouplist"><left>{X}</left><top>648</top><width>400</width><height>8</height>'
-                 '<orientation>horizontal</orientation><itemgap>8</itemgap><usecontrolwidth>true</usecontrolwidth>',
-                 "\n".join(items), "</control>")
+    focus = "Control.HasFocus(204)"
+    rows = [(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]
+    return lines(
+        # focusable: Left / Right step through the featured titles (gui/home.py), Down to the rows
+        img(X - 16, 630, 136, 44, "av-pill44.png", S2, border=22, visible=focus),
+        img(X - 21, 625, 146, 54, "av-pill54-ring.png", CYAN, border=27, visible=focus),
+        f'<control type="button" id="204"><left>{X - 16}</left><top>630</top><width>136</width><height>44</height>'
+        '<texturefocus colordiffuse="00FFFFFF">av-white.png</texturefocus>'
+        '<texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus>'
+        f'<label></label>{_nav(up=201, down=rows, left=204, right=204)}'
+        f'<visible>{MANY_HEROES}</visible></control>',
+        f'<control type="grouplist"><left>{X}</left><top>648</top><width>400</width><height>8</height>'
+        '<orientation>horizontal</orientation><itemgap>8</itemgap><usecontrolwidth>true</usecontrolwidth>',
+        "\n".join(items), "</control>")
 
 
 def _row_title(n, top):
@@ -371,22 +387,31 @@ def home():
                               ("$ADDON[plugin.video.novaflix 30511]", "hero_year", 100),
                               ("$ADDON[plugin.video.novaflix 30512]", "hero_kind", 140),
                               ("$ADDON[plugin.video.novaflix 30513]", "hero_genres", 420)]),
-        f'<control type="textbox"><left>{X}</left><top>424</top><width>640</width><height>102</height>'
-        f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(hero_plot)]</label></control>',
+        # the plot: Up from the buttons focuses it and it scrolls through the whole text
+        img(X - 16, 414, 932, 122, "av-r10.png", "B3141A21", border=10, visible="Control.HasFocus(203)"),
+        img(X - 19, 411, 938, 128, "av-r10-ring.png", CYAN, border=10, visible="Control.HasFocus(203)"),
+        f'<control type="button" id="203"><left>{X - 16}</left><top>414</top><width>932</width><height>122</height>'
+        '<texturefocus colordiffuse="00FFFFFF">av-white.png</texturefocus>'
+        '<texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus>'
+        f'<label></label>{_nav(down=201, left=100, right=203)}<visible>{HAS_HERO_PLOT}</visible></control>',
+        f'<control type="textbox"><left>{X}</left><top>424</top><width>900</width><height>102</height>'
+        f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(hero_plot)]</label>'
+        '<autoscroll delay="1500" time="2500" repeat="4000">Control.HasFocus(203)</autoscroll></control>',
         pill_button(201, X, 562, 250, "$INFO[Window.Property(play_label)]", True,
-                    _nav(left=100, right=202, down=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]),
+                    _nav(left=100, right=202, up=[(HAS_HERO_PLOT, 203)], down=HERO_DOWN),
                     icon="av-icon-play_arrow.png"),
         pill_button(202, X + 274, 562, 280, "$INFO[Window.Property(info_label)]", False,
-                    _nav(left=201, down=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]), icon="av-icon-info.png"),
+                    _nav(left=201, up=[(HAS_HERO_PLOT, 203)], down=HERO_DOWN), icon="av-icon-info.png"),
         _hero_dots(),
     )
     rows = lines(
         group(0, 0, 1920, 330, lines(_row_title(0, 6), card_list(300, X - PAD, 50, 1920 - X + PAD, "wide",
-                                                                 _nav(left=100, up=201, down=310))),
+                                                                 _nav(left=100, up=HERO_UP, down=310))),
               visible=HAS_CONTINUE),
         group(0, 0, 1920, 420, lines(_row_title(1, 16), card_list(
             310, X - PAD, 60, 1920 - X + PAD, "poster",
-            _nav(left=100, up=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 201)], down=320)))),
+            _nav(left=100, up=[(HAS_CONTINUE, 300), (f"!{HAS_CONTINUE} + {MANY_HEROES}", 204),
+                               (f"!{HAS_CONTINUE} + !{MANY_HEROES}", 201)], down=320)))),
         group(0, 0, 1920, 420, lines(_row_title(2, 16), card_list(320, X - PAD, 60, 1920 - X + PAD, "poster",
                                                                   _nav(left=100, up=310, down=330)))),
         group(0, 0, 1920, 420, lines(_row_title(3, 16), card_list(330, X - PAD, 60, 1920 - X + PAD, "poster",

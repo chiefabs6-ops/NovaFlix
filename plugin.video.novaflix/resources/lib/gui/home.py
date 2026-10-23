@@ -88,10 +88,19 @@ class HomeView:
 
     def tick(self, now=None):
         now = time.monotonic() if now is None else now
-        if len(self.featured) < 2 or self.app.window.getFocusId() in (ids.HERO_PLAY, ids.HERO_INFO):
+        if len(self.featured) < 2 or self.app.window.getFocusId() in ids.HERO_FOCUS:
             return
         if now - self.hero_since >= HERO_SECONDS:
             self.show_hero((self.hero_index + 1) % len(self.featured), now)
+
+    def step(self, direction):
+        """The dots: the next or previous featured title; Left on the first one opens the menu."""
+        if not self.featured:
+            return
+        if direction < 0 and self.hero_index == 0:
+            self.app.window.setFocusId(ids.SIDEBAR)
+            return
+        self.show_hero((self.hero_index + direction) % len(self.featured))
 
     def selected(self, control_id):
         page = self.pages.get(control_id)

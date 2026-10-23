@@ -328,3 +328,16 @@ def test_title_page_plot_can_be_focused_and_scrolls():
     buttons = next(c for c in root.iter("control") if c.get("type") == "grouplist"
                    and any(b.get("id") == str(ids.SHOW_PLAY) for b in c.findall("control")))
     assert buttons.findtext("onup") == str(ids.SHOW_PLOT)
+
+
+def test_home_plot_and_dots_can_be_focused():
+    root = _app_root()
+    by_id = {c.get("id"): c for c in root.iter("control") if c.get("id")}
+    plot, dots = by_id[str(ids.HERO_PLOT)], by_id[str(ids.HERO_DOTS)]
+    assert plot.findtext("ondown") == str(ids.HERO_PLAY)
+    assert by_id[str(ids.HERO_PLAY)].findtext("onup") == str(ids.HERO_PLOT)
+    downs = {o.get("condition"): o.text for o in by_id[str(ids.HERO_PLAY)].findall("ondown")}
+    assert str(ids.HERO_DOTS) in downs.values()
+    assert dots.findtext("onup") == str(ids.HERO_PLAY)
+    box = next(c for c in root.iter("control") if c.get("type") == "textbox" and "hero_plot" in (c.findtext("label") or ""))
+    assert f"Control.HasFocus({ids.HERO_PLOT})" in box.findtext("autoscroll")

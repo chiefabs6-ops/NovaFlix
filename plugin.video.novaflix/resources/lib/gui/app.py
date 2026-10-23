@@ -340,6 +340,8 @@ class App:
             self.back()
         elif action_id in ids.ACTION_CONTEXT:
             self._context_menu()
+        elif action_id in (ids.ACTION_MOVE_LEFT, ids.ACTION_MOVE_RIGHT) and self.window.getFocusId() == ids.HERO_DOTS:
+            self.home.step(1 if action_id == ids.ACTION_MOVE_RIGHT else -1)
         elif action_id in ids.ACTION_MOVES and self.window.getFocusId() in ids.GRIDS:
             cid = self.grid.cid
             self.checks.follow_grid(cid, self.grid.cards, self.window.getControl(cid).getSelectedPosition())
