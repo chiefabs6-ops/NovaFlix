@@ -272,3 +272,19 @@ def test_source_rows_leave_room_for_the_focus_ring():
     row = sources.find("focusedlayout").find("control")
     assert row.get("type") == "group" and int(row.findtext("left")) >= 4
     assert int(row.findtext("left")) + int(row.findtext("width")) + 3 <= int(sources.findtext("width"))
+
+
+@pytest.mark.parametrize("name", XMLS)
+def test_pills_are_drawn_at_the_height_they_were_made_for(name):
+    """A pill image stretched to another height bends its round ends (the chip ring did not match its chip)."""
+    import re
+    root = ET.parse(os.path.join(LAYOUTS, name)).getroot()
+    for image in root.iter("control"):
+        tex = image.find("texture")
+        if image.get("type") != "image" or tex is None:
+            continue
+        found = re.fullmatch(r"av-pill(\d+)(-ring)?\.png", tex.text or "")
+        if found:
+            size = int(found.group(1))
+            assert int(image.findtext("height")) == size, f"{name}: {tex.text} at {image.findtext('height')}"
+            assert tex.get("border") == str(size // 2), f"{name}: {tex.text} border {tex.get('border')}"

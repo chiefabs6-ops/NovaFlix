@@ -15,7 +15,8 @@ ICONS = ["home", "search", "play_circle", "format_list_bulleted", "star", "sched
 SHAPES = {"av-white.png": (8, 8), "av-dot.png": (16, 16), "av-logo.png": (280, 280),
           # Cinematic UI (0.4.0)
           "av-r10.png": (64, 64), "av-r10-ring.png": (64, 64), "av-pill66.png": (132, 66),
-          "av-pill66-ring.png": (132, 66), "av-pill78-ring.png": (156, 78), "av-pill44.png": (88, 44), "av-r22.png": (96, 96), "av-shade-hero.png": (1920, 8),
+          "av-pill66-ring.png": (132, 66), "av-pill78-ring.png": (156, 78), "av-pill44.png": (88, 44), "av-pill54-ring.png": (108, 54),
+          "av-pill56.png": (112, 56), "av-pill32.png": (64, 32), "av-r22.png": (96, 96), "av-shade-hero.png": (1920, 8),
           "av-shade-bottom.png": (8, 512), "av-shade-card.png": (8, 256), "av-shade-menu.png": (1920, 8),
           "av-vignette.png": (480, 270), "av-bar.png": (32, 6),
           "av-mask-wide10.png": (420, 236), "av-mask-poster10.png": (200, 300), "av-spinner.png": (64, 64),

@@ -295,7 +295,7 @@ def poster_card(width, height, focused, cid=None):
             visible=tile, extra="<wrapmultiline>true</wrapmultiline>"),
         lbl(14, height // 2 + 76, width - 28, 60, "font10", INK3, "$INFO[ListItem.Label2]", align="center", aligny="top",
             visible="String.IsEqual(ListItem.Property(kind),tile)", extra="<wrapmultiline>true</wrapmultiline>"),
-        img(12, 12, 130, 32, "av-pill66.png", "D9000000", border=16, visible="!String.IsEmpty(ListItem.Property(dub))"),
+        img(12, 12, 130, 32, "av-pill32.png", "D9000000", border=16, visible="!String.IsEmpty(ListItem.Property(dub))"),
         lbl(12, 12, 130, 32, "font10", INK, "$INFO[ListItem.Property(dub)]", align="center",
             visible="!String.IsEmpty(ListItem.Property(dub))"),
     ]
@@ -514,9 +514,9 @@ def genre_tabs():
             (412, 1640, 30516, "tv", _nav(left=411, down=401))):
         here = f"String.IsEqual(Window.Property(grid_genre_tab),{tab})"
         tabs.append(group(left, 60, 160, 56, lines(
-            img(-5, -5, 170, 66, "av-pill66-ring.png", CYAN, border=28, visible=f"Control.HasFocus({control_id})"),
-            img(0, 0, 160, 56, "av-pill66.png", INK, border=28, visible=here),
-            img(0, 0, 160, 56, "av-pill66.png", S2, border=28, visible="!" + here),
+            img(-5, -5, 170, 66, "av-pill66-ring.png", CYAN, border=33, visible=f"Control.HasFocus({control_id})"),
+            img(0, 0, 160, 56, "av-pill56.png", INK, border=28, visible=here),
+            img(0, 0, 160, 56, "av-pill56.png", S2, border=28, visible="!" + here),
             f'<control type="button" id="{control_id}"><left>0</left><top>0</top><width>160</width><height>56</height>'
             '<font>font13</font><align>center</align><aligny>center</aligny>'
             f'<textcolor>{INK2}</textcolor><focusedcolor>{INK2}</focusedcolor>'
@@ -717,7 +717,7 @@ def _source_row(focused):
         is_open = f"String.IsEqual(ListItem.Property(chip_open),{n})"
         left = 160 + n * 122
         if focused:
-            body.append(img(left - 5, 23, 124, 54, "av-pill66-ring.png", CYAN, border=27,
+            body.append(img(left - 5, 23, 124, 54, "av-pill54-ring.png", CYAN, border=27,
                             visible=f"{shown} + String.IsEqual(ListItem.Property(chip_focus),{n})"))
         body += [img(left, 28, 114, 44, "av-pill44.png", INK, border=22, visible=f"{shown} + {is_open}"),
                  img(left, 28, 114, 44, "av-pill44.png", S3 if focused else S2, border=22,
