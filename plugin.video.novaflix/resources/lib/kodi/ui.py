@@ -82,19 +82,28 @@ def styled():
     return addon().getSettingBool("novaflix_look")
 
 
-def confirm(heading, message):
+def confirm(heading, message, yes=None, no=None, note=""):
+    """yes / no: button labels (default Yes / No); note: a smaller line under the message."""
     if styled():
         from resources.lib.gui import dialogs
-        return dialogs.confirm(heading, message)
-    return bool(xbmcgui.Dialog().yesno(heading, message))
+        return dialogs.confirm(heading, message, yes, no, note)
+    text = f"{message}[CR][CR]{note}" if note else message
+    return bool(xbmcgui.Dialog().yesno(heading, text, nolabel=no or "", yeslabel=yes or ""))
 
 
 def ok(heading, message):
+    if styled():
+        from resources.lib.gui import dialogs
+        dialogs.message(heading, message)
+        return
     xbmcgui.Dialog().ok(heading, message)
 
 
 def select(heading, options):
     """Index of the chosen option, or -1 if cancelled."""
+    if styled():
+        from resources.lib.gui import dialogs
+        return dialogs.menu(heading, options)
     return xbmcgui.Dialog().select(heading, options)
 
 
@@ -130,7 +139,9 @@ class _KodiProgress:
     def cancelled(self):
         return self._dialog.iscanceled()
 
-    def update(self, percent, message):
+    def update(self, percent, message, stats=None):
+        if stats:
+            message = " · ".join([message] + [stats[k] for k in ("speed", "seeders", "left") if stats.get(k)])
         self._dialog.update(max(0, min(int(percent), 100)), message)
 
     def wait(self, seconds):

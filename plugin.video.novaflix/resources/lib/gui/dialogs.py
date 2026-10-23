@@ -33,14 +33,29 @@ class _ConfirmWindow(_Modal):
             self.close()
 
 
-def confirm(heading, message):
+def confirm(heading, message, yes=None, no=None, note=""):
+    """yes / no labels default to Yes and No; note is a smaller grey line under the message."""
     window = _ConfirmWindow("novaflix-confirm.xml", _path(), "Default", "1080i")
     window.setProperty("heading", heading)
     window.setProperty("message", message)
-    window.setProperty("yes", ui.string(30252))
-    window.setProperty("no", ui.string(30253))
+    window.setProperty("note", note or "")
+    window.setProperty("yes", yes or ui.string(30252))
+    window.setProperty("no", no or ui.string(30253))
+    window.setProperty("single", "")
     window.doModal()
     return bool(window.result)
+
+
+def message(heading, text, note=""):
+    """The confirm panel with one OK button (replaces Kodi's OK box)."""
+    window = _ConfirmWindow("novaflix-confirm.xml", _path(), "Default", "1080i")
+    window.setProperty("heading", heading)
+    window.setProperty("message", text)
+    window.setProperty("note", note or "")
+    window.setProperty("yes", ui.string(30503))
+    window.setProperty("no", "")
+    window.setProperty("single", "true")
+    window.doModal()
 
 
 class _ListWindow(_Modal):
@@ -98,6 +113,9 @@ def resume_choice(position_s):
     return {0: True, 1: False}.get(choice)
 
 
+STAT_KEYS = ("speed", "seeders", "size", "left")
+
+
 class _ProgressWindow(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -123,15 +141,26 @@ class Progress:
         self._window.setProperty("heading", heading)
         self._window.setProperty("message", message)
         self._window.setProperty("cancel", ui.string(30260))
+        # the title being played (views/watch.py), for the picture beside the title
+        self._window.setProperty("art", ui.get_window_property("novaflix.source_art"))
+        self._window.setProperty("title", ui.get_window_property("novaflix.source_title"))
+        self._window.setProperty("percent", "")
+        for key in STAT_KEYS:
+            self._window.setProperty(f"stat_{key}", "")
         self._window.show()
         self._monitor = xbmc.Monitor()
 
     def cancelled(self):
         return self._window.cancelled
 
-    def update(self, percent, message):
-        self._window.getControl(ids.PROGRESS_BAR).setPercent(max(0, min(int(percent), 100)))
+    def update(self, percent, message, stats=None):
+        """stats: optional strings speed, seeders, size, left (a missing one hides)."""
+        percent = max(0, min(int(percent), 100))
+        self._window.getControl(ids.PROGRESS_BAR).setPercent(percent)
         self._window.setProperty("message", message)
+        self._window.setProperty("percent", f"{percent}%")
+        for key in STAT_KEYS:
+            self._window.setProperty(f"stat_{key}", (stats or {}).get(key) or "")
 
     def wait(self, seconds):
         for _ in range(int(seconds * 4)):

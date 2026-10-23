@@ -102,3 +102,50 @@ def test_source_dialog_shows_the_title_being_played():
     window = xbmcgui.xml_dialogs[-1]
     assert (window.properties["art"], window.properties["title"]) == ("b.jpg", "Charade")
     assert window.getControl(ids.SOURCES_LIST).items[0].properties["badge"] == "4K"
+
+
+def test_confirm_uses_given_labels():
+    xbmcgui.modal_scripts.append(click(ids.CONFIRM_YES))
+    assert ui.confirm("TorBox", "Download it?", yes="Download and play", no="Not now", note="58 GB") is True
+    props = xbmcgui.xml_dialogs[-1].properties
+    assert (props["yes"], props["no"], props["note"], props["single"]) == ("Download and play", "Not now", "58 GB", "")
+
+
+def test_confirm_defaults_to_yes_and_no():
+    xbmcgui.modal_scripts.append(back)
+    ui.confirm("TorBox", "Download it?")
+    props = xbmcgui.xml_dialogs[-1].properties
+    assert (props["yes"], props["no"], props["note"]) == ("Yes", "No", "")
+
+
+def test_message_hides_no_button():
+    xbmcgui.modal_scripts.append(click(ids.CONFIRM_YES))
+    ui.ok("Charade · Sources", "No sources left after your filters (6 hidden).")
+    window = xbmcgui.xml_dialogs[-1]
+    assert window.xml_file == "novaflix-confirm.xml"
+    assert (window.properties["single"], window.properties["yes"]) == ("true", "OK")
+
+
+def test_select_uses_styled_menu():
+    xbmcgui.modal_scripts.append(choose(1))
+    assert ui.select("Which file is this episode?", ["E03.mkv", "E04.mkv"]) == 1
+    assert xbmcgui.xml_dialogs[-1].xml_file == "novaflix-menu.xml"
+
+
+def test_progress_stats_skip_missing_values():
+    progress = ui.Progress("Charade", "Downloading on TorBox...")
+    progress.update(42, "42% downloaded", {"speed": "18.4 MB/s"})
+    props = xbmcgui.xml_dialogs[-1].properties
+    assert props["stat_speed"] == "18.4 MB/s"
+    assert (props["stat_left"], props["stat_size"], props["stat_seeders"]) == ("", "", "")
+    assert props["percent"] == "42%"
+    progress.update(50, "50% downloaded")  # the old call shape still works
+    progress.close()
+
+
+def test_look_off_ok_and_select_stay_kodi():
+    xbmcaddon.settings["novaflix_look"] = False
+    xbmcgui.select_answers.append(1)
+    assert ui.select("h", ["a", "b"]) == 1
+    ui.ok("h", "m")
+    assert not any(d.xml_file in ("novaflix-confirm.xml", "novaflix-menu.xml") for d in xbmcgui.xml_dialogs)

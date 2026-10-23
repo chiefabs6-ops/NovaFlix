@@ -28,6 +28,22 @@ def _speed(n):
     return f"{n / 1e6:.1f} MB/s" if n >= 1e6 else f"{n / 1e3:.0f} KB/s"
 
 
+def download_stats(percent, speed, seeders, size_bytes):
+    """Strings for the numbers under the download bar; a value that is not known is left out."""
+    from resources.lib.views.sources import _size
+    stats = {}
+    if speed:
+        stats["speed"] = _speed(speed)
+    if seeders is not None:
+        stats["seeders"] = str(seeders)
+    if size_bytes:
+        stats["size"] = ui.string(30520) % (_size(size_bytes * percent / 100) or "0 MB", _size(size_bytes))
+        if speed:
+            seconds = size_bytes * (100 - percent) / 100 / speed
+            stats["left"] = ui.string(30521) if seconds < 60 else ui.string(30519) % round(seconds / 60)
+    return stats
+
+
 def download_and_wait(resolver, torrent_id, candidate, wanted, heading, wait=None):
     """Modal progress until downloaded (Q15c). Returns (url, filename) or an outcome."""
     progress = ui.Progress(heading, ui.string(30180) % service.label())
@@ -40,9 +56,8 @@ def download_and_wait(resolver, torrent_id, candidate, wanted, heading, wait=Non
                 return resolver.finish(torrent_id, candidate, wanted, info)
             if percent != last_percent:
                 last_percent, last_change = percent, _clock()
-            parts = [ui.string(30181) % percent, _speed(speed),
-                     (ui.string(30182) % seeders) if seeders is not None else None]
-            progress.update(int(percent), " · ".join(p for p in parts if p))
+            progress.update(int(percent), ui.string(30180) % service.label(),
+                            download_stats(percent, speed, seeders, candidate.size_bytes))
             if _clock() - last_change > STALL_S:
                 choice = ui.select(ui.string(30183), [ui.string(30184), ui.string(30185) % service.label(), ui.string(30186)])
                 if choice == 0:
@@ -55,7 +70,8 @@ def download_and_wait(resolver, torrent_id, candidate, wanted, heading, wait=Non
                     return BACK
             if wait(POLL_S):
                 # Q15a: ask each time whether to keep the download.
-                if ui.confirm(heading, ui.string(30187) % (service.label(), service.label())):
+                if ui.confirm(heading, ui.string(30506) % service.label(), yes=ui.string(30508), no=ui.string(30186),
+                              note=ui.string(30507) % service.label()):
                     resolver.keep(torrent_id)
                     ui.notify(service.label(), ui.string(30188) % (service.label(), service.label()))
                 else:
@@ -86,7 +102,10 @@ def resolve_choice(resolver, candidate, wanted, heading):
                 return BACK
             chosen_file, torrent_id = exc.files[index][0], exc.torrent_id
         except NotReady as exc:
-            if not ui.confirm(heading, ui.string(30190) % service.label()):
+            from resources.lib.views.sources import _size
+            note = " · ".join(p for p in (candidate.resolution, _size(candidate.size_bytes)) if p)
+            if not ui.confirm(heading, ui.string(30190) % service.label(), yes=ui.string(30504), no=ui.string(30505),
+                              note=note):
                 resolver.remove(exc.torrent_id)
                 return BACK
             return download_and_wait(resolver, exc.torrent_id, candidate, wanted, heading)

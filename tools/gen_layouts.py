@@ -697,6 +697,97 @@ def sources():
     )
 
 
+# -- Dialogs -------------------------------------------------------------------------------------------
+
+def _dialog_panel(top, height):
+    """The dimmed screen and one 860 px panel in the middle."""
+    return lines(img(0, 0, 1920, 1080, "av-white.png", "CC000000"),
+                 img(530, top, 860, height, "av-r22.png", S1, border=22))
+
+
+def confirm():
+    single = "!String.IsEmpty(Window.Property(single))"
+    return lines(
+        _dialog_panel(330, 420),
+        lbl(582, 372, 760, 36, "font12", CYAN_HI, "[B]$INFO[Window.Property(heading)][/B]"),
+        f'<control type="textbox"><left>582</left><top>418</top><width>760</width><height>150</height>'
+        f'<font>font30_title</font><textcolor>{INK}</textcolor><label>$INFO[Window.Property(message)]</label></control>',
+        f'<control type="textbox"><left>582</left><top>572</top><width>760</width><height>60</height>'
+        f'<font>font12</font><textcolor>{INK3}</textcolor><label>$INFO[Window.Property(note)]</label></control>',
+        '<control type="grouplist"><left>576</left><top>644</top><width>800</width><height>78</height>'
+        '<orientation>horizontal</orientation><itemgap>8</itemgap>',
+        row_button(700, 340, "$INFO[Window.Property(yes)]", True).replace(
+            "</label>", "</label><onleft>701</onleft><onright>701</onright>", 1),
+        row_button(701, 260, "$INFO[Window.Property(no)]", False, visible="!" + single).replace(
+            "</label>", "</label><onleft>700</onleft><onright>700</onright>", 1),
+        "</control>",
+        lbl(0, 1000, 1920, 40, "font12", INK3, _addon(30525), align="center"),
+    )
+
+
+def _menu_row(focused):
+    body = [img(0, 3, 760, 60, "av-r10.png", INK if focused else S2, border=10)]
+    if focused:
+        body = [img(0, 3, 760, 60, "av-r10.png", S2, border=10, visible="!Control.HasFocus(720)"),
+                img(0, 3, 760, 60, "av-r10.png", INK, border=10, visible="Control.HasFocus(720)"),
+                lbl(26, 3, 708, 60, "font13", GROUND, "[B]$INFO[ListItem.Label][/B]", visible="Control.HasFocus(720)",
+                    extra="<scroll>true</scroll>"),
+                lbl(26, 3, 708, 60, "font13", INK2, "[B]$INFO[ListItem.Label][/B]", visible="!Control.HasFocus(720)")]
+    else:
+        body.append(lbl(26, 3, 708, 60, "font13", INK2, "[B]$INFO[ListItem.Label][/B]"))
+    return "\n".join(body)
+
+
+def menu():
+    """Hold-OK menu, resume choice, Settings, sort and filters, pick a file, stalled download."""
+    return lines(
+        _dialog_panel(220, 640),
+        f'<control type="textbox"><left>582</left><top>262</top><width>760</width><height>96</height>'
+        f'<font>font30_title</font><textcolor>{INK}</textcolor><label>$INFO[Window.Property(heading)]</label></control>',
+        '<control type="list" id="720"><left>580</left><top>370</top><width>760</width><height>462</height>'
+        '<orientation>vertical</orientation><onleft>720</onleft><onright>720</onright>'
+        '<scrolltime tween="quadratic" easing="out">140</scrolltime>',
+        '<itemlayout height="66" width="760">', _menu_row(False), "</itemlayout>",
+        '<focusedlayout height="66" width="760">', _menu_row(True), "</focusedlayout>",
+        "</control>",
+        lbl(0, 1000, 1920, 40, "font12", INK3, _addon(30525), align="center"),
+    )
+
+
+def progress():
+    art = "!String.IsEmpty(Window.Property(art))"
+    stats = []
+    for key, string_id, width in (("speed", 30522, 190), ("seeders", 30523, 150), ("size", 30524, 360)):
+        info = f"Window.Property(stat_{key})"
+        stats.append(group(0, 0, width, 64, lines(
+            lbl(0, 0, width, 24, "font10", INK3, _addon(string_id), aligny="top"),
+            lbl(0, 26, width, 38, "font12", INK2, f"$INFO[{info}]", aligny="top")), visible=f"!String.IsEmpty({info})"))
+    return lines(
+        _dialog_panel(270, 540),
+        img(582, 318, 220, 124, "$INFO[Window.Property(art)]", visible=art,
+            extra="<aspectratio>scale</aspectratio>").replace("<texture>", '<texture diffuse="av-mask-wide10.png">'),
+        group(0, 0, 1920, 1080, lines(
+            lbl(830, 330, 512, 64, "font45_title", INK, "$INFO[Window.Property(title)]"),
+            lbl(830, 394, 512, 40, "font12", INK2, "$INFO[Window.Property(message)]")), visible=art),
+        group(0, 0, 1920, 1080, lines(
+            lbl(582, 330, 760, 64, "font45_title", INK, "$INFO[Window.Property(heading)]"),
+            lbl(582, 394, 760, 40, "font12", INK2, "$INFO[Window.Property(message)]")), visible="!" + art),
+        lbl(582, 470, 400, 80, "font52_title", INK, "$INFO[Window.Property(percent)]"),
+        lbl(940, 486, 402, 50, "font12", INK3, "$INFO[Window.Property(stat_left)]", align="right"),
+        '<control type="progress" id="710"><left>582</left><top>560</top><width>760</width><height>8</height>'
+        f'<texturebg border="3" colordiffuse="{S3}">av-bar.png</texturebg>'
+        f'<midtexture border="3" colordiffuse="{CYAN}">av-bar.png</midtexture></control>',
+        '<control type="grouplist"><left>582</left><top>590</top><width>760</width><height>64</height>'
+        '<orientation>horizontal</orientation><itemgap>34</itemgap><usecontrolwidth>true</usecontrolwidth>',
+        "\n".join(stats), "</control>",
+        '<control type="grouplist"><left>576</left><top>690</top><width>400</width><height>78</height>'
+        '<orientation>horizontal</orientation>',
+        row_button(711, 240, "$INFO[Window.Property(cancel)]", False),
+        "</control>",
+        lbl(0, 1000, 1920, 40, "font12", INK3, _addon(30526), align="center"),
+    )
+
+
 def loading():
     """The small spinner while something loads (grid pages, the next page of a grid)."""
     return group(1600, 990, 280, 60, lines(
@@ -716,6 +807,9 @@ SECTIONS = {
     ("novaflix-app.xml", "loading"): loading,
     ("novaflix-show.xml", "show"): show,
     ("novaflix-sources.xml", "sources"): sources,
+    ("novaflix-confirm.xml", "confirm"): confirm,
+    ("novaflix-menu.xml", "menu"): menu,
+    ("novaflix-progress.xml", "progress"): progress,
     ("novaflix-app.xml", "push-related"): menu_push,
     ("novaflix-app.xml", "related"): related,
 }
