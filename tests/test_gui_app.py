@@ -479,3 +479,32 @@ def test_back_from_the_open_menu_returns_to_the_view(app):
     app.window.setFocusId(ids.SIDEBAR_SETTINGS)
     app.window.onAction(xbmcgui.Action(92))
     assert app.view == "grid" and app.window.getFocusId() == ids.GRID
+
+
+def test_empty_my_list_offers_trending(app, monkeypatch):
+    monkeypatch.setattr(lists, "load", lambda key, page_no=1: lists.Page("My List", [], False,
+                                                                         "Nothing in My List yet."))
+    select_sidebar(app, "mylist")
+    w = app.window
+    assert w.properties["grid_empty"] == "Nothing here yet"
+    assert w.properties["grid_empty_hint"] == "Nothing in My List yet."
+    assert w.properties["grid_empty_action"] == "Browse Trending Now" and w.getFocusId() == ids.GRID_EMPTY_ACTION
+    opened = []
+    monkeypatch.setattr(app, "open_grid", opened.append)
+    w.onClick(ids.GRID_EMPTY_ACTION)
+    assert opened == ["trending"]
+
+
+def test_empty_search_results_offer_no_button(app, monkeypatch):
+    monkeypatch.setattr(lists, "load", lambda key, page_no=1: lists.Page("Results", [], False, "No results."))
+    app.open_grid("search:zzz")
+    assert app.window.properties["grid_empty_action"] == ""
+
+
+def test_grid_peek_only_for_title_pages(app, monkeypatch):
+    select_sidebar(app, "trending")
+    assert app.window.properties["grid_peek"] == ""  # the fixture's cards carry no details
+    monkeypatch.setattr(lists, "load", lambda key, page_no=1: lists.Page(
+        "Trending", [Card(label="A", kind_label="Movie", action=("title", "movie", 1))]))
+    app.open_grid("trending")
+    assert app.window.properties["grid_peek"] == "true"

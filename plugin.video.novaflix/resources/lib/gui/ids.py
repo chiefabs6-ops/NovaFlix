@@ -10,8 +10,7 @@ HERO_INFO = 202
 HOME_ROWS = (300, 310, 320, 330)
 HOME_RETRY = 340
 GRID = 400
-MAL_CARDS = (420, 421, 422, 423, 424)   # watching, plan to watch, completed, on hold, dropped
-MAL_BARS = (430, 431, 432, 433)         # share bars of the first four cards
+GRID_EMPTY_ACTION = 410  # "Browse Trending Now" on an empty personal list
 RELATED_ROWS = (800, 810, 820, 830, 840, 850)
 SHOW_PLAY = 500
 SHOW_FAVOURITE = 501
@@ -41,6 +40,6 @@ WINDOW_IDS = {
     "novaflix-sources.xml": [SOURCES_LIST],
     "novaflix-menu.xml": [MENU_LIST],
     "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_SEASON, SHOW_EPISODES],
-    "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, *MAL_CARDS, *MAL_BARS,
+    "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, GRID_EMPTY_ACTION,
                          *RELATED_ROWS],
 }

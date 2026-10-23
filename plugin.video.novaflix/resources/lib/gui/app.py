@@ -36,6 +36,8 @@ EXPLORE_ITEMS = [
 ]
 EXPLORE_KEYS = {target[1] for _, _, target in EXPLORE_ITEMS} | {"genre"}
 GRID_MORE_MARGIN = 6  # within one grid row of the end -> load the next page
+EMPTY_OFFERS = {"continue", "mylist"}  # empty personal lists offer "Browse Trending Now"
+EMPTY_ICONS = {"continue": "av-icon-play_circle.png", "mylist": "av-icon-bookmark.png"}
 
 
 class AppWindow(xbmcgui.WindowXML):
@@ -68,8 +70,8 @@ class GridView:
         self.app.checks.reset()
         w = self.app.window
         w.getControl(ids.GRID).reset()
-        w.setProperty("grid_title", "")
-        w.setProperty("grid_empty", "")
+        for prop in ("grid_title", "grid_empty", "grid_empty_hint", "grid_empty_action", "grid_empty_icon", "grid_peek"):
+            w.setProperty(prop, "")
         self._fetch(1)
 
     def _fetch(self, page_no):
@@ -106,9 +108,23 @@ class GridView:
         position = control.getSelectedPosition()
         self.app.checks.follow_grid(ids.GRID, self.cards, max(position, 0))  # next-episode availability
         if first:
-            w.setProperty("grid_empty", "" if page.cards else (page.empty or ui.string(30256)))
+            # the focused-title peek above the grid, only on pages of films and shows
+            w.setProperty("grid_peek", "true" if any(c.kind_label for c in page.cards) else "")
             if page.cards:
                 w.setFocusId(ids.GRID)
+            else:
+                self._show_empty(page)
+
+    def _show_empty(self, page):
+        """"Nothing here yet", the page's own sentence, and for the personal lists a way to find something."""
+        w = self.app.window
+        w.setProperty("grid_empty", ui.string(30256))
+        w.setProperty("grid_empty_hint", page.empty or "")
+        w.setProperty("grid_empty_icon", EMPTY_ICONS.get(self.key, "av-icon-search.png"))
+        offer = self.key in EMPTY_OFFERS
+        w.setProperty("grid_empty_action", ui.string(30500) if offer else "")
+        if offer:
+            w.setFocusId(ids.GRID_EMPTY_ACTION)
 
     def maybe_more(self):
         if not self.more or self.loading:
@@ -305,6 +321,8 @@ class App:
             self.related.on_click(control_id)
         elif control_id == ids.HOME_RETRY:
             self.home.load()
+        elif control_id == ids.GRID_EMPTY_ACTION:
+            self.open_grid("trending")
         elif control_id == ids.GRID:
             card = self.grid.selected()
             if card:

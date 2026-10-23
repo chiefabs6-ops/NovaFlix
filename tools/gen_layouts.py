@@ -27,7 +27,6 @@ VIEW_TARGETS = [  # (condition, control) the sidebar and Settings hand focus to 
     ("String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))", 340),
     ("String.IsEqual(Window.Property(view),grid)", 400),
     ("String.IsEqual(Window.Property(view),related)", 800),
-    ("String.IsEqual(Window.Property(view),mal)", 420),
 ]
 
 
@@ -202,15 +201,16 @@ def pill_button(control_id, left, top, width, label, primary, nav, icon=None, la
                  extra=zoom_when(f"Control.HasFocus({control_id})", 105, f"{width // 2},33"))
 
 
-def labelled_fields(top, fields):
+def labelled_fields(top, fields, source="Window.Property({})"):
     """Grey titles over values, laid out left to right; a field with no value hides, title and all.
-    fields: (title label, property, width)."""
+    fields: (title label, property, width). source: the infolabel pattern the property is read from."""
     items = []
     for title, prop, width in fields:
+        info = source.format(prop)
         items.append(group(0, 0, width, 64, lines(
             lbl(0, 0, width, 24, "font10", INK3, title, aligny="top"),
-            lbl(0, 26, width, 38, "font13", INK2, f"$INFO[Window.Property({prop})]", aligny="top")),
-            visible=f"!String.IsEmpty(Window.Property({prop}))"))
+            lbl(0, 26, width, 38, "font13", INK2, f"$INFO[{info}]", aligny="top")),
+            visible=f"!String.IsEmpty({info})"))
     return lines(f'<control type="grouplist"><left>{X}</left><top>{top}</top><width>1200</width><height>64</height>'
                  '<orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>',
                  "\n".join(items), "</control>")
@@ -411,6 +411,75 @@ def home():
     )
 
 
+# -- Grid -----------------------------------------------------------------------------------------------
+
+def _addon(string_id):
+    return f"$ADDON[plugin.video.novaflix {string_id}]"
+
+
+PEEK_FIELDS = [(_addon(30510), "rating", 110), (_addon(30511), "year", 100), (_addon(30512), "kind_label", 140),
+               (_addon(30513), "genres", 420)]
+
+
+def peek(container, top=150):
+    """The focused card's picture, title, labelled details and plot above a grid or rows."""
+    item = f"Container({container}).ListItem"
+    return lines(
+        img(0, 0, 1920, 640, f"$INFO[{item}.Art(fanart)]",
+            extra='<aspectratio>scale</aspectratio><fadetime>300</fadetime>').replace(
+            "<texture>", '<texture background="true">'),
+        img(0, 0, 1920, 640, "av-shade-hero.png"),
+        img(0, 0, 1920, 640, "av-shade-bottom.png"),
+        img(0, 0, 1920, 640, "av-white.png", "4005070A"),
+        lbl(X, top, 1300, 90, "font52_title", INK, f"$INFO[{item}.Label]"),
+        labelled_fields(top + 100, PEEK_FIELDS, source=item + ".Property({})"),
+        f'<control type="textbox"><left>{X}</left><top>{top + 178}</top><width>720</width><height>76</height>'
+        f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[{item}.Property(plot)]</label></control>',
+    )
+
+
+def grid():
+    peek_on = "!String.IsEmpty(Window.Property(grid_peek))"
+    cw, ch = 180, 270
+    panel = lines(
+        '<control type="panel" id="400"><left>178</left><top>520</top><width>1742</width><height>930</height>',
+        '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>',
+        "<onleft>100</onleft>",
+        # pages without films or shows (Search, Genres, My TorBox) have no peek: the grid moves up
+        f'<animation effect="slide" start="0,0" end="0,-370" time="0" condition="!{peek_on}">Conditional</animation>',
+        f'<itemlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, False), "</itemlayout>",
+        f'<focusedlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, True), "</focusedlayout>",
+        "</control>")
+    empty = group(0, 0, 1920, 1080, lines(
+        img(902, 330, 116, 116, "av-dot.png", S2),
+        img(934, 362, 52, 52, "$INFO[Window.Property(grid_empty_icon)]", INK3),
+        lbl(X, 480, 1920 - 2 * X, 90, "font52_title", INK, "$INFO[Window.Property(grid_empty)]", align="center"),
+        f'<control type="textbox"><left>480</left><top>578</top><width>960</width><height>80</height>'
+        f'<font>font13</font><textcolor>{INK2}</textcolor><align>center</align>'
+        '<label>$INFO[Window.Property(grid_empty_hint)]</label></control>',
+        group(0, 0, 1920, 1080, pill_button(410, 790, 680, 340, "$INFO[Window.Property(grid_empty_action)]", True,
+                                            _nav(left=100)),
+              visible="!String.IsEmpty(Window.Property(grid_empty_action))"),
+    ), visible="!String.IsEmpty(Window.Property(grid_empty))")
+    skeleton = lines(*[img(X + i * 202, 534, cw, ch, "av-r10.png", S2, border=10, extra=PULSE) for i in range(8)])
+    return lines(
+        group(0, 0, 1920, 640, peek(400), visible=peek_on + " + Integer.IsGreater(Container(400).NumItems,0)"),
+        lbl(X, 52, 1500, 64, "font45_title", INK, "$INFO[Window.Property(grid_title)]"),
+        panel,
+        empty,
+        group(0, 0, 1920, 1080, skeleton, visible="!String.IsEmpty(Window.Property(loading)) + "
+                                                  "!Integer.IsGreater(Container(400).NumItems,0)"),
+    )
+
+
+def loading():
+    """The small spinner while something loads (grid pages, the next page of a grid)."""
+    return group(1600, 990, 280, 60, lines(
+        img(0, 17, 26, 26, "av-spinner.png", CYAN, extra=SPIN),
+        lbl(40, 0, 240, 60, "font12", INK3, _addon(30514))),
+        visible="!String.IsEmpty(Window.Property(loading))")
+
+
 # -- splicing ----------------------------------------------------------------------------------------
 
 SECTIONS = {
@@ -418,6 +487,8 @@ SECTIONS = {
     ("novaflix-app.xml", "push-home"): menu_push,
     ("novaflix-app.xml", "home"): home,
     ("novaflix-app.xml", "push-grid"): menu_push,
+    ("novaflix-app.xml", "grid"): grid,
+    ("novaflix-app.xml", "loading"): loading,
     ("novaflix-app.xml", "push-related"): menu_push,
 }
 

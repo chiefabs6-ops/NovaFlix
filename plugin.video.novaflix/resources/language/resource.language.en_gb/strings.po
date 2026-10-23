@@ -901,3 +901,11 @@ msgstr ""
 msgctxt "#30513"
 msgid "Genre"
 msgstr ""
+
+msgctxt "#30500"
+msgid "Browse Trending Now"
+msgstr ""
+
+msgctxt "#30514"
+msgid "Loading"
+msgstr ""
