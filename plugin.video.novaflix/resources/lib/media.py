@@ -9,7 +9,7 @@ from typing import List, Optional
 
 MOVIE, TV = "movie", "tv"
 IMAGES = "https://image.tmdb.org/t/p/"
-POSTER, BACKDROP, STILL = "w342", "w1280", "w300"
+POSTER, BACKDROP, STILL, LOGO = "w342", "w1280", "w300", "w500"
 
 
 LANGUAGES = {"en": "English", "ko": "Korean", "ja": "Japanese", "zh": "Chinese", "cn": "Chinese", "hi": "Hindi",
@@ -64,6 +64,7 @@ class Title:
     last_aired: Optional[tuple] = None   # TV: (season, episode)
     collection: Optional[tuple] = None   # movie: (collection id, name)
     original_language: Optional[str] = None  # TMDB code, e.g. "en", "ko"
+    logo: Optional[str] = None           # title logo image (details only), shown in place of the title text
 
     @property
     def key(self):
@@ -141,6 +142,16 @@ def _seasons(data):
     return sorted(out, key=lambda s: (s.number == 0, s.number))
 
 
+def _logo(data):
+    """The English title logo, else one without a language; None when TMDB has neither."""
+    logos = (data.get("images") or {}).get("logos") or []
+    for wanted in ("en", None):
+        for logo in logos:
+            if logo.get("iso_639_1") == wanted and logo.get("file_path"):
+                return image(logo["file_path"], LOGO)
+    return None
+
+
 def title_from(data, media_type=None, genre_names=None):
     """A Title from a list item, details or search/multi result; None for people and unknown types."""
     media_type = data.get("media_type") or media_type
@@ -178,6 +189,7 @@ def title_from(data, media_type=None, genre_names=None):
         last_aired=last,
         collection=(collection["id"], collection.get("name")) if isinstance(collection.get("id"), int) else None,
         original_language=data.get("original_language") or None,
+        logo=_logo(data),
     )
 
 

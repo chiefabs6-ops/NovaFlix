@@ -96,7 +96,8 @@ def search(token, text, page=1, genre_names=None):
 
 def details(token, media_type, tmdb_id):
     """(Title with IMDb id, recommended Titles)."""
-    data = get(token, f"/{media_type}/{int(tmdb_id)}", append_to_response="external_ids,recommendations")
+    data = get(token, f"/{media_type}/{int(tmdb_id)}", append_to_response="external_ids,recommendations,images",
+               include_image_language="en,null")
     title = media.title_from(data, media_type)
     more = media.titles_from((data.get("recommendations") or {}).get("results"), media_type=media_type)
     return title, more

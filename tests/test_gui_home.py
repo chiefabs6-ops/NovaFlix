@@ -194,3 +194,15 @@ def test_upcoming_card_opens_the_title_page_instead_of_playing(make_app, monkeyp
     a.window.getControl(ids.HOME_ROWS[0]).selectItem(0)
     a.window.onClick(ids.HOME_ROWS[0])
     assert opened == [("tv", 3)] and not any("PlayMedia" in b for b in xbmc.builtins_executed)
+
+
+def test_hero_shows_logo_when_known(make_app, monkeypatch):
+    monkeypatch.setattr(lists, "hero_logos", lambda featured: {1: "logo1.png"})
+    w = make_app().window
+    assert w.properties["hero_logo"] == "logo1.png"
+
+
+def test_hero_without_logo_shows_text(make_app, monkeypatch):
+    monkeypatch.setattr(lists, "hero_logos", lambda featured: {})
+    w = make_app().window
+    assert w.properties["hero_logo"] == "" and w.properties["hero_title"] == "Show 1"

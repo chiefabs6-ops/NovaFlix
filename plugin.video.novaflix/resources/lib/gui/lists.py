@@ -181,6 +181,21 @@ def _next_air(title, row):
     return None
 
 
+def hero_logos(titles):
+    """{tmdb_id: logo url} for the hero titles that have one. A title that fails is left out:
+    the hero then shows its name as text."""
+    library, logos = _library(), {}
+    for title in titles:
+        try:
+            url = library.logo(title.media_type, title.tmdb_id)
+        except Exception as exc:  # noqa: BLE001 - one missing logo never stops the others
+            log.warning(f"hero logo {title.key}: {type(exc).__name__}")
+            continue
+        if url:
+            logos[title.tmdb_id] = url
+    return logos
+
+
 def home_row(key):
     page = load(key)
     page.cards = [c for c in page.cards if not (c.action and c.action[0] == "filter")]  # grid only

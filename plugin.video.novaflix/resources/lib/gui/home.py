@@ -23,6 +23,7 @@ class HomeView:
         self.hero_index = 0
         self.hero_since = 0.0
         self.continue_final = False
+        self.logos = {}
 
     def load(self):
         w = self.app.window
@@ -71,6 +72,8 @@ class HomeView:
             self.featured = page.titles[:HERO_COUNT]
             w.setProperty("hero_count", str(len(self.featured)))
             self.show_hero(0)
+            featured = list(self.featured)
+            self.app.loader.start({"hero_logos": lambda: lists.hero_logos(featured)}, self._logos)
 
     def show_hero(self, index, now=None):
         data = cards.title_hero(self.featured[index], ui.string)
@@ -78,6 +81,7 @@ class HomeView:
         for key in ("title", "alt", "plot", "meta", "art"):
             w.setProperty(f"hero_{key}", data[key])
         w.setProperty("hero_dark", "true" if data["dark"] else "")
+        w.setProperty("hero_logo", self.logos.get(self.featured[index].tmdb_id, ""))
         w.setProperty("hero_index", str(index))
         self.hero_index = index
         self.hero_since = time.monotonic() if now is None else now
@@ -114,6 +118,12 @@ class HomeView:
         self.continue_final = False
         self._fill_continue(lists.home_row("continue:local"))
         self.app.loader.start({"continue": lambda: lists.home_row("continue")}, self._deliver)
+
+    def _logos(self, name, logos, error):
+        if error or not self.featured:
+            return  # the hero keeps its text titles
+        self.logos = logos
+        self.app.window.setProperty("hero_logo", logos.get(self.featured[self.hero_index].tmdb_id, ""))
 
     def _played(self, name, result, error):
         if error:

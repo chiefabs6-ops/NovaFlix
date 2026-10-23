@@ -160,3 +160,38 @@ def test_next_season_starting_above_one():
      .route("/3/tv/1396/season/2", s2).route("/3/tv/1396", breaking_bad()))
     lib = Library(token=TOKEN)
     assert lib.next_episode(lib.title(media.TV, 1396), 1, 7) == (2, 8)
+
+
+# -- Cinematic UI: title logos (0.4.0) ------------------------------------------------------------
+
+def _with_logos(logos):
+    data = copy.deepcopy(fixture("tmdb/movie_438631.json"))
+    data["images"] = {"logos": logos}
+    return data
+
+
+def test_details_reads_english_logo():
+    FakeNet().route("/3/movie/438631", _with_logos([
+        {"iso_639_1": "pl", "file_path": "/pl.png"}, {"iso_639_1": None, "file_path": "/none.png"},
+        {"iso_639_1": "en", "file_path": "/en.png"}]))
+    lib = Library(token=TOKEN)
+    assert lib.logo(media.MOVIE, 438631) == "https://image.tmdb.org/t/p/w500/en.png"
+
+
+def test_logo_falls_back_to_one_without_language():
+    FakeNet().route("/3/movie/438631", _with_logos([{"iso_639_1": "pl", "file_path": "/pl.png"},
+                                                    {"iso_639_1": None, "file_path": "/none.png"}]))
+    assert Library(token=TOKEN).logo(media.MOVIE, 438631).endswith("/none.png")
+
+
+def test_details_ask_for_logos():
+    net = FakeNet().route("/3/movie/438631", _with_logos([]))
+    assert Library(token=TOKEN).logo(media.MOVIE, 438631) is None
+    url = net.calls[-1][1]
+    assert "images" in url and "include_image_language=en%2Cnull" in url
+
+
+def test_cached_title_without_logo_loads():
+    data = media.title_from(fixture("tmdb/movie_438631.json"), media.MOVIE).to_dict()
+    data.pop("logo", None)
+    assert media.Title.from_dict(data).logo is None

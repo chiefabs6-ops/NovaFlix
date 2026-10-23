@@ -122,6 +122,7 @@ class TitlePage:
             w.setProperty(key, hero[key])
         w.setProperty("dark", "true" if hero["dark"] else "")
         w.setProperty("poster", title.poster or "")
+        w.setProperty("logo", title.logo or "")
         w.setProperty("genres", " · ".join(title.genres[:4]))
         foreign = title.original_language not in (None, "en")
         w.setProperty("dub", ui.string(30427) % media.language_name(title.original_language) if foreign else "")

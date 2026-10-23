@@ -115,6 +115,10 @@ class Library:
     def title(self, media_type, tmdb_id):
         return self._details(media_type, tmdb_id)[0]
 
+    def logo(self, media_type, tmdb_id):
+        """The title logo image (from the same cached details as the title page), or None."""
+        return self.title(media_type, tmdb_id).logo
+
     def cached_title(self, media_type, tmdb_id):
         """Saved details only, never the network; None if not saved."""
         cached = self._cache.get(f"tmdb:title:{media_type}:{int(tmdb_id)}")
