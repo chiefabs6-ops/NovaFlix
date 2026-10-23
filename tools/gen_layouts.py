@@ -705,16 +705,17 @@ def _source_row(focused):
     is_4k = "String.IsEqual(ListItem.Property(badge),4K)"
     has_badge = "!String.IsEmpty(ListItem.Property(badge))"
     body = [
-        img(0, 4, width, height - 8, "av-r10.png", S3 if focused else S2, border=10),
+        img(0, 4, width, height - 8, "av-r10.png", S3 if focused else S2, border=10, visible=f"!{tabs}"),
+        img(0, 4, width, height - 8, "av-r10.png", S2, border=10, visible=tabs) if focused else "",
         # tab rows (language, quality): a grey title, then one chip per tab with the open one in white
-        lbl(28, 4, 130, height - 8, "font12", INK3, "$INFO[ListItem.Label]", visible=tabs),
+        lbl(0 if not focused else 20, 4, 110, height - 8, "font12", INK3, "$INFO[ListItem.Label]", visible=tabs),
     ]
     for n in range(6):
         chip = f"ListItem.Property(chip{n})"
-        left = 150 + n * 126
-        fill, text = (INK, GROUND) if n == 0 else (S3 if not focused else "33FFFFFF", INK2)
-        body += [img(left, 28, 118, 44, "av-pill66.png", fill, border=22, visible=f"{tabs} + !String.IsEmpty({chip})"),
-                 lbl(left, 28, 118, 44, "font10", text, f"[B]$INFO[{chip}][/B]", align="center",
+        left = (110 if not focused else 130) + n * 130
+        fill, text = (INK, GROUND) if n == 0 else (S2 if not focused else S3, INK2)
+        body += [img(left, 28, 122, 44, "av-pill44.png", fill, border=22, visible=f"{tabs} + !String.IsEmpty({chip})"),
+                 lbl(left, 28, 122, 44, "font10", text, f"[B]$INFO[{chip}][/B]", align="center",
                      visible=f"{tabs} + !String.IsEmpty({chip})")]
     body += [
         # other actions (check more sources, sort): a plain row of words
@@ -739,9 +740,8 @@ def _source_row(focused):
                  lbl(width - 214, 52, 190, 40, "font12", colour, "[B]$INFO[ListItem.Property(note)][/B]",
                      visible=here)]
     if focused:
-        body.insert(1, img(-3, 1, width + 6, height - 2, "av-r10-ring.png", CYAN, border=10,
-                           visible="Control.HasFocus(600)"))
-    return "\n".join(body)
+        body.insert(2, img(-3, 1, width + 6, height - 2, "av-r10-ring.png", CYAN, border=10))
+    return "\n".join(b for b in body if b)
 
 
 def sources():
@@ -753,20 +753,26 @@ def sources():
         img(0, 0, 1920, 1080, "av-shade-bottom.png"),
         lbl(120, 780, 700, 40, "font12", CYAN_HI, f"[B]{_addon(30219)}[/B]",
             visible="!String.IsEmpty(Window.Property(title))"),
-        lbl(120, 820, 740, 180, "font52_title", INK, "$INFO[Window.Property(title)]", aligny="top",
-            extra="<wrapmultiline>true</wrapmultiline>"),
+        lbl(120, 820, 740, 120, "font52_title", INK, "$INFO[Window.Property(title)]", aligny="bottom"),
+        lbl(120, 944, 740, 40, "font12", INK2, "$INFO[Window.Property(meta)]"),
         '<!-- the list is a drawer from the right -->',
         img(880, 0, 1040, 1080, "av-white.png", S1,
             extra='<animation effect="slide" start="300,0" end="0,0" time="250" tween="cubic" easing="out">WindowOpen</animation>'),
+        group(0, 0, 1920, 160, lines(
+            lbl(944, 44, 912, 64, "font45_title", INK, "$INFO[Window.Property(count)]"),
+            lbl(944, 106, 912, 40, "font12", INK3, "$INFO[Window.Property(sub)]")),
+            visible="!String.IsEmpty(Window.Property(count))"),
         f'<control type="textbox"><left>944</left><top>48</top><width>912</width><height>100</height>'
-        f'<font>font30_title</font><textcolor>{INK}</textcolor><label>$INFO[Window.Property(heading)]</label></control>',
-        '<control type="list" id="600"><left>944</left><top>160</top><width>912</width><height>860</height>'
+        f'<font>font30_title</font><textcolor>{INK}</textcolor><label>$INFO[Window.Property(heading)]</label>'
+        '<visible>String.IsEmpty(Window.Property(count))</visible></control>',
+        '<control type="list" id="600"><left>944</left><top>164</top><width>912</width><height>842</height>'
         '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">160</scrolltime>'
         '<onleft>600</onleft><onright>600</onright>'
         '<animation effect="slide" start="300,0" end="0,0" time="250" tween="cubic" easing="out">WindowOpen</animation>',
         '<itemlayout width="912" height="108">', _source_row(False), "</itemlayout>",
         '<focusedlayout width="912" height="108">', _source_row(True), "</focusedlayout>",
         "</control>",
+        lbl(944, 1012, 912, 40, "font12", INK3, _addon(30525), align="right"),
     )
 
 

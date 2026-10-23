@@ -287,3 +287,20 @@ def test_watch_names_the_title_for_the_source_drawer(monkeypatch):
     title = fixture("tmdb/movie_438631.json")["title"]
     assert seen and seen[0][0] == title and seen[0][1].endswith(fixture("tmdb/movie_438631.json")["backdrop_path"])
     assert not xbmcgui.window_properties.get("novaflix.source_title")  # cleared afterwards
+
+
+def test_source_drawer_counts_and_title_details(monkeypatch):
+    monkeypatch.setattr(test_torbox, "FILE_NAME", MOVIE_FILE)
+    Net(FakeTorBox(), [stream(HASH, "Dune.2021.2160p.WEB-DL.x265-GRP", MOVIE_FILE)])
+    seen = {}
+
+    def script(window):
+        seen.update(window.properties)
+        window.getControl(600).selectItem(len(window.entries) - 1)  # the source is the last row
+        window.onClick(600)
+    xbmcaddon.settings["novaflix_look"] = True
+    xbmcgui.modal_scripts.append(script)
+    router.dispatch([BASE + "watch", "5", "?type=movie&id=438631"])
+    assert seen.get("count") == "1 source"
+    assert seen.get("sub", "").startswith("Best quality")
+    assert seen.get("meta") and "Movie" in seen["meta"]

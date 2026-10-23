@@ -113,6 +113,8 @@ def _choose(request):
     last_group, last_resolution = history.last_choice(media_type, tmdb_id)
     ui.set_window_property("novaflix.source_title", title.title)  # the source drawer names what is played
     ui.set_window_property("novaflix.source_art", title.backdrop or "")
+    from resources.lib.gui import cards
+    ui.set_window_property("novaflix.source_meta", cards.title_meta(title, ui.string))
     try:
         return sources.pick_source(
             request, service.client(), wanted, kept, filters, False, last_group, last_resolution, heading_base,
@@ -120,7 +122,8 @@ def _choose(request):
             row_note, tabs)
     finally:
         ui.clear_window_property("novaflix.source_title")
-        ui.clear_window_property("novaflix.source_art")
+        for key in ("art", "meta", "count", "sub"):
+            ui.clear_window_property(f"novaflix.source_{key}")
 
 
 def _release_language(title, candidates, titles):

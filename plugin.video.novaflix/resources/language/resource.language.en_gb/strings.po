@@ -985,3 +985,15 @@ msgstr ""
 msgctxt "#30527"
 msgid "Or open this address"
 msgstr ""
+
+msgctxt "#30528"
+msgid "%d sources"
+msgstr ""
+
+msgctxt "#30529"
+msgid "%d ready to play"
+msgstr ""
+
+msgctxt "#30530"
+msgid "1 source"
+msgstr ""

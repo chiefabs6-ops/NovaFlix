@@ -125,7 +125,7 @@ def test_quality_badge_says_cam_before_resolution():
 def test_tab_rows_become_chips():
     row = cards.source_row("Quality: All (37) — 4K / UHD 7 · 1080p 19 · 720p 5", "", T)
     assert row.kind == "tabs" and row.label == "Quality"
-    assert row.chips == ("All 37", "4K / UHD 7", "1080p 19", "720p 5")
+    assert row.chips == ("All 37", "4K 7", "1080p 19", "720p 5")
     lang = cards.source_row("Language: English (23) — Polish 4", "", T)
     assert lang.label == "Language" and lang.chips == ("English 23", "Polish 4")
     other = cards.source_row("Check more sources (4 not checked)", "", T)
@@ -137,3 +137,8 @@ def test_source_details_drop_the_status_shown_on_the_right():
     assert row.note == "Ready to play" and row.details == "2160p · WEB-DL · 7.2 GB"
     unknown = cards.source_row("A", "1080p · 2 GB", T)
     assert unknown.details == "1080p · 2 GB"
+
+
+def test_tab_chips_use_short_names():
+    row = cards.source_row("Quality: 4K / UHD (7) — 4K / UHD 7 · Other / unknown 2", "", T)
+    assert row.chips == ("4K 7", "4K 7", "Other 2")

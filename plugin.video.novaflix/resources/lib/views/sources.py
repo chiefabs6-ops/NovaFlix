@@ -211,6 +211,7 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
             return False
         if not listed:
             heading = f"{heading_base} · {ui.string(30199)}"
+        _drawer_header(len(listed), len(playable) if rd is not None else None, sort, heading[len(heading_base):])
         choice = ui.select_details(heading, [(label, "") for _, label in top] + rows
                                    + [(label, "") for _, label in actions], focus=len(top) if rows else 0)
         if choice < 0:
@@ -252,6 +253,14 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
         if outcome == play.STOP:
             return False
         # BACK: same list again; the owner picks another source (never automatic).
+
+
+def _drawer_header(shown, ready, sort, extras):
+    """The source drawer's header: "23 sources", then "Best quality · 12 ready to play" and the heading's
+    notes (other languages hidden, filters). Home-window properties, read by gui/dialogs.pick_source."""
+    ui.set_window_property("novaflix.source_count", ui.string(30530) if shown == 1 else ui.string(30528) % shown)
+    parts = [ui.string(SORT_STRINGS[sort])] + ([ui.string(30529) % ready] if ready else [])
+    ui.set_window_property("novaflix.source_sub", " · ".join(parts) + extras)
 
 
 def _movie_year(wanted):

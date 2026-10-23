@@ -192,7 +192,8 @@ def main():
     save(outline((64, 64), 10, 3), "av-r10-ring.png")
     save(rounded((132, 66), 33), "av-pill66.png")
     save(outline((132, 66), 33, 3), "av-pill66-ring.png")
-    save(outline((156, 78), 39, 3), "av-pill78-ring.png")  # focus ring 6 px outside a 66 px pill
+    save(outline((156, 78), 39, 3), "av-pill78-ring.png")
+    save(rounded((88, 44), 22), "av-pill44.png")  # tab chips: a pill drawn at their own height  # focus ring 6 px outside a 66 px pill
     save(rounded((96, 96), 22), "av-r22.png")
     save(rounded((32, 6), 3), "av-bar.png")
     save(stops((1920, 8), True, BG, [(0, .92), (.28, .70), (.58, 0), (1, 0)]), "av-shade-hero.png")
