@@ -438,15 +438,66 @@ def peek(container, top=150):
     )
 
 
+def genre_card(width, height, focused):
+    """A genre: a picture from its own list under a left-to-right shade, the name large at the bottom left."""
+    mask = "av-mask-wide10.png"
+    body = [
+        img(0, 0, width, height, "av-r10.png", S2, border=10),
+        img(0, 0, width, height, "$INFO[ListItem.Art(thumb)]",
+            extra="<aspectratio>scale</aspectratio><fadetime>300</fadetime>").replace(
+            "<texture>", f'<texture diffuse="{mask}" background="true">'),
+        img(0, 0, width, height, "av-shade-hero.png").replace("<texture>", f'<texture diffuse="{mask}">'),
+        lbl(22, height - 74, width - 44, 60, "font45_title", INK, "$INFO[ListItem.Label]"),
+    ]
+    if focused:
+        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10))
+        return group(0, 14, width, height, "\n".join(body),
+                     extra=f'<animation effect="zoom" start="100" end="104" time="150" center="{width // 2},{height // 2}">'
+                           'Focus</animation>')
+    return group(0, 14, width, height, "\n".join(body))
+
+
+GENRES_SHOWN = "!String.IsEmpty(Window.Property(grid_genre_tab))"
+
+
+def genre_tabs():
+    """Films / Shows at the top right of the Genres page; the open one white."""
+    tabs = []
+    for control_id, left, string_id, tab, nav in (
+            (411, 1460, 30515, "movie", _nav(left=100, right=412, down=400)),
+            (412, 1640, 30516, "tv", _nav(left=411, down=400))):
+        here = f"String.IsEqual(Window.Property(grid_genre_tab),{tab})"
+        tabs.append(group(left, 60, 160, 56, lines(
+            img(-5, -5, 170, 66, "av-pill66-ring.png", CYAN, border=28, visible=f"Control.HasFocus({control_id})"),
+            img(0, 0, 160, 56, "av-pill66.png", INK, border=28, visible=here),
+            img(0, 0, 160, 56, "av-pill66.png", S2, border=28, visible="!" + here),
+            f'<control type="button" id="{control_id}"><left>0</left><top>0</top><width>160</width><height>56</height>'
+            '<font>font13</font><align>center</align><aligny>center</aligny>'
+            f'<textcolor>{INK2}</textcolor><focusedcolor>{INK2}</focusedcolor>'
+            '<texturefocus colordiffuse="00FFFFFF">av-white.png</texturefocus>'
+            '<texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus>'
+            f"<label></label>{nav}</control>",
+            lbl(0, 0, 160, 56, "font13", GROUND, f"[B]{_addon(string_id)}[/B]", align="center", visible=here),
+            lbl(0, 0, 160, 56, "font13", INK2, f"[B]{_addon(string_id)}[/B]", align="center", visible="!" + here)),
+            extra=zoom_when(f"Control.HasFocus({control_id})", 105, "80,28")))
+    return group(0, 0, 1920, 140, "\n".join(tabs), visible=GENRES_SHOWN)
+
+
 def grid():
     peek_on = "!String.IsEmpty(Window.Property(grid_peek))"
     cw, ch = 180, 270
+    gw, gh = 400, 200
     panel = lines(
         '<control type="panel" id="400"><left>178</left><top>520</top><width>1742</width><height>930</height>',
         '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>',
-        "<onleft>100</onleft>",
+        f'<onleft>100</onleft><onup condition="{GENRES_SHOWN}">411</onup>',
         # pages without films or shows (Search, Genres, My TorBox) have no peek: the grid moves up
         f'<animation effect="slide" start="0,0" end="0,-370" time="0" condition="!{peek_on}">Conditional</animation>',
+        # Genres: four wide picture tiles across (a panel takes one cell size, so the layout is chosen by page)
+        f'<itemlayout width="{gw + 22}" height="{gh + 26}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, False),
+        "</itemlayout>",
+        f'<focusedlayout width="{gw + 22}" height="{gh + 26}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, True),
+        "</focusedlayout>",
         f'<itemlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, False), "</itemlayout>",
         f'<focusedlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, True), "</focusedlayout>",
         "</control>")
@@ -465,6 +516,7 @@ def grid():
     return lines(
         group(0, 0, 1920, 640, peek(400), visible=peek_on + " + Integer.IsGreater(Container(400).NumItems,0)"),
         lbl(X, 52, 1500, 64, "font45_title", INK, "$INFO[Window.Property(grid_title)]"),
+        genre_tabs(),
         panel,
         empty,
         group(0, 0, 1920, 1080, skeleton, visible="!String.IsEmpty(Window.Property(loading)) + "

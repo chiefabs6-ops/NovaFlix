@@ -40,6 +40,14 @@ EMPTY_OFFERS = {"continue", "mylist"}  # empty personal lists offer "Browse Tren
 EMPTY_ICONS = {"continue": "av-icon-play_circle.png", "mylist": "av-icon-bookmark.png"}
 
 
+def genre_tab(key):
+    """"movie" or "tv" on a Genres page (its open tab), else ""."""
+    name, _, arg = key.partition(":")
+    if name != "genres":
+        return ""
+    return media.TV if arg == media.TV else media.MOVIE
+
+
 class AppWindow(xbmcgui.WindowXML):
     app = None
 
@@ -72,6 +80,7 @@ class GridView:
         w.getControl(ids.GRID).reset()
         for prop in ("grid_title", "grid_empty", "grid_empty_hint", "grid_empty_action", "grid_empty_icon", "grid_peek"):
             w.setProperty(prop, "")
+        w.setProperty("grid_genre_tab", genre_tab(key))
         self._fetch(1)
 
     def _fetch(self, page_no):
@@ -114,6 +123,24 @@ class GridView:
                 w.setFocusId(ids.GRID)
             else:
                 self._show_empty(page)
+            if genre_tab(key) and page.cards:
+                tiles = list(page.cards)
+                self.app.loader.start({f"pictures:{key}": lambda: lists.genre_pictures(tiles)}, self._pictures)
+
+    def _pictures(self, name, pictures, error):
+        if error or name.partition(":")[2] != self.key:
+            return  # the tiles keep their names on the plain surface
+        control = self.app.window.getControl(ids.GRID)
+        for index, url in pictures.items():
+            if index < control.size():
+                control.getListItem(index).setArt({"fanart": url, "thumb": url})
+
+    def switch_genres(self, media_type):
+        """Films / Shows tab: the other genre list in place (Back still leaves Genres)."""
+        key = f"genres:{media_type}"
+        if key != self.key:
+            self.app.stack[-1:] = [key]
+            self.load(key)
 
     def _show_empty(self, page):
         """"Nothing here yet", the page's own sentence, and for the personal lists a way to find something."""
@@ -323,6 +350,8 @@ class App:
             self.home.load()
         elif control_id == ids.GRID_EMPTY_ACTION:
             self.open_grid("trending")
+        elif control_id in (ids.GENRE_TAB_FILMS, ids.GENRE_TAB_SHOWS):
+            self.grid.switch_genres(media.MOVIE if control_id == ids.GENRE_TAB_FILMS else media.TV)
         elif control_id == ids.GRID:
             card = self.grid.selected()
             if card:

@@ -508,3 +508,28 @@ def test_grid_peek_only_for_title_pages(app, monkeypatch):
         "Trending", [Card(label="A", kind_label="Movie", action=("title", "movie", 1))]))
     app.open_grid("trending")
     assert app.window.properties["grid_peek"] == "true"
+
+
+def _genre_page(key, page_no=1):
+    media_type = "tv" if key == "genres:tv" else "movie"
+    return lists.Page("Genres", [Card(label=f"{media_type} {i}", kind="genre",
+                                      action=("grid", f"genre:{media_type}:{i}")) for i in range(3)])
+
+
+def test_genre_tab_switches_without_growing_the_stack(app, monkeypatch):
+    monkeypatch.setattr(lists, "load", _genre_page)
+    monkeypatch.setattr(lists, "genre_pictures", lambda tiles: {0: "pic.jpg"})
+    select_sidebar(app, "genres")
+    w = app.window
+    assert w.properties["grid_genre_tab"] == "movie" and len(app.stack) == 1
+    assert w.getControl(ids.GRID).getListItem(0).art.get("fanart") == "pic.jpg"
+    w.onClick(ids.GENRE_TAB_SHOWS)
+    assert w.properties["grid_genre_tab"] == "tv" and app.stack == ["genres:tv"]
+    assert w.getControl(ids.GRID).getListItem(0).getLabel() == "tv 0"
+    w.onAction(xbmcgui.Action(92))
+    assert app.view == "home"
+
+
+def test_genre_tabs_hide_on_other_grids(app):
+    select_sidebar(app, "trending")
+    assert app.window.properties["grid_genre_tab"] == ""

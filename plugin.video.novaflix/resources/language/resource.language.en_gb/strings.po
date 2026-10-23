@@ -909,3 +909,11 @@ msgstr ""
 msgctxt "#30514"
 msgid "Loading"
 msgstr ""
+
+msgctxt "#30515"
+msgid "Films"
+msgstr ""
+
+msgctxt "#30516"
+msgid "Shows"
+msgstr ""

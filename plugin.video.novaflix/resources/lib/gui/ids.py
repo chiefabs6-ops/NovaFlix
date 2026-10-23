@@ -11,6 +11,8 @@ HOME_ROWS = (300, 310, 320, 330)
 HOME_RETRY = 340
 GRID = 400
 GRID_EMPTY_ACTION = 410  # "Browse Trending Now" on an empty personal list
+GENRE_TAB_FILMS = 411    # Genres: Films / Shows tabs
+GENRE_TAB_SHOWS = 412
 RELATED_ROWS = (800, 810, 820, 830, 840, 850)
 SHOW_PLAY = 500
 SHOW_FAVOURITE = 501
@@ -41,5 +43,6 @@ WINDOW_IDS = {
     "novaflix-menu.xml": [MENU_LIST],
     "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_SEASON, SHOW_EPISODES],
     "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, GRID_EMPTY_ACTION,
+                         GENRE_TAB_FILMS, GENRE_TAB_SHOWS,
                          *RELATED_ROWS],
 }

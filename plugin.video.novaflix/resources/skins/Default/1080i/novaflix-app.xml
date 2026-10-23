@@ -280,10 +280,45 @@
 <control type="textbox"><left>184</left><top>328</top><width>720</width><height>76</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Container(400).ListItem.Property(plot)]</label></control>
 </control>
 <control type="label"><left>184</left><top>52</top><width>1500</width><height>64</height><font>font45_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(grid_title)]</label></control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>140</height><visible>!String.IsEmpty(Window.Property(grid_genre_tab))</visible>
+<control type="group"><left>1460</left><top>60</top><width>160</width><height>56</height><animation effect="zoom" start="100" end="105" time="150" center="80,28" condition="Control.HasFocus(411)" reversible="true">Conditional</animation>
+<control type="image"><left>-5</left><top>-5</top><width>170</width><height>66</height><texture border="28" colordiffuse="FF00A6D6">av-pill66-ring.png</texture><visible>Control.HasFocus(411)</visible></control>
+<control type="image"><left>0</left><top>0</top><width>160</width><height>56</height><texture border="28" colordiffuse="FFFFFFFF">av-pill66.png</texture><visible>String.IsEqual(Window.Property(grid_genre_tab),movie)</visible></control>
+<control type="image"><left>0</left><top>0</top><width>160</width><height>56</height><texture border="28" colordiffuse="FF141A21">av-pill66.png</texture><visible>!String.IsEqual(Window.Property(grid_genre_tab),movie)</visible></control>
+<control type="button" id="411"><left>0</left><top>0</top><width>160</width><height>56</height><font>font13</font><align>center</align><aligny>center</aligny><textcolor>FFD3D8DF</textcolor><focusedcolor>FFD3D8DF</focusedcolor><texturefocus colordiffuse="00FFFFFF">av-white.png</texturefocus><texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus><label></label><onleft>100</onleft><onright>412</onright><ondown>400</ondown></control>
+<control type="label"><left>0</left><top>0</top><width>160</width><height>56</height><font>font13</font><textcolor>FF05070A</textcolor><align>center</align><aligny>center</aligny><label>[B]$ADDON[plugin.video.novaflix 30515][/B]</label><visible>String.IsEqual(Window.Property(grid_genre_tab),movie)</visible></control>
+<control type="label"><left>0</left><top>0</top><width>160</width><height>56</height><font>font13</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>[B]$ADDON[plugin.video.novaflix 30515][/B]</label><visible>!String.IsEqual(Window.Property(grid_genre_tab),movie)</visible></control>
+</control>
+<control type="group"><left>1640</left><top>60</top><width>160</width><height>56</height><animation effect="zoom" start="100" end="105" time="150" center="80,28" condition="Control.HasFocus(412)" reversible="true">Conditional</animation>
+<control type="image"><left>-5</left><top>-5</top><width>170</width><height>66</height><texture border="28" colordiffuse="FF00A6D6">av-pill66-ring.png</texture><visible>Control.HasFocus(412)</visible></control>
+<control type="image"><left>0</left><top>0</top><width>160</width><height>56</height><texture border="28" colordiffuse="FFFFFFFF">av-pill66.png</texture><visible>String.IsEqual(Window.Property(grid_genre_tab),tv)</visible></control>
+<control type="image"><left>0</left><top>0</top><width>160</width><height>56</height><texture border="28" colordiffuse="FF141A21">av-pill66.png</texture><visible>!String.IsEqual(Window.Property(grid_genre_tab),tv)</visible></control>
+<control type="button" id="412"><left>0</left><top>0</top><width>160</width><height>56</height><font>font13</font><align>center</align><aligny>center</aligny><textcolor>FFD3D8DF</textcolor><focusedcolor>FFD3D8DF</focusedcolor><texturefocus colordiffuse="00FFFFFF">av-white.png</texturefocus><texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus><label></label><onleft>411</onleft><ondown>400</ondown></control>
+<control type="label"><left>0</left><top>0</top><width>160</width><height>56</height><font>font13</font><textcolor>FF05070A</textcolor><align>center</align><aligny>center</aligny><label>[B]$ADDON[plugin.video.novaflix 30516][/B]</label><visible>String.IsEqual(Window.Property(grid_genre_tab),tv)</visible></control>
+<control type="label"><left>0</left><top>0</top><width>160</width><height>56</height><font>font13</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>[B]$ADDON[plugin.video.novaflix 30516][/B]</label><visible>!String.IsEqual(Window.Property(grid_genre_tab),tv)</visible></control>
+</control>
+</control>
 <control type="panel" id="400"><left>178</left><top>520</top><width>1742</width><height>930</height>
 <orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>
-<onleft>100</onleft>
+<onleft>100</onleft><onup condition="!String.IsEmpty(Window.Property(grid_genre_tab))">411</onup>
 <animation effect="slide" start="0,0" end="0,-370" time="0" condition="!!String.IsEmpty(Window.Property(grid_peek))">Conditional</animation>
+<itemlayout width="422" height="226" condition="!String.IsEmpty(Window.Property(grid_genre_tab))">
+<control type="group"><left>0</left><top>14</top><width>400</width><height>200</height>
+<control type="image"><left>0</left><top>0</top><width>400</width><height>200</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>400</width><height>200</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(thumb)]</texture><aspectratio>scale</aspectratio><fadetime>300</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>400</width><height>200</height><texture diffuse="av-mask-wide10.png">av-shade-hero.png</texture></control>
+<control type="label"><left>22</left><top>126</top><width>356</width><height>60</height><font>font45_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label></control>
+</control>
+</itemlayout>
+<focusedlayout width="422" height="226" condition="!String.IsEmpty(Window.Property(grid_genre_tab))">
+<control type="group"><left>0</left><top>14</top><width>400</width><height>200</height><animation effect="zoom" start="100" end="104" time="150" center="200,100">Focus</animation>
+<control type="image"><left>-6</left><top>-6</top><width>412</width><height>212</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>400</width><height>200</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>400</width><height>200</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(thumb)]</texture><aspectratio>scale</aspectratio><fadetime>300</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>400</width><height>200</height><texture diffuse="av-mask-wide10.png">av-shade-hero.png</texture></control>
+<control type="label"><left>22</left><top>126</top><width>356</width><height>60</height><font>font45_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label></control>
+</control>
+</focusedlayout>
 <itemlayout width="202" height="306">
 <control type="group"><left>0</left><top>14</top><width>180</width><height>270</height>
 <control type="image"><left>0</left><top>0</top><width>180</width><height>270</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>

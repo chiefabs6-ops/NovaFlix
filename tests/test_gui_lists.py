@@ -65,16 +65,43 @@ def test_home_row_caps_at_twenty_with_view_all(monkeypatch):
     assert len(row.cards) == 21 and row.cards[-1].kind == "more" and row.cards[-1].action == ("grid", "popular_tv")
 
 
-def test_genres_tiles_movies_then_tv():
+def test_genres_page_per_media_type():
     net()
-    page = lists.load("genres")
     movie_genres = sorted(fixture("tmdb/genre_movie.json")["genres"], key=lambda g: g["name"])
     tv_genres = sorted(fixture("tmdb/genre_tv.json")["genres"], key=lambda g: g["name"])
-    assert len(page.cards) == len(movie_genres) + len(tv_genres)
-    assert page.cards[0].action == ("grid", f"genre:movie:{movie_genres[0]['id']}")
-    assert page.cards[0].label2 == "Movies" and page.cards[-1].label2 == "TV shows"
+    films, shows = lists.load("genres"), lists.load("genres:tv")
+    assert len(films.cards) == len(movie_genres) and len(shows.cards) == len(tv_genres)
+    assert films.cards[0].action == ("grid", f"genre:movie:{movie_genres[0]['id']}")
+    assert shows.cards[0].action == ("grid", f"genre:tv:{tv_genres[0]['id']}")
+    assert lists.load("genres:movie").cards[0].action == films.cards[0].action
+    assert {c.kind for c in films.cards} == {"genre"}
     genre = lists.load("genre:movie:28")
     assert genre.title == "Action · Movies" and genre.cards and genre.cards[0].action[0] == "title"
+
+
+class _Shelf:
+    def __init__(self, fail=()):
+        self.fail = fail
+
+    def by_genre(self, media_type, genre_id, page=1):
+        if genre_id in self.fail:
+            raise OSError("offline")
+        return [media.Title(media_type=media_type, tmdb_id=1, title="No art"),
+                media.Title(media_type=media_type, tmdb_id=2, title="Art", backdrop=f"b{genre_id}.jpg")], False
+
+
+def test_genre_pictures_map_first_backdrop(monkeypatch):
+    monkeypatch.setattr(lists, "_library", lambda: _Shelf())
+    tiles = [lists.cards.Card(label="Action", kind="genre", action=("grid", "genre:movie:28")),
+             lists.cards.Card(label="Drama", kind="genre", action=("grid", "genre:movie:18"))]
+    assert lists.genre_pictures(tiles) == {0: "b28.jpg", 1: "b18.jpg"}
+
+
+def test_genre_pictures_failure_keeps_tiles(monkeypatch):
+    monkeypatch.setattr(lists, "_library", lambda: _Shelf(fail=(28,)))
+    tiles = [lists.cards.Card(label="Action", kind="genre", action=("grid", "genre:movie:28")),
+             lists.cards.Card(label="Drama", kind="genre", action=("grid", "genre:tv:18"))]
+    assert lists.genre_pictures(tiles) == {1: "b18.jpg"}
 
 
 def test_search_tiles_and_results_remember_text():

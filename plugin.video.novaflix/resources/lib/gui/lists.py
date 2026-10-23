@@ -71,14 +71,10 @@ def load(key, page=1):
     if name == "mylist":
         return Page(text(30415), [cards.title_card(t, text) for t in MyList(paths.profile_dir()).all()], False,
                     text(30428))
-    if name == "genres":
-        library = _library()
-        tiles = []
-        for media_type, group in GENRE_GROUPS:
-            for genre_id, genre in library.genres(media_type):
-                tile = cards.tile(genre, ("grid", f"genre:{media_type}:{genre_id}"), icon="grid_view")
-                tile.label2 = text(group)
-                tiles.append(tile)
+    if name == "genres":  # "genres" / "genres:movie" for films, "genres:tv" for shows (one tab each)
+        media_type = media.TV if arg == media.TV else media.MOVIE
+        tiles = [cards.Card(label=genre, kind="genre", action=("grid", f"genre:{media_type}:{genre_id}"))
+                 for genre_id, genre in _library().genres(media_type)]
         return Page(text(30010), tiles)
     if name == "genre":
         media_type, _, genre_id = arg.partition(":")
@@ -179,6 +175,23 @@ def _next_air(title, row):
     if nxt and (nxt[0], nxt[1]) > (row["season"], row["episode"]):
         return nxt
     return None
+
+
+def genre_pictures(tiles):
+    """{tile index: backdrop} from the first title with one in each genre's list (cached by the Library).
+    A genre that fails is left out: its tile keeps its name on the plain surface."""
+    library, pictures = _library(), {}
+    for index, tile in enumerate(tiles):
+        _, media_type, genre_id = tile.action[1].split(":")
+        try:
+            titles, _ = library.by_genre(media_type, int(genre_id), 1)
+        except Exception as exc:  # noqa: BLE001 - a picture is decoration, never an error
+            log.warning(f"genre picture {media_type}:{genre_id}: {type(exc).__name__}")
+            continue
+        backdrop = next((t.backdrop for t in titles if t.backdrop), None)
+        if backdrop:
+            pictures[index] = backdrop
+    return pictures
 
 
 def hero_logos(titles):
