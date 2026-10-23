@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!-- NovaFlix's tile under Video add-ons. Kodi starts a script straight away, so NovaFlix opens without
      Kodi's folder screen first (a plugin tile always goes through it). The plugin imports this add-on. -->
-<addon id="script.novaflix" name="NovaFlix" version="0.1.0" provider-name="NovaFlix">
+<addon id="script.novaflix" name="NovaFlix" version="0.1.1" provider-name="NovaFlix">
   <requires>
     <import addon="xbmc.python" version="3.0.1"/>
   </requires>

@@ -3,7 +3,7 @@
   <requires>
     <import addon="xbmc.python" version="3.0.1"/>
     <import addon="script.module.pyqrcode" version="1.2.1"/>
-    <import addon="script.novaflix" version="0.1.0"/>
+    <import addon="script.novaflix" version="0.1.1"/>
   </requires>
   <!-- No <provides>: the Video add-ons tile is script.novaflix, which opens NovaFlix without Kodi's
        folder screen. plugin:// links (playback, widgets, classic lists) work as before. -->
