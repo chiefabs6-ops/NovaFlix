@@ -22,7 +22,9 @@ SHAPES = {"av-white.png": (8, 8), "av-round.png": (64, 64), "av-round-border.png
           "av-pill66-ring.png": (132, 66), "av-r22.png": (96, 96), "av-shade-hero.png": (1920, 8),
           "av-shade-bottom.png": (8, 512), "av-shade-card.png": (8, 256), "av-shade-menu.png": (1920, 8),
           "av-vignette.png": (480, 270), "av-bar.png": (32, 6),
-          "av-mask-wide10.png": (420, 236), "av-mask-poster10.png": (200, 300), "av-spinner.png": (64, 64)}
+          "av-mask-wide10.png": (420, 236), "av-mask-poster10.png": (200, 300), "av-spinner.png": (64, 64),
+          "av-btn-primary.png": (156, 78), "av-btn-primary-focus.png": (156, 78),
+          "av-btn-secondary.png": (156, 78), "av-btn-secondary-focus.png": (156, 78)}
 
 
 def png_size(path):

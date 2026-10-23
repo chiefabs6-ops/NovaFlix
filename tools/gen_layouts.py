@@ -234,7 +234,7 @@ AVAIL_DOTS = (("available", OK), ("upcoming", WARN), ("sub_only", INK2), ("unava
               ("unknown", INK3), ("checking", INK3))
 
 
-def wide_card(width, height, focused):
+def wide_card(width, height, focused, episode=False):
     """Continue Watching / episodes: the picture with its title, details and progress over it."""
     body = [
         _wide_art(width, height),
@@ -255,6 +255,12 @@ def wide_card(width, height, focused):
         f'<midtexture border="2" colordiffuse="{CYAN}">av-bar.png</midtexture>'
         '<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible></control>',
     ]
+    if episode:  # watched episodes: dimmed, with a check
+        body.insert(1, img(0, 0, width, height, "av-white.png", "8C05070A", visible="String.IsEqual(ListItem.Property(watched),true)"
+                           ).replace("<texture", '<texture diffuse="av-mask-wide10.png"', 1))
+        body += [img(width - 46, 14, 32, 32, "av-dot.png", "B305070A", visible="String.IsEqual(ListItem.Property(watched),true)"),
+                 img(width - 42, 18, 24, 24, "av-icon-check_circle.png", OK,
+                     visible="String.IsEqual(ListItem.Property(watched),true)")]
     if focused:
         body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10))
         return group(0, 12, width, height, "\n".join(body),
@@ -553,6 +559,81 @@ def related():
     )
 
 
+# -- Title page (novaflix-show.xml) -----------------------------------------------------------------
+
+def row_button(control_id, width, label, primary, visible=None):
+    """A pill button for a grouplist row: fill and focus ring are one full-colour texture each."""
+    name = "primary" if primary else "secondary"
+    text = GROUND if primary else INK
+    return (f'<control type="button" id="{control_id}"><width>{width}</width><height>78</height>'
+            f'<font>font30_title</font><align>center</align><aligny>center</aligny>'
+            f'<textcolor>{text}</textcolor><focusedcolor>{text}</focusedcolor>'
+            f'<texturefocus border="39">av-btn-{name}-focus.png</texturefocus>'
+            f'<texturenofocus border="39">av-btn-{name}.png</texturenofocus>'
+            f'<label>{label}</label>'
+            '<animation effect="zoom" start="100" end="105" time="150" center="auto">Focus</animation>'
+            f"{_visible(visible)}</control>")
+
+
+TITLE_FIELDS = [(_addon(30510), "rating", 110), (_addon(30511), "year", 100),
+                ("$INFO[Window.Property(length_label)]", "length", 170), (_addon(30513), "genres", 420)]
+
+
+def show():
+    logo = "!String.IsEmpty(Window.Property(logo))"
+    avail = [img(X, 683, 10, 10, "av-dot.png", colour, visible=f"String.IsEqual(Window.Property(avail),{state})")
+             for state, colour in AVAIL_DOTS]
+    skeleton = lines(*[img(l, t, w, h, "av-r10.png", S2, border=10, extra=PULSE) for l, t, w, h in (
+        (X, 130, 200, 24), (X, 174, 600, 110), (X, 330, 460, 56), (X, 414, 660, 22), (X, 450, 560, 22),
+        (X, 560, 300, 66), (X + 320, 560, 260, 66), (X, 760, 380, 214), (X + 400, 760, 380, 214),
+        (X + 800, 760, 380, 214), (X + 1200, 760, 380, 214))])
+    return lines(
+        img(0, 0, 1920, 1080, "av-white.png", GROUND),
+        img(0, 0, 1920, 1080, "$INFO[Window.Property(art)]",
+            extra="<aspectratio>scale</aspectratio><fadetime>300</fadetime>").replace(
+            "<texture>", '<texture background="true">'),
+        img(0, 0, 1920, 1080, "av-white.png", "B305070A", visible="!String.IsEmpty(Window.Property(dark))"),
+        img(0, 0, 1920, 1080, "av-vignette.png"),
+        img(0, 0, 1920, 1080, "av-shade-hero.png"),
+        img(0, 0, 1920, 1080, "av-shade-bottom.png"),
+        group(0, 0, 1920, 1080, lines(
+            lbl(X, 120, 1500, 36, "font12", CYAN_HI,
+                "[B]$INFO[Window.Property(kind)][/B]$INFO[Window.Property(alt),   [COLOR " + INK2 + "],[/COLOR]]"
+                "$INFO[Window.Property(dub),   [COLOR " + WARN + "],[/COLOR]]"),
+            img(X, 160, 760, 140, "$INFO[Window.Property(logo)]", visible=logo,
+                extra='<aspectratio align="left" aligny="bottom">keep</aspectratio><fadetime>300</fadetime>'),
+            lbl(X, 160, 1300, 140, "font52_title", INK, "$INFO[Window.Property(title)]", aligny="bottom",
+                visible="!" + logo),
+            labelled_fields(320, TITLE_FIELDS),
+            f'<control type="textbox"><left>{X}</left><top>400</top><width>660</width><height>114</height>'
+            f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(plot)]</label></control>',
+            f'<control type="grouplist"><left>{X - 6}</left><top>554</top><width>1650</width><height>78</height>'
+            '<orientation>horizontal</orientation><itemgap>8</itemgap><ondown>510</ondown>',
+            row_button(500, 420, "$INFO[Window.Property(play_label)]", True),
+            row_button(503, 260, "$INFO[Window.Property(season_label)]", False,
+                       visible="!String.IsEmpty(Window.Property(season_label))"),
+            row_button(501, 400, "$INFO[Window.Property(favourite_label)]", False),
+            row_button(502, 330, "$INFO[Window.Property(related_label)]", False,
+                       visible="!String.IsEmpty(Window.Property(has_related))"),
+            "</control>",
+            "\n".join(avail),
+            lbl(X + 22, 670, 1500, 36, "font12", INK2, "$INFO[Window.Property(avail_line)]"),
+            lbl(X, 716, 1200, 44, "font30_title", INK2, "$INFO[Window.Property(episodes_title)]"),
+            lbl(X, 770, 1500, 44, "font13", INK3, "$INFO[Window.Property(no_episodes)]"),
+            lines(
+                f'<control type="list" id="510"><left>{X - 6}</left><top>758</top><width>{1920 - X + 6}</width>'
+                '<height>250</height><orientation>horizontal</orientation><onup>500</onup>'
+                '<scrolltime tween="quadratic" easing="out">200</scrolltime>',
+                '<itemlayout width="400" height="250">', wide_card(380, 214, False, episode=True), "</itemlayout>",
+                '<focusedlayout width="400" height="250">', wide_card(380, 214, True, episode=True), "</focusedlayout>",
+                "</control>"),
+        ), visible="!String.IsEmpty(Window.Property(title))"),
+        # first load: the page's shapes; a season switch only shows the spinner
+        group(0, 0, 1920, 1080, skeleton, visible="String.IsEmpty(Window.Property(title))"),
+        loading(),
+    )
+
+
 def loading():
     """The small spinner while something loads (grid pages, the next page of a grid)."""
     return group(1600, 990, 280, 60, lines(
@@ -570,6 +651,7 @@ SECTIONS = {
     ("novaflix-app.xml", "push-grid"): menu_push,
     ("novaflix-app.xml", "grid"): grid,
     ("novaflix-app.xml", "loading"): loading,
+    ("novaflix-show.xml", "show"): show,
     ("novaflix-app.xml", "push-related"): menu_push,
     ("novaflix-app.xml", "related"): related,
 }

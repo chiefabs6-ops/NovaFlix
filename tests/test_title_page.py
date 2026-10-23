@@ -225,3 +225,12 @@ def test_movie_status_line(monkeypatch):
     tmdb()
     p = open_page("movie", 438631)
     assert (p.window.properties["avail"], p.window.properties["avail_line"]) == ("sub_only", "No English audio")
+
+
+def test_title_page_sets_labelled_fields():
+    tmdb()
+    show = open_page("tv", 1396).window.properties
+    assert show["kind"] == "TV series" and show["length_label"] == "Seasons" and show["length"].endswith("seasons")
+    assert show["rating"].startswith("★ ") and show["year"] == "2008" and show["genres"]
+    film = open_page("movie", 438631).window.properties
+    assert film["kind"] == "Movie" and film["length_label"] == "Runtime" and film["length"].endswith(" min")

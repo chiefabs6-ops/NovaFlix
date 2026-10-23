@@ -222,6 +222,16 @@ def main():
     # Masks drawn at the card's own size, so the 10 px corners stay round (diffuse textures do not take a border)
     save(rounded((420, 236), 10), "av-mask-wide10.png")
     save(rounded((200, 300), 10), "av-mask-poster10.png")
+    # Pill buttons for rows of buttons in a grouplist (the ring cannot be a separate image there):
+    # the fill inset 6 px, and on focus a 3 px cyan ring at the edge with a 3 px gap.
+    for name, fill in (("primary", WHITE + (255,)), ("secondary", WHITE + (36,))):
+        for focused in (False, True):
+            tex = Image.new("RGBA", (156, 78), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(tex)
+            draw.rounded_rectangle((6, 6, 149, 71), 33, fill=fill)
+            if focused:
+                draw.rounded_rectangle((0, 0, 155, 77), 39, outline=CYAN + (255,), width=3)
+            save(tex, f"av-btn-{name}{'-focus' if focused else ''}.png")
     spinner = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
     ImageDraw.Draw(spinner).arc((6, 6, 57, 57), 300, 210, fill=WHITE + (255,), width=5)
     save(spinner, "av-spinner.png")

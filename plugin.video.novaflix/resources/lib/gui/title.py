@@ -123,7 +123,16 @@ class TitlePage:
         w.setProperty("dark", "true" if hero["dark"] else "")
         w.setProperty("poster", title.poster or "")
         w.setProperty("logo", title.logo or "")
-        w.setProperty("genres", " · ".join(title.genres[:4]))
+        # labelled fields (Cinematic UI): each hides, label and all, when empty
+        for key in ("year", "rating", "genres", "kind"):
+            w.setProperty(key, hero[key])
+        if title.is_movie:
+            length = ui.string(30258) % title.runtime_min if title.runtime_min else ""
+        else:
+            seasons = len([s for s in title.seasons if s.number > 0])
+            length = ui.string(30431) % seasons if seasons else ""
+        w.setProperty("length", length)
+        w.setProperty("length_label", ui.string(30517 if title.is_movie else 30518))
         foreign = title.original_language not in (None, "en")
         w.setProperty("dub", ui.string(30427) % media.language_name(title.original_language) if foreign else "")
         w.setProperty("has_related", "true" if self.data["has_more"] else "")

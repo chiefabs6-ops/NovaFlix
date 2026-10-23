@@ -917,3 +917,11 @@ msgstr ""
 msgctxt "#30516"
 msgid "Shows"
 msgstr ""
+
+msgctxt "#30517"
+msgid "Runtime"
+msgstr ""
+
+msgctxt "#30518"
+msgid "Seasons"
+msgstr ""
