@@ -665,10 +665,20 @@ def show():
             lbl(X, 160, 1300, 140, "font52_title", INK, "$INFO[Window.Property(title)]", aligny="bottom",
                 visible=neg(logo)),
             labelled_fields(320, TITLE_FIELDS),
-            f'<control type="textbox"><left>{X}</left><top>400</top><width>660</width><height>102</height>'
-            f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(plot)]</label></control>',
+            # the plot: Up from the buttons focuses it (a highlight and a ring), then it scrolls through
+            # the whole text; Down goes back to the buttons
+            img(X - 16, 390, 1132, 122, "av-r10.png", "B3141A21", border=10, visible="Control.HasFocus(520)"),
+            img(X - 19, 387, 1138, 128, "av-r10-ring.png", CYAN, border=10, visible="Control.HasFocus(520)"),
+            f'<control type="button" id="520"><left>{X - 16}</left><top>390</top><width>1132</width><height>122</height>'
+            '<texturefocus colordiffuse="00FFFFFF">av-white.png</texturefocus>'
+            '<texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus>'
+            '<label></label><ondown>500</ondown><onleft>520</onleft><onright>520</onright>'
+            '<visible>!String.IsEmpty(Window.Property(plot))</visible></control>',
+            f'<control type="textbox"><left>{X}</left><top>400</top><width>1100</width><height>102</height>'
+            f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(plot)]</label>'
+            '<autoscroll delay="1500" time="2500" repeat="4000">Control.HasFocus(520)</autoscroll></control>',
             f'<control type="grouplist"><left>{X - 6}</left><top>554</top><width>1650</width><height>78</height>'
-            '<orientation>horizontal</orientation><itemgap>8</itemgap><ondown>510</ondown>',
+            '<orientation>horizontal</orientation><itemgap>8</itemgap><ondown>510</ondown><onup>520</onup>',
             row_button(500, 520, "$INFO[Window.Property(play_label)]", True, auto=True),
             row_button(503, 360, "$INFO[Window.Property(season_label)]", False, auto=True,
                        visible="!String.IsEmpty(Window.Property(season_label))"),

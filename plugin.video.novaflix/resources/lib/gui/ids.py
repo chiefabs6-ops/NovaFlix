@@ -21,6 +21,7 @@ SHOW_FAVOURITE = 501
 SHOW_RELATED = 502
 SHOW_SEASON = 503   # season picker (TV)
 SHOW_EPISODES = 510
+SHOW_PLOT = 520     # the plot: focusable so it can scroll through
 SOURCES_LIST = 600
 CONFIRM_YES = 700
 CONFIRM_NO = 701
@@ -44,7 +45,7 @@ WINDOW_IDS = {
     "novaflix-progress.xml": [PROGRESS_BAR, PROGRESS_CANCEL],
     "novaflix-sources.xml": [SOURCES_LIST],
     "novaflix-menu.xml": [MENU_LIST],
-    "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_SEASON, SHOW_EPISODES],
+    "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_SEASON, SHOW_EPISODES, SHOW_PLOT],
     "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, GRID_TILES, GRID_EMPTY_ACTION,
                          GENRE_TAB_FILMS, GENRE_TAB_SHOWS,
                          *RELATED_ROWS],

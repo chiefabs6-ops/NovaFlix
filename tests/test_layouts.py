@@ -315,3 +315,16 @@ def test_hero_buttons_fit_their_words_with_a_gap():
     (play_left, play_width), (info_left, info_width) = groups["201"], groups["202"]
     assert info_left - (play_left + play_width) >= 20
     assert play_width <= 260 and info_width <= 290
+
+
+def test_title_page_plot_can_be_focused_and_scrolls():
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-show.xml")).getroot()
+    by_id = {c.get("id"): c for c in root.iter("control") if c.get("id")}
+    plot = by_id[str(ids.SHOW_PLOT)]
+    assert plot.findtext("ondown") == str(ids.SHOW_PLAY)
+    box = next(c for c in root.iter("control") if c.get("type") == "textbox" and "Property(plot)" in (c.findtext("label") or ""))
+    assert box.find("autoscroll") is not None and f"Control.HasFocus({ids.SHOW_PLOT})" in box.findtext("autoscroll")
+    assert int(box.findtext("width")) >= 1000
+    buttons = next(c for c in root.iter("control") if c.get("type") == "grouplist"
+                   and any(b.get("id") == str(ids.SHOW_PLAY) for b in c.findall("control")))
+    assert buttons.findtext("onup") == str(ids.SHOW_PLOT)
