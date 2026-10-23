@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090d;--s1:#0e1218;--ink:#fff;--ink2:#b9c0ca;--cyan:#00a6d6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans",system-ui,sans-serif;padding:48px 32px 64px}
+h1{font-size:32px;font-weight:700;max-width:1500px;margin:0 auto}
+p.lead{color:var(--ink2);font-size:17px;margin:8px auto 36px;max-width:1500px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:28px;max-width:1500px;margin:0 auto}
+a.card{display:block;background:var(--s1);border-radius:14px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s}
+a.card:hover,a.card:focus-visible{transform:translateY(-3px);outline:2px solid var(--cyan);outline-offset:2px}
+a.card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.card div{padding:16px 20px 20px}
+.card h2{font-size:20px;font-weight:700}
+.card span{font-size:15px;color:var(--ink2)}
+@media (prefers-reduced-motion:reduce){a.card{transition:none}}
+</style></head><body>
+<h1>NovaFlix home screen: three directions</h1>
+<p class="lead">Each opens full screen and scales to the window. Arrow keys move focus like a TV remote.</p>
+<div class="grid">
+  <a class="card" href="a-cinematic-premium.html"><img src="a-cinematic-premium.png" alt="Concept A preview"><div><h2>A · Cinematic Premium</h2><span>Full-screen artwork, icon rail, overlaid cards</span></div></a>
+  <a class="card" href="b-modern-minimal.html"><img src="b-modern-minimal.png" alt="Concept B preview"><div><h2>B · Modern Minimal</h2><span>Top bar, contained spotlight, more rows visible</span></div></a>
+  <a class="card" href="c-novaflix-signature.html"><img src="c-novaflix-signature.png" alt="Concept C preview"><div><h2>C · NovaFlix Signature</h2><span>Grouped sidebar, framed hero with queue, opening cards</span></div></a>
+</div>
+</body></html>

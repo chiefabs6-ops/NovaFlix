@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Choose source</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+.art img{object-position:70% 14%}
+.art .v{background:linear-gradient(90deg,rgba(5,7,10,.75) 0,rgba(5,7,10,.55) 40%,rgba(5,7,10,.9) 62%)}
+/* the film stays named on the left; the picker is a drawer from the right */
+.who{position:absolute;left:120px;top:0;bottom:0;width:720px;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:120px;z-index:2}
+.who .title{font-size:84px}
+.who p{font-size:22px;color:var(--ink2);margin-top:14px}
+.drawer{position:absolute;right:0;top:0;bottom:0;width:1040px;background:var(--s1);z-index:3;padding:56px 64px;box-shadow:-30px 0 60px rgba(0,0,0,.45)}
+.drawer h2{font-size:34px;font-weight:700}
+.drawer .sub{font-size:19px;color:var(--ink3);margin-top:6px}
+.tabs{display:flex;gap:10px;margin-top:28px;align-items:center}
+.tabs .lab{font-size:17px;font-weight:600;color:var(--ink3);width:96px}
+.tab{height:44px;padding:0 20px;border-radius:22px;display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600;color:var(--ink2);background:var(--s2)}
+.tab b{font-weight:600;color:var(--ink3)}
+.tab.on{background:var(--ink);color:var(--bg)}
+.tab.on b{color:#56606c}
+.tabs+.tabs{margin-top:12px}
+.list{margin-top:30px;display:flex;flex-direction:column;gap:8px}
+.src{display:grid;grid-template-columns:88px 1fr auto;gap:22px;align-items:center;height:100px;padding:0 24px;border-radius:14px;background:var(--s2)}
+.q{height:52px;border-radius:9px;display:grid;place-items:center;font-size:20px;font-weight:800;background:var(--s3);color:var(--ink)}
+.q.uhd{background:rgba(0,166,214,.18);color:var(--cyan-hi)}
+.src .t{font-size:22px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src .s{font-size:18px;color:var(--ink3);margin-top:4px}
+.st{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600;white-space:nowrap}
+.st i{width:10px;height:10px;border-radius:50%}
+.st.ready{color:var(--ok)} .st.ready i{background:var(--ok)}
+.st.dl{color:var(--warn)} .st.dl i{background:var(--warn)}
+.st.bad{color:var(--ink3)} .st.bad i{background:var(--bad)}
+.src.f{background:var(--s3);box-shadow:0 0 0 3px var(--cyan)}
+.src.blocked .t{color:var(--ink3)}
+.foot{position:absolute;left:64px;right:64px;bottom:40px;font-size:18px;color:var(--ink3);display:flex;justify-content:space-between}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div class="v"></div></div>
+  <section class="who"><div class="kick">Choose source</div><h1 class="title">Charade</h1><p>1963 · 1 h 53 min · Thriller, Romance</p></section>
+
+  <aside class="drawer">
+    <h2>23 sources</h2>
+    <div class="sub">Best first · 12 ready to play</div>
+    <div class="tabs"><span class="lab">Language</span><span class="tab on">English <b>23</b></span><span class="tab">Polish <b>4</b></span></div>
+    <div class="tabs"><span class="lab">Quality</span><span class="tab on">All <b>23</b></span><span class="tab">4K / UHD <b>5</b></span><span class="tab">1080p <b>12</b></span><span class="tab">Other <b>6</b></span></div>
+    <div class="list">
+      <div class="src f" tabindex="0" data-start><span class="q uhd">4K</span><div><div class="t">Charade 1963 2160p UHD BluRay REMUX HDR10 DTS-HD</div><div class="s">58.3 GB · HDR10 · 5.1 · English</div></div><span class="st ready"><i></i>Ready</span></div>
+      <div class="src" tabindex="0"><span class="q uhd">4K</span><div><div class="t">Charade 1963 2160p WEB-DL DV HDR H265</div><div class="s">14.2 GB · Dolby Vision · 2.0 · English</div></div><span class="st ready"><i></i>Ready</span></div>
+      <div class="src" tabindex="0"><span class="q">1080p</span><div><div class="t">Charade 1963 1080p BluRay x264 DTS</div><div class="s">12.4 GB · 5.1 · English</div></div><span class="st ready"><i></i>Ready</span></div>
+      <div class="src" tabindex="0"><span class="q">1080p</span><div><div class="t">Charade 1963 Criterion 1080p BluRay FLAC</div><div class="s">9.8 GB · 1.0 · English, subtitles</div></div><span class="st dl"><i></i>Needs download</span></div>
+      <div class="src" tabindex="0"><span class="q">720p</span><div><div class="t">Charade 1963 720p BRRip x264</div><div class="s">1.1 GB · 2.0 · English</div></div><span class="st dl"><i></i>Needs download</span></div>
+      <div class="src blocked" tabindex="0"><span class="q">CAM</span><div><div class="t">Charade 1963 HDCAM</div><div class="s">Cinema recording · hidden by your filter</div></div><span class="st bad"><i></i>Blocked</span></div>
+    </div>
+    <div class="foot"><span>Hold OK for sort and filters</span><span>Back to close</span></div>
+  </aside>
+</div>
+<script src="../round3/shared.js"></script>
+</body></html>

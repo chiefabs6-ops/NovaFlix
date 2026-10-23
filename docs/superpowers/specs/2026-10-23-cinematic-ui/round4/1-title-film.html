@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Film page</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+.art img{object-position:70% 14%}
+.copy{position:absolute;left:var(--x);top:120px;width:860px;z-index:2}
+.copy .title{margin-top:16px}
+.copy .meta{margin-top:24px}
+.copy .plot{margin-top:24px;width:660px}
+.cast{margin-top:14px;font-size:20px;color:var(--ink3);width:900px;line-height:1.5}
+.cast b{color:var(--ink2);font-weight:600}
+.copy .btns{margin-top:32px}
+.avail{margin-top:22px;display:flex;align-items:center;gap:12px;font-size:20px;font-weight:600;color:var(--ink2)}
+.avail i{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.avail span{color:var(--ink3);font-weight:500}
+.row{position:absolute;left:var(--x);right:0;top:770px;z-index:2}
+.row .h2{margin-bottom:16px}
+.cards{display:flex;gap:20px}
+.card{height:236px}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div class="v"></div></div>
+  <nav class="rail"><img class="mark" src="../icons/av-logo.png" alt="NovaFlix">
+    <ul><li class="on"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span></li></ul>
+    <ul class="end"><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span></li></ul></nav>
+
+  <section class="copy">
+    <div class="kick">Film <b>Szarada</b></div>
+    <h1 class="title">Charade</h1>
+    <div class="meta">
+      <div><span class="k">Rating</span>★ 7.9</div>
+      <div><span class="k">Year</span>1963</div>
+      <div><span class="k">Runtime</span>1 h 53 min</div>
+      <div><span class="k">Genre</span>Thriller, Romance</div>
+      <div class="tags"><span class="tag">4K</span><span class="tag">HDR</span><span class="tag">EN</span><span class="tag">PL</span></div>
+    </div>
+    <p class="plot">Widowed in Paris, Regina is chased by three men who want the fortune her husband stole, and helped by a stranger who keeps changing his name.</p>
+    <p class="cast"><b>Starring</b> Cary Grant, Audrey Hepburn, Walter Matthau &nbsp;·&nbsp; <b>Director</b> Stanley Donen</p>
+    <div class="btns">
+      <div class="btn play f" tabindex="0" data-start><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_arrow.png)"></span>Play</div>
+      <div class="btn" tabindex="0">Choose source</div>
+      <div class="btn" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span>My List</div>
+      <div class="btn" tabindex="0">More like this</div>
+    </div>
+    <div class="avail"><i></i>Ready to play <span>· 2160p REMUX · English · 12 sources</span></div>
+  </section>
+
+  <section class="row"><div class="h2">More like this</div><div class="cards">
+    <div class="card" tabindex="0"><img src="../img/buildings-with-colorful-neon-street-signs-at.jpg" alt="" style="object-position:50% 40%"><div class="sh"></div><div class="tx"><div class="t">Shinjuku Blue</div><div class="s"><span>Thriller · 2024</span><span>★ 7.4</span></div></div></div>
+    <div class="card" tabindex="0"><img src="../img/neon-night-3-23358201426.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">After Hours</div><div class="s"><span>Crime · 2022</span><span>★ 6.9</span></div></div></div>
+    <div class="card" tabindex="0"><img src="../img/d4342b-grand-canyon-scenic-sunset-from-desert.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Long Rim</div><div class="s"><span>Drama · 2023</span><span>★ 8.1</span></div></div></div>
+    <div class="card" tabindex="0"><img src="../img/vista-s-infrared-view-of-the-lagoon.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Lagoon</div><div class="s"><span>Sci-fi · 2025</span><span>★ 7.7</span></div></div></div>
+  </div></section>
+</div>
+<script src="../round3/shared.js"></script>
+</body></html>

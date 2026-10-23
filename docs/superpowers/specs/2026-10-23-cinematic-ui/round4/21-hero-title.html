@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Hero title: logo or text</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css">
+<style>
+:root{--bg:#05070a;--ink:#fff;--ink2:#d3d8df;--ink3:#8f98a4;--cyan:#00a6d6;--cyan-hi:#35cdf5;--r:10px;--x:184px}
+/* full-screen artwork with an atmospheric, layered fade */
+.art{position:absolute;inset:0}
+.art img{width:100%;height:100%;object-fit:cover;object-position:68% 16%}
+.art .v{position:absolute;inset:0;background:
+  radial-gradient(120% 90% at 78% 30%,rgba(5,7,10,0) 35%,rgba(5,7,10,.55) 75%,rgba(5,7,10,.85) 100%),
+  linear-gradient(90deg,rgba(5,7,10,.92) 0,rgba(5,7,10,.7) 28%,rgba(5,7,10,0) 58%),
+  linear-gradient(0deg,var(--bg) 0,var(--bg) 22%,rgba(5,7,10,.6) 42%,rgba(5,7,10,0) 62%)}
+/* slim icon rail; labels slide out when the rail has focus */
+.rail{position:absolute;left:0;top:0;bottom:0;width:112px;z-index:5;padding:40px 0;display:flex;flex-direction:column;align-items:center;transition:width .25s ease,background .25s}
+.rail:focus-within{width:340px;background:rgba(5,7,10,.94);align-items:stretch;padding:40px 24px}
+.rail .mark{width:52px;height:52px;border-radius:12px;align-self:center}
+.rail:focus-within .mark{align-self:flex-start;margin-left:6px}
+.rail ul{list-style:none;margin-top:72px;display:flex;flex-direction:column;gap:10px}
+.rail li{height:56px;min-width:56px;border-radius:28px;display:flex;align-items:center;gap:18px;padding:0 14px;color:var(--ink3);font-size:24px;font-weight:600;white-space:nowrap;overflow:hidden;transition:background .15s,color .15s}
+.rail li span.l{opacity:0;width:0;transition:opacity .2s}
+.rail:focus-within li span.l{opacity:1;width:auto}
+.rail li.on{color:var(--ink)}
+.rail li.on::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--cyan);margin-left:auto;flex:none}
+.rail:not(:focus-within) li.on::after{position:absolute;left:52px;margin-top:44px}
+.rail li:focus{background:rgba(255,255,255,.12);color:var(--ink)}
+.rail .end{margin-top:auto}
+/* hero copy, anchored low so the artwork owns the top */
+.copy{position:absolute;left:var(--x);top:210px;width:760px;z-index:2}
+.kick{font-size:21px;font-weight:600;color:var(--cyan-hi);display:flex;gap:14px;align-items:center}
+.kick b{color:var(--ink2);font-weight:500}
+.title{font-family:"Playfair Display",serif;font-weight:700;font-size:112px;line-height:1;letter-spacing:-.01em;margin-top:18px}
+.meta{display:flex;gap:26px;margin-top:24px;font-size:22px;color:var(--ink2);font-weight:500;align-items:center}
+.meta .k{color:var(--ink3);font-size:17px;font-weight:600;display:block;margin-bottom:2px}
+.meta div{line-height:1.25}
+.meta .tags{display:flex;gap:8px;align-self:flex-end}
+.tag{font-size:16px;font-weight:700;padding:3px 9px;border-radius:5px;background:rgba(255,255,255,.14);color:var(--ink)}
+.plot{margin-top:24px;font-size:23px;line-height:1.6;color:var(--ink2);width:620px}
+.btns{display:flex;gap:14px;margin-top:34px}
+.btn{height:66px;padding:0 34px;border-radius:33px;display:flex;align-items:center;gap:12px;font-size:23px;font-weight:700;color:var(--ink);background:rgba(255,255,255,.14);transition:transform .15s,background .15s}
+.btn .ico{width:28px;height:28px}
+.btn.play{background:#fff;color:#05070a}
+.btn.play .ico{color:var(--cyan)}
+.btn:focus{transform:scale(1.05);box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--cyan)}
+/* rows */
+.row{position:absolute;left:var(--x);right:0;z-index:2}
+.row h2{font-size:24px;font-weight:600;color:var(--ink2);margin-bottom:16px}
+.r1{top:690px}
+.cards{display:flex;gap:20px}
+.card{width:420px;height:236px;flex:none;border-radius:var(--r);overflow:hidden;position:relative;transition:transform .2s,box-shadow .2s}
+.card img{width:100%;height:100%;object-fit:cover}
+.card .sh{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.82) 0,rgba(0,0,0,.2) 46%,rgba(0,0,0,0) 70%)}
+.card .tx{position:absolute;left:20px;right:20px;bottom:20px}
+.card .t{font-size:24px;font-weight:700}
+.card .s{font-size:18px;color:var(--ink2);margin-top:2px;display:flex;justify-content:space-between}
+.card .bar{height:3px;background:rgba(255,255,255,.25);border-radius:2px;margin-top:12px}
+.card .bar i{display:block;height:100%;background:var(--cyan);border-radius:2px}
+.card:focus{transform:scale(1.04);box-shadow:0 0 0 3px var(--ink),0 18px 40px rgba(0,0,0,.6);z-index:3}
+.r2{top:1000px}
+.r2 .posters{display:flex;gap:20px}
+.r2 img{width:180px;height:270px;border-radius:var(--r);object-fit:cover}
+.title .logo{height:120px;width:auto;margin:6px 0 0}
+.copy{top:150px!important}
+.title .txt{display:none;font-family:"Noto Sans",sans-serif;font-weight:700;font-size:64px;letter-spacing:-.01em;line-height:1.1}
+.text .title .logo{display:none}.text .title .txt{display:block}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div class="v"></div></div>
+
+  <nav class="rail">
+    <img class="mark" src="../icons/av-logo.png" alt="NovaFlix">
+    <ul>
+      <li class="on" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span><span class="l">Home</span></li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span><span class="l">Search</span></li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span><span class="l">Continue Watching</span></li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span><span class="l">My List</span></li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span><span class="l">Explore</span></li>
+    </ul>
+    <ul class="end"><li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span><span class="l">Settings</span></li></ul>
+  </nav>
+
+  <section class="copy">
+    <div class="kick">Trending Now <b>No. 1 this week</b></div>
+    <h1 class="title"><img class="logo" src="../img/charade-logo.png" alt="Charade"><span class="txt">Charade</span></h1>
+    <div class="meta">
+      <div><span class="k">Rating</span>★ 7.9</div>
+      <div><span class="k">Year</span>1963</div>
+      <div><span class="k">Runtime</span>1 h 53 min</div>
+      <div><span class="k">Genre</span>Thriller, Romance</div>
+      <div class="tags"><span class="tag">4K</span><span class="tag">HDR</span><span class="tag">EN</span></div>
+    </div>
+    <p class="plot">Widowed in Paris, Regina is chased by three men who want the fortune her husband stole, and helped by a stranger who keeps changing his name.</p>
+    <div class="btns">
+      <div class="btn play" tabindex="0" data-start><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_arrow.png)"></span>Play</div>
+      <div class="btn" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-info.png)"></span>More info</div>
+      <div class="btn" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span>My List</div>
+    </div>
+  </section>
+
+  <section class="row r1"><h2>Continue Watching</h2><div class="cards">
+    <div class="card" tabindex="0"><img src="../img/001-volcano-eruption-of-litli-hrutur-in.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Fire Line</div><div class="s"><span>S1 E4 · The Road</span><span>22 min left</span></div><div class="bar"><i style="width:64%"></i></div></div></div>
+    <div class="card" tabindex="0"><img src="../img/buildings-with-colorful-neon-street-signs-at.jpg" alt="" style="object-position:50% 40%"><div class="sh"></div><div class="tx"><div class="t">Shinjuku Blue</div><div class="s"><span>S2 E1 · Last Train</span><span>41 min left</span></div><div class="bar"><i style="width:30%"></i></div></div></div>
+    <div class="card" tabindex="0"><img src="../img/la-horde-surfers-riding-a-wave-in.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">The Set</div><div class="s"><span>Film</span><span>14 min left</span></div><div class="bar"><i style="width:82%"></i></div></div></div>
+    <div class="card" tabindex="0"><img src="../img/flaming-star-nebula-ic-405.png" alt=""><div class="sh"></div><div class="tx"><div class="t">Deep Field</div><div class="s"><span>S1 E2 · Red Shift</span><span>48 min left</span></div><div class="bar"><i style="width:12%"></i></div></div></div>
+  </div></section>
+  <section class="row r2"><h2>Trending Now</h2><div class="posters"><img src="../img/his-girl-friday-1940-poster.jpg" alt=""><img src="../img/the-general-1926-movie-poster-2.png" alt=""><img src="../img/the-cabinet-of-doctor-caligari-movie-poster.jpg" alt=""><img src="../img/phantom-of-the-opera-1925-poster.jpg" alt=""><img src="../img/detour-poster.jpg" alt=""><img src="../img/charade-1963-poster.jpg" alt=""><img src="../img/night-of-the-living-dead-1968-poster.jpg" alt=""><img src="../img/boris-bilinski-1900-1948-plakat-fur-den.jpg" alt=""></div></section>
+</div>
+<script>if(/text/.test(location.search))document.getElementById("stage").classList.add("text")</script>
+<script src="../round3/shared.js"></script>
+</body></html>

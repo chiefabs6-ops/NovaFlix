@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Series page</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+.art img{object-position:50% 40%}
+.copy{position:absolute;left:var(--x);top:110px;width:900px;z-index:2}
+.copy .title{margin-top:16px}
+.copy .meta{margin-top:24px}
+.copy .plot{margin-top:22px;width:660px}
+.copy .btns{margin-top:30px}
+.avail{margin-top:20px;display:flex;align-items:center;gap:12px;font-size:20px;font-weight:600;color:var(--ink2)}
+.avail i{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.avail span{color:var(--ink3);font-weight:500}
+.chev{width:22px;height:22px}
+.eps{position:absolute;left:var(--x);right:0;top:700px;z-index:2}
+.eps header{display:flex;align-items:baseline;gap:16px;margin-bottom:16px}
+.eps header span{font-size:19px;color:var(--ink3)}
+.cards{display:flex;gap:20px}
+.card{width:380px;height:214px}
+.card .n{position:absolute;left:16px;top:14px;font-size:16px;font-weight:700;color:var(--ink);background:rgba(5,7,10,.7);border-radius:5px;padding:2px 8px}
+.card .done{position:absolute;right:14px;top:14px;width:30px;height:30px;border-radius:50%;background:rgba(5,7,10,.7);display:grid;place-items:center;color:var(--ok)}
+.card .done .ico{width:20px;height:20px}
+.card.watched img{filter:brightness(.7)}
+.desc{margin-top:14px;font-size:19px;color:var(--ink3);line-height:1.5;width:380px}
+.desc b{color:var(--ink2);font-weight:600}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/039-northern-lights-over-myvatn-iceland-photo.jpg" alt=""><div class="v"></div></div>
+  <nav class="rail"><img class="mark" src="../icons/av-logo.png" alt="NovaFlix">
+    <ul><li class="on"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span></li></ul>
+    <ul class="end"><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span></li></ul></nav>
+
+  <section class="copy">
+    <div class="kick">Series <b>2 seasons · 16 episodes</b></div>
+    <h1 class="title">Polar Night</h1>
+    <div class="meta">
+      <div><span class="k">Rating</span>★ 8.6</div>
+      <div><span class="k">Years</span>2023 – 2025</div>
+      <div><span class="k">Episodes</span>52 min</div>
+      <div><span class="k">Genre</span>Drama, Mystery</div>
+      <div class="tags"><span class="tag">4K</span><span class="tag">HDR</span><span class="tag">EN</span></div>
+    </div>
+    <p class="plot">A research crew stays on through the Arctic winter, and the lights over the lake start to answer back.</p>
+    <div class="btns">
+      <div class="btn play f" tabindex="0" data-start><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_arrow.png)"></span>Resume S2 E3 · 30 min left</div>
+      <div class="btn" tabindex="0">Season 2<span class="ico chev" style="-webkit-mask-image:url(../icons/av-icon-expand_more.png)"></span></div>
+      <div class="btn" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span>My List</div>
+      <div class="btn" tabindex="0">More like this</div>
+    </div>
+    <div class="avail"><i></i>Ready to play <span>· 2160p WEB-DL · English · Next: S2 E4</span></div>
+  </section>
+
+  <section class="eps"><header><div class="h2">Season 2</div><span>8 episodes · 2 watched</span></header><div class="cards">
+    <div><div class="card watched" tabindex="0"><img src="../img/vista-s-infrared-view-of-the-lagoon.jpg" alt=""><div class="sh"></div><span class="n">E1</span><span class="done"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-check_circle.png)"></span></span><div class="tx"><div class="t">Thaw</div><div class="s"><span>54 min</span><span>Watched</span></div></div></div></div>
+    <div><div class="card watched" tabindex="0"><img src="../img/flaming-star-nebula-ic-405.png" alt=""><div class="sh"></div><span class="n">E2</span><span class="done"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-check_circle.png)"></span></span><div class="tx"><div class="t">Static</div><div class="s"><span>51 min</span><span>Watched</span></div></div></div></div>
+    <div><div class="card" tabindex="0"><img src="../img/039-northern-lights-over-myvatn-iceland-photo.jpg" alt=""><div class="sh"></div><span class="n">E3</span><div class="tx"><div class="t">The Signal</div><div class="s"><span>52 min</span><span>30 min left</span></div><div class="bar"><i style="width:42%"></i></div></div></div></div>
+    <div><div class="card" tabindex="0"><img src="../img/d4342b-grand-canyon-scenic-sunset-from-desert.jpg" alt=""><div class="sh"></div><span class="n">E4</span><div class="tx"><div class="t">Whiteout</div><div class="s"><span>55 min</span><span></span></div></div></div></div>
+  </div></section>
+</div>
+<script src="../round3/shared.js"></script>
+</body></html>

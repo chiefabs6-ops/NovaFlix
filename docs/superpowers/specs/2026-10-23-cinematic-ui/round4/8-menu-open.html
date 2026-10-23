@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Menu open</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+.art img{object-position:68% 16%}
+/* Home underneath, pushed back while the menu is open */
+.home{position:absolute;inset:0;transition:opacity .25s,transform .25s}
+.open .home{opacity:.45;transform:translateX(40px)}
+.copy{position:absolute;left:var(--x);top:210px;width:760px;z-index:2}
+.copy .title{margin-top:18px}
+.copy .meta{margin-top:24px}
+.copy .plot{margin-top:24px;width:620px}
+.copy .btns{margin-top:34px}
+.row{position:absolute;left:var(--x);right:0;top:690px;z-index:2}
+.row .h2{margin-bottom:16px}
+.cards{display:flex;gap:20px}
+/* the menu: a dark fade from the left edge, no box and no hard edge */
+.shade{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .25s;
+  background:linear-gradient(90deg,rgba(5,7,10,.98) 0,rgba(5,7,10,.97) 26%,rgba(5,7,10,.8) 40%,rgba(5,7,10,0) 64%)}
+.open .shade{opacity:1}
+.nav{position:absolute;left:0;top:0;bottom:0;z-index:5;padding:40px 0 40px 30px;display:flex;flex-direction:column}
+.nav .brand{display:flex;align-items:center;gap:16px;height:56px}
+.nav .brand img{width:52px;height:52px;border-radius:12px}
+.nav .brand span{font-size:26px;font-weight:700;letter-spacing:.08em;opacity:0;transition:opacity .2s}
+.nav .brand b{color:var(--cyan)}
+.open .nav .brand span{opacity:1}
+.nav ul{list-style:none;margin-top:64px;display:flex;flex-direction:column;gap:6px}
+.nav li{height:60px;display:flex;align-items:center;gap:22px;padding:0 14px;border-radius:30px;color:var(--ink3);white-space:nowrap;position:relative}
+.nav li .ico{width:30px;height:30px}
+.nav li .l{font-size:27px;font-weight:600;opacity:0;transform:translateX(-12px);transition:opacity .2s,transform .2s}
+.open .nav li .l{opacity:1;transform:none}
+.nav li.on{color:var(--ink)}
+.nav li.on .ico{color:var(--cyan)}
+.nav li.f{color:var(--ink)}
+.nav li.f .l{font-size:31px;font-weight:700}
+.nav li.f::before{content:"";position:absolute;left:-30px;top:12px;bottom:12px;width:5px;border-radius:0 3px 3px 0;background:var(--cyan)}
+/* Explore opens its own list underneath when it has focus */
+.nav .sub{list-style:none;margin:4px 0 8px 66px;display:none;flex-direction:column;gap:2px}
+.explore .nav .sub{display:flex}
+.explore #explore{color:var(--ink)}
+.explore #explore .ico{color:var(--cyan)}
+.sub li{height:46px;padding:0 14px;font-size:22px;font-weight:500;color:var(--ink3)}
+.sub li.f{color:var(--ink);font-size:23px;font-weight:700}
+.sub li.f::before{left:-96px}
+.nav .end{margin-top:auto}
+.hint{position:absolute;left:30px;bottom:110px;font-size:18px;color:var(--ink3);z-index:5;opacity:0}
+.open .hint{opacity:1}
+</style></head><body>
+<div id="stage">
+  <div class="home">
+    <div class="art"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div class="v"></div></div>
+    <section class="copy">
+      <div class="kick">Trending Now <b>No. 1 this week</b></div>
+      <h1 class="title">Charade</h1>
+      <div class="meta"><div><span class="k">Rating</span>★ 7.9</div><div><span class="k">Year</span>1963</div><div><span class="k">Runtime</span>1 h 53 min</div><div><span class="k">Genre</span>Thriller, Romance</div></div>
+      <p class="plot">Widowed in Paris, Regina is chased by three men who want the fortune her husband stole, and helped by a stranger who keeps changing his name.</p>
+      <div class="btns"><div class="btn play"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_arrow.png)"></span>Play</div><div class="btn">More info</div></div>
+    </section>
+    <section class="row"><div class="h2">Continue Watching</div><div class="cards">
+      <div class="card"><img src="../img/001-volcano-eruption-of-litli-hrutur-in.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Fire Line</div><div class="s"><span>S1 E4</span><span>22 min left</span></div><div class="bar"><i style="width:64%"></i></div></div></div>
+      <div class="card"><img src="../img/buildings-with-colorful-neon-street-signs-at.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Shinjuku Blue</div><div class="s"><span>S2 E1</span><span>41 min left</span></div><div class="bar"><i style="width:30%"></i></div></div></div>
+      <div class="card"><img src="../img/la-horde-surfers-riding-a-wave-in.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">The Set</div><div class="s"><span>Film</span><span>14 min left</span></div><div class="bar"><i style="width:82%"></i></div></div></div>
+      <div class="card"><img src="../img/flaming-star-nebula-ic-405.png" alt=""><div class="sh"></div><div class="tx"><div class="t">Deep Field</div><div class="s"><span>S1 E2</span><span>48 min left</span></div><div class="bar"><i style="width:12%"></i></div></div></div>
+    </div></section>
+  </div>
+
+  <div class="shade"></div>
+  <nav class="nav">
+    <div class="brand"><img src="../icons/av-logo.png" alt=""><span>NOVA<b>FLIX</b></span></div>
+    <ul>
+      <li class="on"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span><span class="l">Home</span></li>
+      <li id="search"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span><span class="l">Search</span></li>
+      <li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span><span class="l">Continue Watching</span></li>
+      <li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span><span class="l">My List</span></li>
+      <li id="explore"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span><span class="l">Explore</span></li>
+    </ul>
+    <ul class="sub">
+      <li class="f"><span class="l">Trending Now</span></li>
+      <li><span class="l">Popular movies</span></li>
+      <li><span class="l">Popular shows</span></li>
+      <li><span class="l">Top rated movies</span></li>
+      <li><span class="l">Top rated shows</span></li>
+      <li><span class="l">Airing today</span></li>
+      <li><span class="l">Genres</span></li>
+    </ul>
+    <ul class="end"><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span><span class="l">Settings</span></li></ul>
+  </nav>
+  <div class="hint">Right to go back</div>
+</div>
+<script>
+// ?closed shows the rail as it sits while you browse; ?explore shows Explore opened.
+var q = location.search, st = document.getElementById('stage');
+if (!/closed/.test(q)) st.classList.add('open');
+if (/explore/.test(q)) { st.classList.add('explore'); } else if (!/closed/.test(q)) { document.getElementById('search').classList.add('f'); }
+</script>
+<script src="../round3/shared.js"></script>
+</body></html>

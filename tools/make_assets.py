@@ -19,13 +19,11 @@ FONT_BASE = "https://raw.githubusercontent.com/google/material-design-icons/mast
 FONT_FILE = "variablefont/MaterialSymbolsRounded%5BFILL,GRAD,opsz,wght%5D"
 LICENSE_URL = FONT_BASE + "LICENSE"
 
-# NovaFlix: darker than AniVerse's palette (owner, 2026-10-19).
-BG = (2, 5, 13)
-PANEL = (7, 15, 31)
-PURPLE = (91, 31, 214)
-BLUE = (6, 99, 204)
-VIOLET = (139, 63, 224)
+# Cinematic UI (0.4.0, owner 2026-10-23): near-black ground, cyan the one accent; no purple or blue.
+BG = (5, 7, 10)
+PANEL = (12, 16, 21)
 CYAN = (0, 166, 214)
+BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 ICONS = ["home", "search", "play_circle", "format_list_bulleted", "star", "schedule", "calendar_month",
@@ -51,26 +49,6 @@ def outline(size, radius, width):
     return img
 
 
-def glow():
-    img = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
-    ImageDraw.Draw(img).rounded_rectangle((24, 24, 103, 103), 18, outline=WHITE + (255,), width=6)
-    return img.filter(ImageFilter.GaussianBlur(9))
-
-
-def gradient(size, start, end, radius):
-    w, h = size
-    img = Image.new("RGBA", size)
-    px = img.load()
-    for x in range(w):
-        t = x / (w - 1)
-        colour = tuple(round(a + (b - a) * t) for a, b in zip(start, end)) + (255,)
-        for y in range(h):
-            px[x, y] = colour
-    mask = rounded(size, radius).getchannel("A")
-    img.putalpha(mask)
-    return img
-
-
 def fade(size, horizontal):
     w, h = size
     img = Image.new("RGBA", size)
@@ -82,29 +60,43 @@ def fade(size, horizontal):
     return img
 
 
-def divider():
-    img = Image.new("RGBA", (8, 512), (0, 0, 0, 0))
+def stops(size, horizontal, colour, points):
+    """A one-colour fade whose alpha runs piecewise-linearly through (position 0..1, alpha 0..1) points."""
+    w, h = size
+    length = w if horizontal else h
+    alphas = []
+    for i in range(length):
+        t = i / (length - 1)
+        for (p0, a0), (p1, a1) in zip(points, points[1:]):
+            if p0 <= t <= p1:
+                alphas.append(a0 + (a1 - a0) * ((t - p0) / (p1 - p0) if p1 > p0 else 0))
+                break
+        else:
+            alphas.append(points[-1][1] if t > points[-1][0] else points[0][1])
+    img = Image.new("RGBA", size)
     px = img.load()
-    for y in range(512):
-        t = y / 511
-        colour = tuple(round(a + (b - a) * t) for a, b in zip(VIOLET, CYAN))
-        alpha = round(200 * (1 - abs(t - 0.5) * 1.6))
-        for x in range(8):
-            px[x, y] = colour + (max(alpha - abs(x - 3) * 40, 0),)
+    for x in range(w):
+        for y in range(h):
+            px[x, y] = colour + (round(255 * alphas[x if horizontal else y]),)
     return img
 
 
-def accent():
-    """Slim vertical purple-to-cyan bar beside the open Explore submenu (sidebar redesign)."""
-    w, h = 8, 256
+def vignette():
+    """Darkens the edges of a hero picture; clear around (78 %, 30 %). Drawn small, scaled by Kodi."""
+    w, h = 480, 270
+    cx, cy = 0.78 * w, 0.30 * h
     img = Image.new("RGBA", (w, h))
     px = img.load()
-    for y in range(h):
-        t = y / (h - 1)
-        colour = tuple(round(a + (b - a) * t) for a, b in zip(VIOLET, CYAN)) + (255,)
-        for x in range(w):
-            px[x, y] = colour
-    img.putalpha(rounded((w, h), 4).getchannel("A"))
+    for x in range(w):
+        for y in range(h):
+            d = (((x - cx) / (1.2 * w)) ** 2 + ((y - cy) / (0.9 * h)) ** 2) ** 0.5 / 0.5
+            if d <= 0.35:
+                a = 0.0
+            elif d <= 0.75:
+                a = 0.55 * (d - 0.35) / 0.40
+            else:
+                a = min(0.85, 0.55 + 0.30 * (d - 0.75) / 0.25)
+            px[x, y] = BG + (round(255 * a),)
     return img
 
 
@@ -193,13 +185,12 @@ def logo():
 
 
 def fanart():
-    """1920x1080 add-on background: BG with a soft violet glow top left and a cyan glow bottom right.
-    Drawn small and scaled up, so the glows stay smooth."""
+    """1920x1080 add-on background: the ground with one soft cyan glow bottom right.
+    Drawn small and scaled up, so the glow stays smooth."""
     small = Image.new("RGB", (192, 108), BG)
-    for colour, box in ((VIOLET, (-50, -45, 110, 75)), (CYAN, (90, 40, 250, 160))):
-        layer = Image.new("L", small.size, 0)
-        ImageDraw.Draw(layer).ellipse(box, fill=80)
-        small = Image.composite(Image.new("RGB", small.size, colour), small, layer.filter(ImageFilter.GaussianBlur(28)))
+    layer = Image.new("L", small.size, 0)
+    ImageDraw.Draw(layer).ellipse((100, 50, 250, 160), fill=60)
+    small = Image.composite(Image.new("RGB", small.size, CYAN), small, layer.filter(ImageFilter.GaussianBlur(28)))
     image = small.resize((1920, 1080), Image.BICUBIC)
     for addon in ("plugin.video.novaflix", "script.novaflix", "repository.novaflix"):
         image.save(os.path.join(ROOT, addon, "fanart.png"), optimize=True)
@@ -210,16 +201,24 @@ def main():
     save(Image.new("RGBA", (8, 8), WHITE + (255,)), "av-white.png")
     save(rounded((64, 64), 16), "av-round.png")
     save(outline((64, 64), 16, 3), "av-round-border.png")
-    save(glow(), "av-glow.png")
-    save(gradient((256, 64), PURPLE, BLUE, 16), "av-gradient.png")
     save(fade((512, 8), horizontal=True), "av-fade-left.png")
     save(fade((8, 256), horizontal=False), "av-fade-bottom.png")
     save(rounded((230, 345), 14), "av-mask-poster.png")
     save(rounded((320, 180), 14), "av-mask-wide.png")
     save(rounded((64, 32), 16), "av-pill.png")
     save(rounded((32, 8), 4), "av-progress.png")
-    save(divider(), "av-divider.png")
-    save(accent(), "av-accent.png")
+    # Cinematic UI
+    save(rounded((64, 64), 10), "av-r10.png")
+    save(outline((64, 64), 10, 3), "av-r10-ring.png")
+    save(rounded((132, 66), 33), "av-pill66.png")
+    save(outline((132, 66), 33, 3), "av-pill66-ring.png")
+    save(rounded((96, 96), 22), "av-r22.png")
+    save(rounded((32, 6), 3), "av-bar.png")
+    save(stops((1920, 8), True, BG, [(0, .92), (.28, .70), (.58, 0), (1, 0)]), "av-shade-hero.png")
+    save(stops((8, 512), False, BG, [(0, 0), (.38, 0), (.58, .60), (.78, 1), (1, 1)]), "av-shade-bottom.png")
+    save(stops((8, 256), False, BLACK, [(0, 0), (.28, 0), (.52, .20), (1, .85)]), "av-shade-card.png")
+    save(stops((1920, 8), True, BG, [(0, .98), (.26, .97), (.40, .80), (.64, 0), (1, 0)]), "av-shade-menu.png")
+    save(vignette(), "av-vignette.png")
     dot = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     ImageDraw.Draw(dot).ellipse((0, 0, 15, 15), fill=WHITE + (255,))
     save(dot, "av-dot.png")

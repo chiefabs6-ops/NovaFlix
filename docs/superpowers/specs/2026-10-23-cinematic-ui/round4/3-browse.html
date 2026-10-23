@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Browse</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+/* the focused title's artwork fills the top, faded more than on Home */
+.art{height:640px}
+.art img{object-position:65% 20%}
+.art .v{background:linear-gradient(90deg,var(--bg) 0,rgba(5,7,10,.85) 30%,rgba(5,7,10,.25) 70%,rgba(5,7,10,.4) 100%),linear-gradient(0deg,var(--bg) 0,rgba(5,7,10,.4) 50%,rgba(5,7,10,.2) 100%)}
+.head{position:absolute;left:var(--x);right:96px;top:52px;display:flex;align-items:baseline;gap:18px;z-index:2}
+.head h1{font-size:34px;font-weight:700}
+.head span{font-size:20px;color:var(--ink3)}
+.head .sort{margin-left:auto;font-size:20px;font-weight:600;color:var(--ink2);background:rgba(255,255,255,.12);border-radius:22px;padding:8px 20px}
+.peek{position:absolute;left:var(--x);top:170px;width:780px;z-index:2}
+.peek .title{font-size:76px}
+.peek .meta{margin-top:18px}
+.peek .plot{margin-top:16px;font-size:21px;width:640px}
+.grid{position:absolute;left:var(--x);top:520px;right:0;display:grid;grid-template-columns:repeat(8,180px);gap:36px 22px;z-index:2}
+.grid img{width:180px;height:270px}
+.grid img.f{transform:scale(1.07)}
+.grid .lbl{display:none}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div class="v"></div></div>
+  <nav class="rail"><img class="mark" src="../icons/av-logo.png" alt="NovaFlix">
+    <ul><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span></li><li class="on"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span></li></ul>
+    <ul class="end"><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span></li></ul></nav>
+
+  <header class="head"><h1>Popular movies</h1><span>Explore · 240 titles</span><span class="sort">Sort, genre, year, rating</span></header>
+
+  <section class="peek">
+    <h2 class="title">Charade</h2>
+    <div class="meta"><div><span class="k">Rating</span>★ 7.9</div><div><span class="k">Year</span>1963</div><div><span class="k">Runtime</span>1 h 53 min</div><div><span class="k">Genre</span>Thriller, Romance</div></div>
+    <p class="plot">Widowed in Paris, Regina is chased by three men who want the fortune her husband stole.</p>
+  </section>
+
+  <section class="grid">
+    <img class="poster" tabindex="0" src="../img/his-girl-friday-1940-poster.jpg" alt="">
+    <img class="poster f" tabindex="0" data-start src="../img/charade-1963-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/the-general-1926-movie-poster-2.png" alt="">
+    <img class="poster" tabindex="0" src="../img/the-cabinet-of-doctor-caligari-movie-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/phantom-of-the-opera-1925-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/detour-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/night-of-the-living-dead-1968-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/boris-bilinski-1900-1948-plakat-fur-den.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/pals-first-film-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/eagles-claw-poster.png" alt="">
+    <img class="poster" tabindex="0" src="../img/charade-1963-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/his-girl-friday-1940-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/detour-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/the-general-1926-movie-poster-2.png" alt="">
+    <img class="poster" tabindex="0" src="../img/phantom-of-the-opera-1925-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/the-cabinet-of-doctor-caligari-movie-poster.jpg" alt="">
+  </section>
+</div>
+<script src="../round3/shared.js"></script>
+</body></html>

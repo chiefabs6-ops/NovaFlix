@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Concept B · Modern Minimal</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--bg:#0a0c10;--s1:#11151b;--s2:#1a1f27;--ink:#f4f6f8;--ink2:#b9c0ca;--ink3:#7d8693;--cyan:#00a6d6;--r:8px;--m:96px}
+/* top bar: one line, no chrome */
+.top{position:absolute;left:var(--m);right:var(--m);top:0;height:104px;display:flex;align-items:center;gap:44px;z-index:3}
+.brand{display:flex;align-items:center;gap:12px;margin-right:28px}
+.brand img{width:40px;height:40px;border-radius:9px}
+.brand span{font-size:21px;font-weight:700;letter-spacing:.1em}
+.brand b{color:var(--cyan)}
+.tab{font-size:22px;font-weight:500;color:var(--ink3);height:44px;display:flex;align-items:center;position:relative;transition:color .15s}
+.tab.on{color:var(--ink);font-weight:600}
+.tab.on::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--cyan)}
+.tab:focus{color:var(--ink)}
+.tab:focus::before{content:"";position:absolute;inset:-6px -14px;border-radius:8px;background:rgba(255,255,255,.07);z-index:-1}
+.top .right{margin-left:auto;display:flex;gap:16px}
+.iconbtn{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:var(--ink2);transition:background .15s,color .15s}
+.iconbtn:focus{background:var(--s2);color:var(--ink)}
+/* spotlight: contained, half text, half picture */
+.spot{position:absolute;left:var(--m);right:var(--m);top:116px;height:440px;display:grid;grid-template-columns:1fr 782px;gap:64px;align-items:center}
+.spot .pic{width:782px;height:440px;border-radius:12px;overflow:hidden}
+.spot .pic img{width:100%;height:100%;object-fit:cover;object-position:64% 22%}
+.lab{font-size:18px;font-weight:600;color:var(--ink3)}
+.spot h1{font-size:64px;font-weight:700;letter-spacing:-.025em;line-height:1.05;margin-top:10px}
+.facts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.fact{font-size:18px;font-weight:600;color:var(--ink2);background:var(--s1);border-radius:6px;padding:6px 12px}
+.spot p{font-size:21px;line-height:1.6;color:var(--ink2);margin-top:18px;max-width:640px}
+.acts{display:flex;gap:12px;margin-top:28px}
+.act{height:58px;padding:0 28px;border-radius:var(--r);display:flex;align-items:center;gap:10px;font-size:21px;font-weight:600;background:var(--s2);color:var(--ink);transition:background .15s,transform .15s}
+.act .ico{width:26px;height:26px}
+.act.p{background:var(--ink);color:var(--bg)}
+.act:focus{transform:translateY(-2px);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--cyan)}
+.spot .dots{display:flex;gap:6px;margin-top:32px}
+.spot .dots i{width:24px;height:3px;border-radius:2px;background:var(--s2)}
+.spot .dots i.on{background:var(--ink2)}
+/* rows: more of the catalogue visible at once */
+.row{position:absolute;left:var(--m);right:0}
+.row header{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
+.row h2{font-size:23px;font-weight:600}
+.row header span{font-size:18px;color:var(--ink3)}
+.r1{top:588px}
+.cw{display:flex;gap:20px}
+.c{width:330px;flex:none;transition:transform .15s}
+.c .pic{height:186px;border-radius:var(--r);overflow:hidden;position:relative;background:var(--s1)}
+.c img{width:100%;height:100%;object-fit:cover}
+.c .bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(0,0,0,.5)}
+.c .bar i{display:block;height:100%;background:var(--cyan)}
+.c .t{font-size:20px;font-weight:600;margin-top:12px}
+.c .s{font-size:17px;color:var(--ink3);margin-top:2px}
+.c:focus{transform:translateY(-4px)}
+.c:focus .pic{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+.r2{top:922px}
+.posters{display:flex;gap:20px}
+.p{width:150px;flex:none;transition:transform .15s}
+.p img{width:150px;height:225px;border-radius:var(--r);object-fit:cover}
+.p:focus{transform:translateY(-4px)}
+.p:focus img{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+</style></head><body>
+<div id="stage">
+  <header class="top">
+    <div class="brand"><img src="../icons/av-logo.png" alt=""><span>NOVA<b>FLIX</b></span></div>
+    <div class="tab on" tabindex="0">Home</div>
+    <div class="tab" tabindex="0">Continue Watching</div>
+    <div class="tab" tabindex="0">My List</div>
+    <div class="tab" tabindex="0">Explore</div>
+    <div class="right">
+      <div class="iconbtn" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span></div>
+      <div class="iconbtn" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span></div>
+    </div>
+  </header>
+
+  <section class="spot">
+    <div>
+      <div class="lab">Trending Now</div>
+      <h1>Charade</h1>
+      <div class="facts"><span class="fact">★ 7.9</span><span class="fact">1963</span><span class="fact">1 h 53 min</span><span class="fact">Thriller</span><span class="fact">4K HDR</span></div>
+      <p>Widowed in Paris, Regina is chased by three men who want the fortune her husband stole, and helped by a stranger who keeps changing his name.</p>
+      <div class="acts">
+        <div class="act p" tabindex="0" data-start><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_arrow.png)"></span>Play</div>
+        <div class="act" tabindex="0">More info</div>
+        <div class="act" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span></div>
+      </div>
+      <div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="pic"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""></div>
+  </section>
+
+  <section class="row r1"><header><h2>Continue Watching</h2><span>4</span></header><div class="cw">
+    <div class="c" tabindex="0"><div class="pic"><img src="../img/001-volcano-eruption-of-litli-hrutur-in.jpg" alt=""><div class="bar"><i style="width:64%"></i></div></div><div class="t">Fire Line</div><div class="s">S1 E4 · 22 min left</div></div>
+    <div class="c" tabindex="0"><div class="pic"><img src="../img/buildings-with-colorful-neon-street-signs-at.jpg" alt="" style="object-position:50% 40%"><div class="bar"><i style="width:30%"></i></div></div><div class="t">Shinjuku Blue</div><div class="s">S2 E1 · 41 min left</div></div>
+    <div class="c" tabindex="0"><div class="pic"><img src="../img/la-horde-surfers-riding-a-wave-in.jpg" alt=""><div class="bar"><i style="width:82%"></i></div></div><div class="t">The Set</div><div class="s">14 min left</div></div>
+    <div class="c" tabindex="0"><div class="pic"><img src="../img/flaming-star-nebula-ic-405.png" alt=""><div class="bar"><i style="width:12%"></i></div></div><div class="t">Deep Field</div><div class="s">S1 E2 · 48 min left</div></div>
+    <div class="c" tabindex="0"><div class="pic"><img src="../img/039-northern-lights-over-myvatn-iceland-photo.jpg" alt=""><div class="bar"><i style="width:50%"></i></div></div><div class="t">Polar Night</div><div class="s">S2 E3 · 30 min left</div></div>
+  </div></section>
+
+  <section class="row r2"><header><h2>Trending Now</h2><span>Films and shows</span></header><div class="posters">
+    <div class="p" tabindex="0"><img src="../img/his-girl-friday-1940-poster.jpg" alt=""></div>
+    <div class="p" tabindex="0"><img src="../img/the-general-1926-movie-poster-2.png" alt=""></div>
+    <div class="p" tabindex="0"><img src="../img/the-cabinet-of-doctor-caligari-movie-poster.jpg" alt=""></div>
+    <div class="p" tabindex="0"><img src="../img/phantom-of-the-opera-1925-poster.jpg" alt=""></div>
+    <div class="p" tabindex="0"><img src="../img/detour-poster.jpg" alt=""></div>
+    <div class="p" tabindex="0"><img src="../img/charade-1963-poster.jpg" alt=""></div>
+    <div class="p" tabindex="0"><img src="../img/night-of-the-living-dead-1968-poster.jpg" alt=""></div>
+    <div class="p" tabindex="0"><img src="../img/boris-bilinski-1900-1948-plakat-fur-den.jpg" alt=""></div>
+    <div class="p" tabindex="0"><img src="../img/pals-first-film-poster.jpg" alt="" style="object-fit:cover"></div>
+    <div class="p" tabindex="0"><img src="../img/eagles-claw-poster.png" alt=""></div>
+  </div></section>
+</div>
+<script src="shared.js"></script>
+</body></html>

@@ -1,0 +1,10 @@
+/* Shared base for the round-3 NovaFlix concepts. The screen is designed at
+   1920x1080 (the TV) and scaled to fit any window by shared.js. */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{font-family:"Noto Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#stage{width:1920px;height:1080px;position:absolute;left:50%;top:50%;overflow:hidden;transform-origin:center center;transform:translate(-50%,-50%);background:var(--bg);color:var(--ink)}
+.ico{display:inline-block;width:28px;height:28px;background:currentColor;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;flex:none}
+img{display:block}
+[tabindex]{outline:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

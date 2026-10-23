@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Search from your phone</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+.art img{object-position:50% 40%}
+.art .v{background:linear-gradient(90deg,var(--bg) 0,rgba(5,7,10,.88) 45%,rgba(5,7,10,.55) 100%),linear-gradient(0deg,var(--bg),rgba(5,7,10,0) 50%)}
+.copy{position:absolute;left:var(--x);top:150px;width:860px;z-index:2}
+.copy .title{font-size:96px;margin-top:16px}
+.copy .plot{margin-top:24px;width:720px}
+.addr{margin-top:34px;display:flex;flex-direction:column;gap:6px}
+.addr .k{font-size:17px;font-weight:600;color:var(--ink3)}
+.addr .v2{font-size:34px;font-weight:700;letter-spacing:.01em}
+.status{margin-top:26px;display:flex;align-items:center;gap:12px;font-size:20px;font-weight:600;color:var(--ink2)}
+.status i{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 6px rgba(0,166,214,.18)}
+.qr{position:absolute;right:220px;top:200px;width:460px;height:460px;background:#fff;border-radius:24px;padding:34px;z-index:2;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.qr canvas{width:100%;height:100%;display:block}
+.qr-cap{position:absolute;right:220px;top:684px;width:460px;text-align:center;font-size:19px;color:var(--ink3);z-index:2}
+.recent{position:absolute;left:var(--x);top:820px;z-index:2}
+.recent .h2{margin-bottom:16px}
+.chips{display:flex;gap:12px}
+.chip{height:56px;padding:0 26px;border-radius:28px;background:rgba(255,255,255,.12);display:flex;align-items:center;gap:12px;font-size:21px;font-weight:600}
+.chip .ico{width:22px;height:22px;color:var(--ink3)}
+.btns{margin-top:30px}
+
+/* Kodi build: the skin font (bold sans) replaces the serif */
+.title,h1,.g b,.t{font-family:"Noto Sans",sans-serif!important;letter-spacing:-.01em!important}
+.copy .title{font-size:64px;font-weight:700;line-height:1.1}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/buildings-with-colorful-neon-street-signs-at.jpg" alt=""><div class="v"></div></div>
+  <nav class="rail"><img class="mark" src="../icons/av-logo.png" alt="NovaFlix">
+    <ul><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span></li><li class="on"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span></li></ul>
+    <ul class="end"><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span></li></ul></nav>
+
+  <section class="copy">
+    <div class="kick">Search</div>
+    <h1 class="title">Type on your phone</h1>
+    <p class="plot">Scan the QR code with your phone (same Wi-Fi as this TV) and bookmark the page. Next time just open the bookmark while NovaFlix is open: type a title and press Search on TV.</p>
+    <div class="addr"><span class="k">Or open this address</span><span class="v2">http://192.168.1.86:8765</span></div>
+    <div class="status"><i></i>Waiting for your phone · closes in 4:52</div>
+  </section>
+
+  <div class="qr"><canvas id="qr" width="29" height="29"></canvas></div>
+  <div class="qr-cap">Same Wi-Fi as this TV</div>
+</div>
+<script>
+// A stand-in pattern for the QR code (the real one comes from the add-on).
+(function () {
+  var c = document.getElementById('qr').getContext('2d'), n = 29, seed = 7;
+  function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+  c.imageSmoothingEnabled = false;
+  for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) if (rnd() > 0.52) { c.fillStyle = '#05070a'; c.fillRect(x, y, 1, 1); }
+  [[0, 0], [n - 7, 0], [0, n - 7]].forEach(function (p) {
+    c.fillStyle = '#fff'; c.fillRect(p[0] - 1 < 0 ? 0 : p[0] - 1, p[1] - 1 < 0 ? 0 : p[1] - 1, 9, 9);
+    c.fillStyle = '#05070a'; c.fillRect(p[0], p[1], 7, 7);
+    c.fillStyle = '#fff'; c.fillRect(p[0] + 1, p[1] + 1, 5, 5);
+    c.fillStyle = '#05070a'; c.fillRect(p[0] + 2, p[1] + 2, 3, 3);
+  });
+  document.getElementById('qr').style.imageRendering = 'pixelated';
+})();
+</script>
+<script src="../round3/shared.js"></script>
+</body></html>

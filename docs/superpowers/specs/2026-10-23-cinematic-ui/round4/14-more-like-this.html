@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · More like this</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+/* same top as Browse: the focused title's artwork and details */
+.art{height:600px}
+.art img{object-position:50% 45%}
+.art .v{background:linear-gradient(90deg,var(--bg) 0,rgba(5,7,10,.85) 30%,rgba(5,7,10,.2) 70%,rgba(5,7,10,.35) 100%),linear-gradient(0deg,var(--bg) 0,rgba(5,7,10,.4) 50%,rgba(5,7,10,.2) 100%)}
+.head{position:absolute;left:var(--x);top:52px;display:flex;align-items:baseline;gap:18px;z-index:2}
+.head h1{font-size:34px;font-weight:700}
+.head span{font-size:20px;color:var(--ink3)}
+.peek{position:absolute;left:var(--x);top:150px;width:780px;z-index:2}
+.peek .title{font-size:76px}
+.peek .meta{margin-top:18px}
+.peek .plot{margin-top:16px;font-size:21px;width:640px}
+.row{position:absolute;left:var(--x);right:0;z-index:2}
+.row .h2{margin-bottom:16px;display:flex;gap:14px;align-items:baseline}
+.row .h2 span{font-size:18px;color:var(--ink3)}
+.r1{top:500px}
+.r2{top:880px}
+.cards{display:flex;gap:20px}
+.cards .card{width:400px;height:225px}
+.posters{display:flex;gap:22px}
+.posters img{width:180px;height:270px}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/001-volcano-eruption-of-litli-hrutur-in.jpg" alt=""><div class="v"></div></div>
+  <nav class="rail"><img class="mark" src="../icons/av-logo.png" alt="NovaFlix">
+    <ul><li class="on"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span></li></ul>
+    <ul class="end"><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span></li></ul></nav>
+
+  <header class="head"><h1>More like this</h1><span>Fire Line</span></header>
+  <section class="peek">
+    <h2 class="title">Fire Line: Ash</h2>
+    <div class="meta"><div><span class="k">Rating</span>★ 7.2</div><div><span class="k">Year</span>2026</div><div><span class="k">Type</span>Film</div><div><span class="k">Genre</span>Action, Drama</div></div>
+    <p class="plot">The crew that held the line at the volcano is called back when the ash cloud reaches the coast.</p>
+  </section>
+
+  <section class="row r1"><div class="h2">Fire Line Collection <span>3 films</span></div><div class="cards">
+    <div class="card f" tabindex="0" data-start><img src="../img/001-volcano-eruption-of-litli-hrutur-in.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Fire Line: Ash</div><div class="s"><span>2026</span><span>★ 7.2</span></div></div></div>
+    <div class="card" tabindex="0"><img src="../img/d4342b-grand-canyon-scenic-sunset-from-desert.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Fire Line: Origins</div><div class="s"><span>2027</span><span>Coming soon</span></div></div></div>
+    <div class="card" tabindex="0"><img src="../img/la-horde-surfers-riding-a-wave-in.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Fire Line: The Coast</div><div class="s"><span>2024</span><span>★ 6.8</span></div></div></div>
+  </div></section>
+
+  <section class="row r2"><div class="h2">More like this</div><div class="posters">
+    <img class="poster" tabindex="0" src="../img/the-general-1926-movie-poster-2.png" alt="">
+    <img class="poster" tabindex="0" src="../img/detour-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/phantom-of-the-opera-1925-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/charade-1963-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/night-of-the-living-dead-1968-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/his-girl-friday-1940-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/the-cabinet-of-doctor-caligari-movie-poster.jpg" alt="">
+    <img class="poster" tabindex="0" src="../img/boris-bilinski-1900-1948-plakat-fur-den.jpg" alt="">
+  </div></section>
+</div>
+<script src="../round3/shared.js"></script>
+</body></html>

@@ -16,7 +16,12 @@ SHAPES = {"av-white.png": (8, 8), "av-round.png": (64, 64), "av-round-border.png
           "av-gradient.png": (256, 64), "av-fade-left.png": (512, 8), "av-fade-bottom.png": (8, 256),
           "av-mask-poster.png": (230, 345), "av-mask-wide.png": (320, 180), "av-pill.png": (64, 32),
           "av-progress.png": (32, 8), "av-divider.png": (8, 512), "av-dot.png": (16, 16),
-          "av-placeholder.png": (230, 345), "av-logo.png": (280, 280), "av-accent.png": (8, 256)}
+          "av-placeholder.png": (230, 345), "av-logo.png": (280, 280), "av-accent.png": (8, 256),
+          # Cinematic UI (0.4.0)
+          "av-r10.png": (64, 64), "av-r10-ring.png": (64, 64), "av-pill66.png": (132, 66),
+          "av-pill66-ring.png": (132, 66), "av-r22.png": (96, 96), "av-shade-hero.png": (1920, 8),
+          "av-shade-bottom.png": (8, 512), "av-shade-card.png": (8, 256), "av-shade-menu.png": (1920, 8),
+          "av-vignette.png": (480, 270), "av-bar.png": (32, 6)}
 
 
 def png_size(path):
@@ -34,6 +39,13 @@ def test_shapes_exist_with_expected_size(name, size):
 @pytest.mark.parametrize("name", ICONS)
 def test_icons_exist(name):
     assert png_size(os.path.join(MEDIA, f"av-icon-{name}.png")) == (64, 64)
+
+
+def test_shades_fade_from_ground_to_clear():
+    image = pytest.importorskip("PIL.Image").open(os.path.join(MEDIA, "av-shade-hero.png")).convert("RGBA")
+    r, g, b, a = image.getpixel((0, 4))
+    assert (r, g, b) == (5, 7, 10) and a >= 230
+    assert image.getpixel((int(image.width * 0.6), 4))[3] == 0
 
 
 def test_addon_icon_is_square_512():

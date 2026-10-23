@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Up next</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+/* the playing video; only a soft fade in the corner where the prompt sits */
+.video{position:absolute;inset:0}
+.video img{width:100%;height:100%;object-fit:cover}
+.video .v{position:absolute;inset:0;background:radial-gradient(70% 70% at 100% 100%,rgba(5,7,10,.85) 0,rgba(5,7,10,.4) 45%,rgba(5,7,10,0) 75%)}
+.end-credits{position:absolute;left:96px;top:72px;font-size:21px;font-weight:600;color:var(--ink2);z-index:2;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.next{position:absolute;right:96px;bottom:96px;width:760px;z-index:3}
+.next .lab{font-size:20px;font-weight:600;color:var(--cyan-hi)}
+.next .row{display:grid;grid-template-columns:300px 1fr;gap:26px;margin-top:14px;align-items:center}
+.next .thumb{width:300px;height:169px;border-radius:var(--r);overflow:hidden;position:relative}
+.next .thumb img{width:100%;height:100%;object-fit:cover}
+.next .ep{font-size:19px;color:var(--ink3);font-weight:600}
+.next .t{font-family:var(--serif);font-size:44px;font-weight:700;line-height:1.05;margin-top:4px}
+.next .s{font-size:19px;color:var(--ink2);margin-top:8px;line-height:1.45}
+.next .btns{margin-top:26px}
+/* the countdown fills the Play button from left to right */
+.btn.count{position:relative;overflow:hidden}
+.btn.count::before{content:"";position:absolute;left:0;bottom:0;height:5px;width:62%;background:var(--cyan)}
+.btn.count>*{position:relative}
+.skip{position:absolute;right:96px;top:72px;z-index:3}
+</style></head><body>
+<div id="stage">
+  <div class="video"><img src="../img/039-northern-lights-over-myvatn-iceland-photo.jpg" alt=""><div class="v"></div></div>
+  <div class="end-credits">Polar Night · S2 E3 · The Signal</div>
+  <div class="skip"><div class="btn" tabindex="0">Skip ending</div></div>
+
+  <section class="next">
+    <div class="lab">Up next in 8 s</div>
+    <div class="row">
+      <div class="thumb"><img src="../img/d4342b-grand-canyon-scenic-sunset-from-desert.jpg" alt=""></div>
+      <div><div class="ep">Next: S2 E4</div><div class="t">Whiteout</div><div class="s">The storm cuts the station off, and someone is still out on the ice.</div></div>
+    </div>
+    <div class="btns">
+      <div class="btn play count f" tabindex="0" data-start><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_arrow.png)"></span><span>Play Now</span></div>
+      <div class="btn" tabindex="0"><span>Back to the credits</span></div>
+    </div>
+  </section>
+</div>
+<script src="../round3/shared.js"></script>
+</body></html>

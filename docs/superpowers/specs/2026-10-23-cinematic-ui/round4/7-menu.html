@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Hold-OK menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+/* the Home screen behind, dimmed; the menu opens beside the card it belongs to */
+.art img{object-position:68% 16%}
+.dimmer{position:absolute;inset:0;background:rgba(5,7,10,.72);z-index:4}
+.row{position:absolute;left:var(--x);right:0;top:690px;z-index:2}
+.row .h2{margin-bottom:16px}
+.cards{display:flex;gap:20px}
+.lift{position:absolute;left:var(--x);top:740px;z-index:5}
+.lift .card{transform:scale(1.04);box-shadow:0 0 0 3px var(--ink),0 18px 40px rgba(0,0,0,.6)}
+.menu{position:absolute;left:calc(var(--x) + 460px);top:420px;width:560px;background:var(--s1);border-radius:18px;padding:28px;z-index:6;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.menu h3{font-family:var(--serif);font-size:38px;font-weight:700}
+.menu .s{font-size:18px;color:var(--ink3);margin-top:4px}
+.menu ul{list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:6px}
+.menu li{height:64px;border-radius:12px;display:flex;align-items:center;gap:16px;padding:0 20px;font-size:22px;font-weight:600;color:var(--ink2)}
+.menu li .ico{width:26px;height:26px;color:var(--ink3)}
+.menu li.f{background:var(--ink);color:var(--bg)}
+.menu li.f .ico{color:var(--cyan)}
+.menu li .sub{margin-left:auto;font-size:18px;font-weight:500;color:var(--ink3)}
+.menu li.f .sub{color:#56606c}
+.hint{position:absolute;left:var(--x);bottom:44px;font-size:19px;color:var(--ink3);z-index:6}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div class="v"></div></div>
+  <nav class="rail"><img class="mark" src="../icons/av-logo.png" alt="NovaFlix">
+    <ul><li class="on"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span></li><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span></li></ul>
+    <ul class="end"><li><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span></li></ul></nav>
+  <section class="row"><div class="h2">Continue Watching</div><div class="cards">
+    <div class="card"></div>
+    <div class="card"><img src="../img/buildings-with-colorful-neon-street-signs-at.jpg" alt=""><div class="sh"></div></div>
+    <div class="card"><img src="../img/la-horde-surfers-riding-a-wave-in.jpg" alt=""><div class="sh"></div></div>
+    <div class="card"><img src="../img/flaming-star-nebula-ic-405.png" alt=""><div class="sh"></div></div>
+  </div></section>
+  <div class="dimmer"></div>
+
+  <div class="lift"><div class="card"><img src="../img/001-volcano-eruption-of-litli-hrutur-in.jpg" alt=""><div class="sh"></div><div class="tx"><div class="t">Fire Line</div><div class="s"><span>S1 E4 · The Road</span><span>22 min left</span></div><div class="bar"><i style="width:64%"></i></div></div></div></div>
+
+  <aside class="menu">
+    <h3>Fire Line</h3>
+    <div class="s">Series · S1 E4 · 22 min left</div>
+    <ul>
+      <li class="f" tabindex="0" data-start><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_arrow.png)"></span>Resume from 30:12</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-history.png)"></span>Play from the start</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span>Add to My List</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-check_circle.png)"></span>Mark as watched</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-explore.png)"></span>More like this</li>
+    </ul>
+  </aside>
+  <div class="hint">Back to close</div>
+</div>
+<script src="../round3/shared.js"></script>
+</body></html>

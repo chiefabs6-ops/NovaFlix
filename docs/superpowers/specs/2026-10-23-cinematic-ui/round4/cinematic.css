@@ -1,0 +1,55 @@
+/* Concept A, Cinematic Premium: the shared look for every screen. */
+:root{
+  --bg:#05070a;--s1:#0c1015;--s2:#141a21;--s3:#1e2630;
+  --ink:#fff;--ink2:#d3d8df;--ink3:#8f98a4;
+  --cyan:#00a6d6;--cyan-hi:#35cdf5;--cyan-ink:#001820;
+  --ok:#3fd28f;--warn:#f5b04f;--bad:#ff6b7a;
+  --r:10px;--x:184px;
+  --serif:"Playfair Display",Georgia,serif;
+}
+/* artwork behind everything, with the layered fade */
+.art{position:absolute;inset:0}
+.art img{width:100%;height:100%;object-fit:cover}
+.art .v{position:absolute;inset:0;background:
+  radial-gradient(120% 90% at 78% 30%,rgba(5,7,10,0) 35%,rgba(5,7,10,.55) 75%,rgba(5,7,10,.85) 100%),
+  linear-gradient(90deg,rgba(5,7,10,.92) 0,rgba(5,7,10,.7) 28%,rgba(5,7,10,0) 58%),
+  linear-gradient(0deg,var(--bg) 0,var(--bg) 22%,rgba(5,7,10,.6) 42%,rgba(5,7,10,0) 62%)}
+.art.dim .v{background:rgba(5,7,10,.78)}
+/* icon rail */
+.rail{position:absolute;left:0;top:0;bottom:0;width:112px;z-index:5;padding:40px 0;display:flex;flex-direction:column;align-items:center}
+.rail .mark{width:52px;height:52px;border-radius:12px}
+.rail ul{list-style:none;margin-top:72px;display:flex;flex-direction:column;gap:10px}
+.rail li{width:56px;height:56px;border-radius:28px;display:grid;place-items:center;color:var(--ink3);position:relative}
+.rail li.on{color:var(--ink)}
+.rail li.on::after{content:"";position:absolute;bottom:-6px;width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.rail .end{margin-top:auto}
+/* type */
+.kick{font-size:21px;font-weight:600;color:var(--cyan-hi);display:flex;gap:14px;align-items:center}
+.kick b{color:var(--ink2);font-weight:500}
+.title{font-family:var(--serif);font-weight:700;font-size:112px;line-height:1;letter-spacing:-.01em}
+.meta{display:flex;gap:26px;font-size:22px;color:var(--ink2);font-weight:500;align-items:flex-end}
+.meta .k{color:var(--ink3);font-size:17px;font-weight:600;display:block;margin-bottom:2px}
+.meta div{line-height:1.25}
+.tags{display:flex;gap:8px}
+.tag{font-size:16px;font-weight:700;padding:3px 9px;border-radius:5px;background:rgba(255,255,255,.14);color:var(--ink)}
+.plot{font-size:23px;line-height:1.6;color:var(--ink2)}
+.h2{font-size:24px;font-weight:600;color:var(--ink2)}
+/* buttons */
+.btns{display:flex;gap:14px}
+.btn{height:66px;padding:0 34px;border-radius:33px;display:flex;align-items:center;gap:12px;font-size:23px;font-weight:700;color:var(--ink);background:rgba(255,255,255,.14);white-space:nowrap;transition:transform .15s}
+.btn .ico{width:28px;height:28px}
+.btn.play{background:#fff;color:var(--bg)}
+.btn.play .ico{color:var(--cyan)}
+.btn.f,.btn:focus{transform:scale(1.05);box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--cyan)}
+/* wide card with text over the picture */
+.card{width:420px;height:236px;flex:none;border-radius:var(--r);overflow:hidden;position:relative;transition:transform .2s}
+.card img{width:100%;height:100%;object-fit:cover}
+.card .sh{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.85) 0,rgba(0,0,0,.2) 48%,rgba(0,0,0,0) 72%)}
+.card .tx{position:absolute;left:20px;right:20px;bottom:20px}
+.card .t{font-size:24px;font-weight:700}
+.card .s{font-size:18px;color:var(--ink2);margin-top:2px;display:flex;justify-content:space-between;gap:12px}
+.card .bar{height:3px;background:rgba(255,255,255,.25);border-radius:2px;margin-top:12px}
+.card .bar i{display:block;height:100%;background:var(--cyan);border-radius:2px}
+.card.f,.card:focus{transform:scale(1.04);box-shadow:0 0 0 3px var(--ink),0 18px 40px rgba(0,0,0,.6);z-index:3}
+.poster{width:200px;height:300px;border-radius:var(--r);object-fit:cover;flex:none;transition:transform .2s}
+.poster.f{transform:scale(1.06);box-shadow:0 0 0 3px var(--ink),0 18px 40px rgba(0,0,0,.6)}

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Cinematic · Dialogs</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../round3/shared.css"><link rel="stylesheet" href="cinematic.css">
+<style>
+/* the screen behind stays visible but dark; one panel in the middle */
+.art img{object-position:70% 14%}
+.art .v{background:rgba(5,7,10,.8)}
+.panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:860px;background:var(--s1);border-radius:22px;padding:48px 52px 44px;z-index:3;box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.panel .kick{font-size:20px}
+.panel .msg{font-size:30px;font-weight:600;line-height:1.4;margin-top:14px}
+.panel .note{font-size:20px;color:var(--ink3);margin-top:12px;line-height:1.5}
+.panel .btns{margin-top:36px}
+.state{display:none}
+/* download progress */
+.dl .top{display:grid;grid-template-columns:220px 1fr;gap:28px;align-items:center}
+.dl .thumb{width:220px;height:124px;border-radius:var(--r);object-fit:cover}
+.dl .title{font-size:52px}
+.dl .sub{font-size:20px;color:var(--ink2);margin-top:6px}
+.dl .num{display:flex;align-items:baseline;justify-content:space-between;margin-top:36px}
+.dl .num b{font-size:64px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dl .num span{font-size:20px;color:var(--ink3)}
+.dl .track{height:8px;border-radius:4px;background:var(--s3);margin-top:12px;overflow:hidden}
+.dl .track i{display:block;height:100%;width:42%;border-radius:4px;background:var(--cyan)}
+.dl .stats{display:flex;gap:34px;margin-top:18px;font-size:20px;color:var(--ink2)}
+.dl .stats div .k{display:block;font-size:16px;font-weight:600;color:var(--ink3)}
+/* stalled download: a choice, set like the hold-OK menu */
+.opts{list-style:none;margin-top:28px;display:flex;flex-direction:column;gap:6px}
+.opts li{height:66px;border-radius:12px;display:flex;align-items:center;padding:0 22px;font-size:23px;font-weight:600;color:var(--ink2);background:var(--s2)}
+.opts li.f{background:var(--ink);color:var(--bg)}
+.opts li .sub{margin-left:auto;font-size:18px;font-weight:500;color:var(--ink3)}
+.opts li.f .sub{color:#56606c}
+.files li{font-size:21px;font-weight:500}
+.hint{position:absolute;left:50%;transform:translateX(-50%);bottom:56px;font-size:19px;color:var(--ink3);z-index:3}
+</style></head><body>
+<div id="stage">
+  <div class="art"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div class="v"></div></div>
+
+  <!-- 1. yes / no -->
+  <section class="panel state" id="confirm">
+    <div class="kick">TorBox</div>
+    <p class="msg">This source isn’t ready on TorBox yet. Download it now and play when ready?</p>
+    <p class="note">2160p REMUX · 58.3 GB · usually a few minutes</p>
+    <div class="btns">
+      <div class="btn play f" tabindex="0" data-start>Download and play</div>
+      <div class="btn" tabindex="0">Not now</div>
+    </div>
+  </section>
+
+  <!-- 2. download progress -->
+  <section class="panel state dl" id="progress">
+    <div class="top"><img class="thumb" src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div><h1 class="title">Charade</h1><div class="sub">Downloading on TorBox…</div></div></div>
+    <div class="num"><b>42%</b><span>about 3 min left</span></div>
+    <div class="track"><i></i></div>
+    <div class="stats"><div><span class="k">Speed</span>18.4 MB/s</div><div><span class="k">Seeders</span>312</div><div><span class="k">Size</span>24.5 of 58.3 GB</div></div>
+    <div class="btns"><div class="btn f" tabindex="0" data-start>Cancel</div></div>
+  </section>
+
+  <!-- 3. the download has stalled -->
+  <section class="panel state" id="stalled">
+    <div class="kick">Charade · 42% downloaded</div>
+    <p class="msg">No progress for 10 minutes. What now?</p>
+    <ul class="opts">
+      <li class="f" tabindex="0" data-start>Keep waiting</li>
+      <li tabindex="0">Keep it in TorBox for later<span class="sub">Shows under My TorBox</span></li>
+      <li tabindex="0">Remove it</li>
+    </ul>
+  </section>
+
+  <!-- 4. leaving a download: keep or remove -->
+  <section class="panel state" id="keep">
+    <div class="kick">Charade</div>
+    <p class="msg">Keep downloading in TorBox, or remove it?</p>
+    <p class="note">If you keep it, it will appear under My TorBox when it’s done.</p>
+    <div class="btns">
+      <div class="btn play f" tabindex="0" data-start>Keep downloading</div>
+      <div class="btn" tabindex="0">Remove it</div>
+    </div>
+  </section>
+
+  <!-- 5. a message with one button (replaces Kodi's own OK box) -->
+  <section class="panel state" id="ok">
+    <div class="kick">Charade · Sources</div>
+    <p class="msg">No sources left after your filters (6 hidden).</p>
+    <p class="note">You can change the filters in NovaFlix settings.</p>
+    <div class="btns"><div class="btn play f" tabindex="0" data-start>OK</div></div>
+  </section>
+
+  <!-- 6. pick a file from a download with several (replaces Kodi's own list) -->
+  <section class="panel state" id="file">
+    <div class="kick">Polar Night · S2 E4</div>
+    <p class="msg">Which file is this episode?</p>
+    <ul class="opts files">
+      <li tabindex="0">Polar.Night.S02E03.2160p.WEB-DL.mkv<span class="sub">8.9 GB</span></li>
+      <li class="f" tabindex="0" data-start>Polar.Night.S02E04.2160p.WEB-DL.mkv<span class="sub">9.2 GB</span></li>
+      <li tabindex="0">Polar.Night.S02E05.2160p.WEB-DL.mkv<span class="sub">9.0 GB</span></li>
+      <li tabindex="0">Polar.Night.S02.Extras.Behind.the.Lights.mkv<span class="sub">1.4 GB</span></li>
+    </ul>
+  </section>
+
+  <div class="hint" id="hint">Back to close</div>
+</div>
+<script>
+// ?confirm (default), ?progress, ?stalled or ?keep picks the dialog shown.
+var m = (location.search.match(/progress|stalled|keep|ok|file/) || ['confirm'])[0];
+document.getElementById(m).style.display = 'block';
+if (m === 'progress') document.getElementById('hint').textContent = 'Back to stop waiting';
+</script>
+<script src="../round3/shared.js"></script>
+</body></html>

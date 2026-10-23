@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaFlix · Concept C · NovaFlix Signature</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=block" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--bg:#07090d;--s1:#0d1117;--s2:#151b23;--s3:#1f2731;--ink:#fff;--ink2:#c9d1dc;--ink3:#8a94a2;--cyan:#00a6d6;--cyan-hi:#2cc7f2;--cyan-ink:#001820;--r:14px;--side:300px}
+/* sidebar: the current NovaFlix sidebar, with Explore opened out as a section */
+.side{position:absolute;left:0;top:0;bottom:0;width:var(--side);background:var(--s1);padding:40px 18px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:12px;padding:0 14px}
+.brand img{width:50px;height:50px;border-radius:12px}
+.brand span{font-size:24px;font-weight:800;letter-spacing:.08em}
+.brand b{color:var(--cyan)}
+.grp{font-size:16px;font-weight:700;color:var(--ink3);padding:0 16px;margin:34px 0 8px}
+.side ul{list-style:none;display:flex;flex-direction:column;gap:2px}
+.side li{height:50px;display:flex;align-items:center;gap:16px;padding:0 16px;border-radius:12px;font-size:21px;font-weight:500;color:var(--ink2);white-space:nowrap;transition:background .15s,color .15s}
+.side li .ico{width:26px;height:26px;color:var(--ink3)}
+.side li.on{background:var(--s3);color:var(--ink);font-weight:700}
+.side li.on .ico{color:var(--cyan)}
+.side li:focus{background:var(--s2);color:var(--ink)}
+.side .end{margin-top:auto}
+/* stage: artwork in a framed panel, featured queue beside it */
+.main{position:absolute;left:var(--side);top:0;right:0;bottom:0;padding:40px 56px 0 56px}
+.feat{display:grid;grid-template-columns:1fr 340px;gap:20px;height:560px}
+.panel{position:relative;border-radius:22px;overflow:hidden;background:var(--s1)}
+.panel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 18%}
+.panel .f{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,9,13,.9) 0,rgba(7,9,13,.6) 34%,rgba(7,9,13,0) 62%),linear-gradient(0deg,rgba(7,9,13,.7),rgba(7,9,13,0) 40%)}
+.panel .tx{position:absolute;left:52px;bottom:48px;width:600px}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:18px;font-weight:700;color:var(--cyan-hi)}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--cyan)}
+.panel h1{font-size:76px;font-weight:800;letter-spacing:-.03em;line-height:1;margin-top:10px}
+.panel .m{font-size:21px;color:var(--ink2);margin-top:14px;font-weight:500}
+.panel .m b{color:var(--ink);font-weight:700}
+.panel p{font-size:21px;line-height:1.55;color:var(--ink2);margin-top:12px;width:560px}
+.acts{display:flex;gap:12px;margin-top:26px}
+.act{height:62px;padding:0 30px;border-radius:31px;display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;background:rgba(255,255,255,.12);color:var(--ink);transition:transform .15s,background .15s}
+.act .ico{width:26px;height:26px}
+.act.p{background:var(--cyan);color:var(--cyan-ink)}
+.act:focus{transform:scale(1.05);box-shadow:0 0 0 3px var(--bg),0 0 0 5px #fff}
+/* the queue makes the carousel visible: what plays next, and how long until it turns */
+.queue{display:flex;flex-direction:column;gap:12px}
+.queue h3{font-size:18px;font-weight:700;color:var(--ink3);padding:4px 4px 2px}
+.q{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;padding:10px;border-radius:14px;transition:background .15s}
+.q img{width:150px;height:84px;border-radius:9px;object-fit:cover}
+.q .t{font-size:19px;font-weight:700}
+.q .s{font-size:16px;color:var(--ink3);margin-top:2px}
+.q.on{background:var(--s2)}
+.q.on .t{color:var(--ink)}
+.q .timer{height:3px;border-radius:2px;background:var(--s3);margin-top:8px;overflow:hidden}
+.q .timer i{display:block;height:100%;width:58%;background:var(--cyan)}
+.q:focus{background:var(--s3)}
+/* continue watching: the focused card opens sideways into a detail tile */
+.row{margin-top:36px}
+.row h2{font-size:25px;font-weight:700;margin-bottom:16px;display:flex;gap:12px;align-items:baseline}
+.row h2 span{font-size:18px;font-weight:600;color:var(--ink3)}
+.cw{display:flex;gap:18px;height:200px}
+.c{width:356px;height:200px;flex:none;border-radius:var(--r);overflow:hidden;position:relative;background:var(--s1);display:flex;transition:width .25s ease}
+.c .pic{width:356px;height:200px;flex:none;position:relative}
+.c img{width:100%;height:100%;object-fit:cover}
+.c .ep{position:absolute;left:12px;top:12px;font-size:15px;font-weight:700;background:rgba(7,9,13,.78);color:var(--ink);padding:3px 9px;border-radius:6px}
+.c .edge{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(7,9,13,.6)}
+.c .edge i{display:block;height:100%;background:var(--cyan)}
+.c .info{width:300px;flex:none;padding:22px 24px;display:flex;flex-direction:column;opacity:0;transition:opacity .2s .05s}
+.c .info .t{font-size:24px;font-weight:800}
+.c .info .s{font-size:18px;color:var(--ink2);margin-top:4px}
+.c .info .left{margin-top:auto;font-size:18px;font-weight:600;color:var(--cyan-hi)}
+.c .info .hint{font-size:16px;color:var(--ink3);margin-top:4px}
+.c:focus,.c.open{width:656px;background:var(--s2)}
+.c:focus .info,.c.open .info{opacity:1}
+.c:focus{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--cyan)}
+.posters{display:flex;gap:18px}.posters img{width:176px;height:264px;object-fit:cover;border-radius:var(--r);flex:none}
+</style></head><body>
+<div id="stage">
+  <aside class="side">
+    <div class="brand"><img src="../icons/av-logo.png" alt=""><span>NOVA<b>FLIX</b></span></div>
+    <div class="grp">Library</div>
+    <ul>
+      <li class="on" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-home.png)"></span>Home</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-search.png)"></span>Search</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_circle.png)"></span>Continue Watching</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-bookmark.png)"></span>My List</li>
+    </ul>
+    <div class="grp">Explore</div>
+    <ul>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-trending_up.png)"></span>Trending Now</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-movie.png)"></span>Popular movies</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-local_fire_department.png)"></span>Popular shows</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-star.png)"></span>Top rated</li>
+      <li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-calendar_month.png)"></span>Airing today</li>
+    </ul>
+    <ul class="end"><li tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-settings.png)"></span>Settings</li></ul>
+  </aside>
+
+  <main class="main">
+    <div class="feat">
+      <section class="panel"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div class="f"></div>
+        <div class="tx">
+          <span class="chip"><i></i>Trending Now</span>
+          <h1>Charade</h1>
+          <div class="m"><b>★ 7.9</b> · 1963 · 1 h 53 min · Thriller · 4K HDR</div>
+          <p>Widowed in Paris, Regina is chased by three men who want the fortune her husband stole, and helped by a stranger who keeps changing his name.</p>
+          <div class="acts">
+            <div class="act p" tabindex="0" data-start><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-play_arrow.png)"></span>Play</div>
+            <div class="act" tabindex="0"><span class="ico" style="-webkit-mask-image:url(../icons/av-icon-info.png)"></span>More info</div>
+          </div>
+        </div>
+      </section>
+      <aside class="queue">
+        <h3>Up next in Trending</h3>
+        <div class="q on" tabindex="0"><img src="../img/charade-1963-audrey-hepburn-and-cary-grant.jpg" alt=""><div><div class="t">Charade</div><div class="s">Film · 1963</div><div class="timer"><i></i></div></div></div>
+        <div class="q" tabindex="0"><img src="../img/039-northern-lights-over-myvatn-iceland-photo.jpg" alt=""><div><div class="t">Polar Night</div><div class="s">Series · 2 seasons</div></div></div>
+        <div class="q" tabindex="0"><img src="../img/buildings-with-colorful-neon-street-signs-at.jpg" alt=""><div><div class="t">Shinjuku Blue</div><div class="s">Series · 2024</div></div></div>
+        <div class="q" tabindex="0"><img src="../img/d4342b-grand-canyon-scenic-sunset-from-desert.jpg" alt=""><div><div class="t">Long Rim</div><div class="s">Film · 2023</div></div></div>
+      </aside>
+    </div>
+
+    <section class="row"><h2>Continue Watching <span>4 in progress</span></h2><div class="cw">
+      <div class="c open" tabindex="0"><div class="pic"><img src="../img/001-volcano-eruption-of-litli-hrutur-in.jpg" alt=""><span class="ep">S1 E4</span><div class="edge"><i style="width:64%"></i></div></div>
+        <div class="info"><div class="t">Fire Line</div><div class="s">The Road · 52 min</div><div class="left">22 min left</div><div class="hint">Press OK to resume</div></div></div>
+      <div class="c" tabindex="0"><div class="pic"><img src="../img/buildings-with-colorful-neon-street-signs-at.jpg" alt="" style="object-position:50% 40%"><span class="ep">S2 E1</span><div class="edge"><i style="width:30%"></i></div></div>
+        <div class="info"><div class="t">Shinjuku Blue</div><div class="s">Last Train · 58 min</div><div class="left">41 min left</div><div class="hint">Press OK to resume</div></div></div>
+      <div class="c" tabindex="0"><div class="pic"><img src="../img/la-horde-surfers-riding-a-wave-in.jpg" alt=""><span class="ep">Film</span><div class="edge"><i style="width:82%"></i></div></div>
+        <div class="info"><div class="t">The Set</div><div class="s">1 h 38 min</div><div class="left">14 min left</div><div class="hint">Press OK to resume</div></div></div>
+      <div class="c" tabindex="0"><div class="pic"><img src="../img/flaming-star-nebula-ic-405.png" alt=""><span class="ep">S1 E2</span><div class="edge"><i style="width:12%"></i></div></div>
+        <div class="info"><div class="t">Deep Field</div><div class="s">Red Shift · 55 min</div><div class="left">48 min left</div><div class="hint">Press OK to resume</div></div></div>
+    </div></section>
+<section class="row"><h2>Popular movies</h2><div class="posters"><img src="../img/his-girl-friday-1940-poster.jpg" alt=""><img src="../img/the-general-1926-movie-poster-2.png" alt=""><img src="../img/the-cabinet-of-doctor-caligari-movie-poster.jpg" alt=""><img src="../img/phantom-of-the-opera-1925-poster.jpg" alt=""><img src="../img/detour-poster.jpg" alt=""><img src="../img/charade-1963-poster.jpg" alt=""><img src="../img/night-of-the-living-dead-1968-poster.jpg" alt=""><img src="../img/boris-bilinski-1900-1948-plakat-fur-den.jpg" alt=""></div></section>
+  </main>
+</div>
+<script>
+// Only the focused card opens; the first one is shown open when nothing in the row has focus.
+document.querySelectorAll('.c').forEach(function (c) {
+  c.addEventListener('focus', function () { document.querySelectorAll('.c.open').forEach(function (o) { o.classList.remove('open'); }); });
+});
+</script>
+<script src="shared.js"></script>
+</body></html>
