@@ -295,3 +295,12 @@ def test_language_chips_have_room_for_long_counts():
     wide = [c for c in root.iter("control") if c.get("type") == "label"
             and "chip_wide" in (c.findtext("visible") or "") and "!String.IsEmpty(ListItem.Property(chip_wide))" in c.findtext("visible")]
     assert wide and min(int(c.findtext("width")) for c in wide) >= 160
+
+
+def test_source_rows_span_the_drawer():
+    """A loop once reused the row's width name for the chip width: every row became 114 px wide."""
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-sources.xml")).getroot()
+    sources = next(c for c in root.iter("control") if c.get("id") == str(ids.SOURCES_LIST))
+    for layout in ("itemlayout", "focusedlayout"):
+        row = sources.find(layout).find("control")
+        assert int(row.findtext("width")) >= 880, layout

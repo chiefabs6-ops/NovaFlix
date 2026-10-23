@@ -712,22 +712,22 @@ def _source_row(focused):
     ]
     # chips: the open tab white; on the focused row a cyan ring marks the chip Left / Right is on.
     # Language rows (few tabs, long counts) get three wide chips, Quality rows six narrow ones.
-    for wide, count, width in ((True, 3, 170), (False, 6, 114)):
+    for wide, count, chip_w in ((True, 3, 170), (False, 6, 114)):
         size = "!String.IsEmpty(ListItem.Property(chip_wide))" if wide else "String.IsEmpty(ListItem.Property(chip_wide))"
         for n in range(count):
             chip = f"ListItem.Property(chip{n})"
             shown = f"{tabs} + {size} + !String.IsEmpty({chip})"
             is_open = f"String.IsEqual(ListItem.Property(chip_open),{n})"
-            left = 160 + n * (width + 8)
+            left = 160 + n * (chip_w + 8)
             if focused:
-                body.append(img(left - 5, 23, width + 10, 54, "av-pill54-ring.png", CYAN, border=27,
+                body.append(img(left - 5, 23, chip_w + 10, 54, "av-pill54-ring.png", CYAN, border=27,
                                 visible=f"{shown} + String.IsEqual(ListItem.Property(chip_focus),{n})"))
-            body += [img(left, 28, width, 44, "av-pill44.png", INK, border=22, visible=f"{shown} + {is_open}"),
-                     img(left, 28, width, 44, "av-pill44.png", S3 if focused else S2, border=22,
+            body += [img(left, 28, chip_w, 44, "av-pill44.png", INK, border=22, visible=f"{shown} + {is_open}"),
+                     img(left, 28, chip_w, 44, "av-pill44.png", S3 if focused else S2, border=22,
                          visible=f"{shown} + !{is_open}"),
-                     lbl(left, 28, width, 44, "font10", GROUND, f"[B]$INFO[{chip}][/B]", align="center",
+                     lbl(left, 28, chip_w, 44, "font10", GROUND, f"[B]$INFO[{chip}][/B]", align="center",
                          visible=f"{shown} + {is_open}"),
-                     lbl(left, 28, width, 44, "font10", INK2, f"[B]$INFO[{chip}][/B]", align="center",
+                     lbl(left, 28, chip_w, 44, "font10", INK2, f"[B]$INFO[{chip}][/B]", align="center",
                          visible=f"{shown} + !{is_open}")]
     body += [
         # other actions (check more sources, sort): a plain row of words
