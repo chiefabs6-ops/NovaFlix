@@ -192,10 +192,8 @@ class App:
 
     def on_init(self):
         if self._started:  # Kodi calls onInit again after the title page or fullscreen video
-            if self.view == "grid":
-                self.window.setFocusId(ids.GRID)
-            elif self.view == "related":
-                self.related.focus()
+            if self.view in ("grid", "related"):
+                self.focus_view()
             key = actions.take_open_show()  # End episode pressed during the video
             if key:
                 self.run(("title",) + key)
@@ -302,7 +300,11 @@ class App:
     def focus_view(self):
         """Focus the shown view, as Right from the menu does."""
         if self.view == "grid":
-            self.window.setFocusId(ids.GRID)
+            if self.grid.cards:
+                self.window.setFocusId(ids.GRID)
+            elif self.window.getProperty("grid_empty_action"):
+                self.window.setFocusId(ids.GRID_EMPTY_ACTION)
+            # an empty grid cannot take focus (Kodi refuses an empty container)
         elif self.view == "related":
             self.related.focus()
         else:
@@ -319,7 +321,9 @@ class App:
     def on_action(self, action):
         action_id = action.getId()
         if action_id in ids.ACTION_BACK and self.window.getFocusId() in (ids.SIDEBAR, ids.SIDEBAR_SETTINGS):
-            self.focus_view()  # Back closes the open menu first
+            self.focus_view()  # Back closes the open menu first...
+            if self.window.getFocusId() in (ids.SIDEBAR, ids.SIDEBAR_SETTINGS):
+                self.back()  # ...unless the view has nothing to focus: then Back leaves it as before
         elif action_id in ids.ACTION_BACK:
             self.back()
         elif action_id in ids.ACTION_CONTEXT:

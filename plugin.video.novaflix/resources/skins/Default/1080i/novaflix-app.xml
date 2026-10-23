@@ -30,8 +30,8 @@
 <control type="grouplist"><left>0</left><top>0</top><width>1920</width><height>1080</height><orientation>vertical</orientation><itemgap>0</itemgap><scrolltime tween="quadratic" easing="out">260</scrolltime>
 <control type="group"><left>0</left><top>0</top><width>1920</width><height>690</height><visible>String.IsEmpty(Window.Property(offline))</visible>
 <control type="label"><left>184</left><top>160</top><width>1000</width><height>36</height><font>font12</font><textcolor>FF35CDF5</textcolor><aligny>center</aligny><label>[B]$INFO[Window.Property(featured)][/B]</label><visible>!String.IsEmpty(Window.Property(hero_title))</visible></control>
-<control type="image"><left>184</left><top>200</top><width>760</width><height>125</height><texture>$INFO[Window.Property(hero_logo)]</texture><aspectratio align="left" aligny="bottom">keep</aspectratio><fadetime>300</fadetime><visible>!String.IsEmpty(Window.Property(hero_logo))</visible></control>
-<control type="label"><left>184</left><top>200</top><width>1100</width><height>125</height><font>font52_title</font><textcolor>FFFFFFFF</textcolor><aligny>bottom</aligny><label>$INFO[Window.Property(hero_title)]</label><visible>!!String.IsEmpty(Window.Property(hero_logo))</visible></control>
+<control type="image"><left>184</left><top>200</top><width>760</width><height>125</height><texture background="true">$INFO[Window.Property(hero_logo)]</texture><aspectratio align="left" aligny="bottom">keep</aspectratio><fadetime>300</fadetime><visible>!String.IsEmpty(Window.Property(hero_logo))</visible></control>
+<control type="label"><left>184</left><top>200</top><width>1100</width><height>125</height><font>font52_title</font><textcolor>FFFFFFFF</textcolor><aligny>bottom</aligny><label>$INFO[Window.Property(hero_title)]</label><visible>String.IsEmpty(Window.Property(hero_logo))</visible></control>
 <control type="grouplist"><left>184</left><top>345</top><width>1200</width><height>64</height><orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>
 <control type="group"><left>0</left><top>0</top><width>110</width><height>64</height><visible>!String.IsEmpty(Window.Property(hero_rating))</visible>
 <control type="label"><left>0</left><top>0</top><width>110</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30510]</label></control>
@@ -298,10 +298,10 @@
 <control type="label"><left>0</left><top>0</top><width>160</width><height>56</height><font>font13</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>[B]$ADDON[plugin.video.novaflix 30516][/B]</label><visible>!String.IsEqual(Window.Property(grid_genre_tab),tv)</visible></control>
 </control>
 </control>
-<control type="panel" id="400"><left>178</left><top>520</top><width>1742</width><height>930</height>
+<control type="panel" id="400"><left>178</left><top>440</top><width>1742</width><height>612</height>
 <orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>
 <onleft>100</onleft><onup condition="!String.IsEmpty(Window.Property(grid_genre_tab))">411</onup>
-<animation effect="slide" start="0,0" end="0,-370" time="0" condition="!!String.IsEmpty(Window.Property(grid_peek))">Conditional</animation>
+<animation effect="slide" start="0,0" end="0,-290" time="0" condition="String.IsEmpty(Window.Property(grid_peek))">Conditional</animation>
 <itemlayout width="422" height="226" condition="!String.IsEmpty(Window.Property(grid_genre_tab))">
 <control type="group"><left>0</left><top>14</top><width>400</width><height>200</height>
 <control type="image"><left>0</left><top>0</top><width>400</width><height>200</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
@@ -758,7 +758,7 @@
 <control type="list" id="100">
 <left>0</left><top>160</top><width>420</width><height>800</height>
 <orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">120</scrolltime>
-<ondown>101</ondown><onright condition="String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))">201</onright><onright condition="String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))">340</onright><onright condition="String.IsEqual(Window.Property(view),grid)">400</onright><onright condition="String.IsEqual(Window.Property(view),related)">800</onright>
+<ondown>101</ondown><onright condition="String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))">201</onright><onright condition="String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))">340</onright><onright condition="String.IsEqual(Window.Property(view),grid) + !String.IsEmpty(Window.Property(grid_empty_action))">410</onright><onright condition="String.IsEqual(Window.Property(view),grid)">400</onright><onright condition="String.IsEqual(Window.Property(view),related)">800</onright>
 <itemlayout width="420" height="60">
 <control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + false</visible></control>
 <control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF00A6D6">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + true + !String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
@@ -811,7 +811,7 @@
 <control type="button" id="101">
 <left>0</left><top>990</top><width>420</width><height>60</height>
 <texturefocus colordiffuse="00FFFFFF">av-white.png</texturefocus><texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus>
-<label></label><onup>100</onup><onright condition="String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))">201</onright><onright condition="String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))">340</onright><onright condition="String.IsEqual(Window.Property(view),grid)">400</onright><onright condition="String.IsEqual(Window.Property(view),related)">800</onright>
+<label></label><onup>100</onup><onright condition="String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))">201</onright><onright condition="String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))">340</onright><onright condition="String.IsEqual(Window.Property(view),grid) + !String.IsEmpty(Window.Property(grid_empty_action))">410</onright><onright condition="String.IsEqual(Window.Property(view),grid)">400</onright><onright condition="String.IsEqual(Window.Property(view),related)">800</onright>
 </control>
 </control>
 <control type="image"><left>0</left><top>1002</top><width>5</width><height>36</height><texture colordiffuse="FF00A6D6">av-white.png</texture><visible>Control.HasFocus(101)</visible></control>

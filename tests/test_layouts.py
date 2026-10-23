@@ -148,3 +148,39 @@ def test_labelled_fields_hide_when_empty():
         labels = [c for g in groups for c in g.iter("control") if c.get("type") == "label"]
         assert any(f"Window.Property({key})" in (c.findtext("label") or "") for c in labels)
         assert len(labels) >= 2, f"{key}: the grey title must hide with the value"
+
+
+# -- final review fixes ---------------------------------------------------------------------------
+
+def _app_root():
+    return ET.parse(os.path.join(LAYOUTS, "novaflix-app.xml")).getroot()
+
+
+def test_grid_panel_fits_on_screen():
+    """A panel scrolls only past its last row: rows below the screen would hide the focused card."""
+    panel = next(c for c in _app_root().iter("control") if c.get("id") == str(ids.GRID))
+    top, height = int(panel.findtext("top")), int(panel.findtext("height"))
+    assert top + height <= 1080
+
+
+def test_sidebar_right_reaches_the_empty_list_offer():
+    sidebar = next(c for c in _app_root().iter("control") if c.get("id") == str(ids.SIDEBAR))
+    targets = [(o.get("condition"), o.text) for o in sidebar.findall("onright")]
+    offer = [i for i, (cond, t) in enumerate(targets) if t == str(ids.GRID_EMPTY_ACTION)]
+    grid = [i for i, (cond, t) in enumerate(targets) if t == str(ids.GRID)]
+    assert offer and grid and offer[0] < grid[0]
+
+
+@pytest.mark.parametrize("name", XMLS)
+def test_no_double_negation(name):
+    assert "!!" not in open(os.path.join(LAYOUTS, name), encoding="utf-8").read()
+
+
+@pytest.mark.parametrize("name", XMLS)
+def test_remote_images_load_in_the_background(name):
+    root = ET.parse(os.path.join(LAYOUTS, name)).getroot()
+    for texture in root.iter("texture"):
+        text = texture.text or ""
+        if any(k in text for k in ("Property(hero_logo)", "Property(logo)", "Property(art)", "Property(hero_art)",
+                                   "Art(")):
+            assert texture.get("background") == "true", f"{name}: {text}"

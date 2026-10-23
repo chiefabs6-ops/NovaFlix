@@ -115,3 +115,8 @@ def test_quality_badge():
     assert cards.quality_badge("Charade HDCAM", "") == "CAM"
     assert cards.quality_badge("Charade DVDRip", "") == ""
     assert cards.source_row("Charade 2160p", "Ready to play", T).badge == "4K"
+
+
+def test_quality_badge_says_cam_before_resolution():
+    assert cards.quality_badge("Movie.2024.1080p.HDCAM.x264", "") == "CAM"
+    assert cards.quality_badge("Movie.2024.1080p.WEB-DL.ts", "") == "1080p"  # .ts is a file extension

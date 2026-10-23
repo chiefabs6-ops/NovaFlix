@@ -533,3 +533,19 @@ def test_genre_tab_switches_without_growing_the_stack(app, monkeypatch):
 def test_genre_tabs_hide_on_other_grids(app):
     select_sidebar(app, "trending")
     assert app.window.properties["grid_genre_tab"] == ""
+
+
+def test_back_from_the_menu_leaves_a_view_with_nothing_to_focus(app, monkeypatch):
+    monkeypatch.setattr(lists, "load", lambda key, page_no=1: lists.Page("Results", [], False, "No results."))
+    app.open_grid("search:zzz")
+    app.window.setFocusId(ids.SIDEBAR)
+    app.window.onAction(xbmcgui.Action(92))
+    assert app.view == "home"
+
+
+def test_back_from_the_menu_on_an_empty_personal_list_goes_to_its_offer(app, monkeypatch):
+    monkeypatch.setattr(lists, "load", lambda key, page_no=1: lists.Page("My List", [], False, "Nothing yet."))
+    select_sidebar(app, "mylist")
+    app.window.setFocusId(ids.SIDEBAR)
+    app.window.onAction(xbmcgui.Action(92))
+    assert app.view == "grid" and app.window.getFocusId() == ids.GRID_EMPTY_ACTION

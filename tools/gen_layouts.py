@@ -25,12 +25,18 @@ MENU_OPEN = "ControlGroup(9100).HasFocus"
 VIEW_TARGETS = [  # (condition, control) the sidebar and Settings hand focus to on Right
     ("String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))", 201),
     ("String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))", 340),
+    ("String.IsEqual(Window.Property(view),grid) + !String.IsEmpty(Window.Property(grid_empty_action))", 410),
     ("String.IsEqual(Window.Property(view),grid)", 400),
     ("String.IsEqual(Window.Property(view),related)", 800),
 ]
 
 
 # -- XML helpers -----------------------------------------------------------------------------------
+
+def neg(cond):
+    """The opposite condition, without a double "!!" (cond is one term)."""
+    return cond[1:] if cond.startswith("!") else "!" + cond
+
 
 def _visible(cond):
     return f"<visible>{cond}</visible>" if cond else ""
@@ -355,9 +361,10 @@ def home():
         lbl(X, 160, 1000, 36, "font12", CYAN_HI, "[B]$INFO[Window.Property(featured)][/B]",
             visible="!String.IsEmpty(Window.Property(hero_title))"),
         img(X, 200, 760, 125, "$INFO[Window.Property(hero_logo)]", visible=logo,
-            extra='<aspectratio align="left" aligny="bottom">keep</aspectratio><fadetime>300</fadetime>'),
+            extra='<aspectratio align="left" aligny="bottom">keep</aspectratio><fadetime>300</fadetime>').replace(
+            "<texture>", '<texture background="true">'),
         lbl(X, 200, 1100, 125, "font52_title", INK, "$INFO[Window.Property(hero_title)]", aligny="bottom",
-            visible="!" + logo),
+            visible=neg(logo)),
         labelled_fields(345, [("$ADDON[plugin.video.novaflix 30510]", "hero_rating", 110),
                               ("$ADDON[plugin.video.novaflix 30511]", "hero_year", 100),
                               ("$ADDON[plugin.video.novaflix 30512]", "hero_kind", 140),
@@ -494,11 +501,11 @@ def grid():
     cw, ch = 180, 270
     gw, gh = 400, 200
     panel = lines(
-        '<control type="panel" id="400"><left>178</left><top>520</top><width>1742</width><height>930</height>',
+        '<control type="panel" id="400"><left>178</left><top>440</top><width>1742</width><height>612</height>',
         '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>',
         f'<onleft>100</onleft><onup condition="{GENRES_SHOWN}">411</onup>',
         # pages without films or shows (Search, Genres, My TorBox) have no peek: the grid moves up
-        f'<animation effect="slide" start="0,0" end="0,-370" time="0" condition="!{peek_on}">Conditional</animation>',
+        f'<animation effect="slide" start="0,0" end="0,-290" time="0" condition="{neg(peek_on)}">Conditional</animation>',
         # Genres: four wide picture tiles across (a panel takes one cell size, so the layout is chosen by page)
         f'<itemlayout width="{gw + 22}" height="{gh + 26}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, False),
         "</itemlayout>",
@@ -601,9 +608,10 @@ def show():
                 "[B]$INFO[Window.Property(kind)][/B]$INFO[Window.Property(alt),   [COLOR " + INK2 + "],[/COLOR]]"
                 "$INFO[Window.Property(dub),   [COLOR " + WARN + "],[/COLOR]]"),
             img(X, 160, 760, 140, "$INFO[Window.Property(logo)]", visible=logo,
-                extra='<aspectratio align="left" aligny="bottom">keep</aspectratio><fadetime>300</fadetime>'),
+                extra='<aspectratio align="left" aligny="bottom">keep</aspectratio><fadetime>300</fadetime>').replace(
+                "<texture>", '<texture background="true">'),
             lbl(X, 160, 1300, 140, "font52_title", INK, "$INFO[Window.Property(title)]", aligny="bottom",
-                visible="!" + logo),
+                visible=neg(logo)),
             labelled_fields(320, TITLE_FIELDS),
             f'<control type="textbox"><left>{X}</left><top>400</top><width>660</width><height>114</height>'
             f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(plot)]</label></control>',
@@ -718,7 +726,7 @@ def confirm():
         '<orientation>horizontal</orientation><itemgap>8</itemgap>',
         row_button(700, 340, "$INFO[Window.Property(yes)]", True).replace(
             "</label>", "</label><onleft>701</onleft><onright>701</onright>", 1),
-        row_button(701, 260, "$INFO[Window.Property(no)]", False, visible="!" + single).replace(
+        row_button(701, 260, "$INFO[Window.Property(no)]", False, visible=neg(single)).replace(
             "</label>", "</label><onleft>700</onleft><onright>700</onright>", 1),
         "</control>",
         lbl(0, 1000, 1920, 40, "font12", INK3, _addon(30525), align="center"),
@@ -765,13 +773,13 @@ def progress():
     return lines(
         _dialog_panel(270, 540),
         img(582, 318, 220, 124, "$INFO[Window.Property(art)]", visible=art,
-            extra="<aspectratio>scale</aspectratio>").replace("<texture>", '<texture diffuse="av-mask-wide10.png">'),
+            extra="<aspectratio>scale</aspectratio>").replace("<texture>", '<texture diffuse="av-mask-wide10.png" background="true">'),
         group(0, 0, 1920, 1080, lines(
             lbl(830, 330, 512, 64, "font45_title", INK, "$INFO[Window.Property(title)]"),
             lbl(830, 394, 512, 40, "font12", INK2, "$INFO[Window.Property(message)]")), visible=art),
         group(0, 0, 1920, 1080, lines(
             lbl(582, 330, 760, 64, "font45_title", INK, "$INFO[Window.Property(heading)]"),
-            lbl(582, 394, 760, 40, "font12", INK2, "$INFO[Window.Property(message)]")), visible="!" + art),
+            lbl(582, 394, 760, 40, "font12", INK2, "$INFO[Window.Property(message)]")), visible=neg(art)),
         lbl(582, 470, 400, 80, "font52_title", INK, "$INFO[Window.Property(percent)]"),
         lbl(940, 486, 402, 50, "font12", INK3, "$INFO[Window.Property(stat_left)]", align="right"),
         '<control type="progress" id="710"><left>582</left><top>560</top><width>760</width><height>8</height>'

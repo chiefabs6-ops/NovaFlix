@@ -195,3 +195,10 @@ def test_cached_title_without_logo_loads():
     data = media.title_from(fixture("tmdb/movie_438631.json"), media.MOVIE).to_dict()
     data.pop("logo", None)
     assert media.Title.from_dict(data).logo is None
+
+
+def test_title_from_a_newer_cache_entry_loads():
+    """Rolling back a release must not break titles a newer version saved."""
+    data = media.title_from(fixture("tmdb/movie_438631.json"), media.MOVIE).to_dict()
+    data["field_from_the_future"] = 1
+    assert media.Title.from_dict(data).tmdb_id == 438631

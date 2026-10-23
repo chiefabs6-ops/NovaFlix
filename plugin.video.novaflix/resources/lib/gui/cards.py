@@ -56,13 +56,15 @@ def more_card(key, text):
     return Card(label=text(30237), kind="more", action=("grid", key))
 
 
-_BADGES = (("4K", re.compile(r"\b(2160p|4k|uhd)\b", re.I)), ("1080p", re.compile(r"\b1080p\b", re.I)),
-           ("720p", re.compile(r"\b720p\b", re.I)), ("CAM", re.compile(r"\b(hd)?(cam|ts|telesync)\b", re.I)))
+# CAM first: a cinema recording is what matters, whatever resolution it claims
+_BADGES = (("CAM", re.compile(r"\b(hd)?(cam|ts|telesync)\b", re.I)), ("4K", re.compile(r"\b(2160p|4k|uhd)\b", re.I)),
+           ("1080p", re.compile(r"\b1080p\b", re.I)), ("720p", re.compile(r"\b720p\b", re.I)))
+_EXTENSION = re.compile(r"\.(mkv|mp4|avi|m2ts|ts|wmv|mov)$", re.I)
 
 
 def quality_badge(line1, line2):
     """The quality chip of a source row: 4K, 1080p, 720p or CAM; "" when the name says none of them."""
-    text = f"{line1} {line2}".replace(".", " ").replace("_", " ")
+    text = f"{_EXTENSION.sub('', line1)} {line2}".replace(".", " ").replace("_", " ")
     return next((badge for badge, pattern in _BADGES if pattern.search(text)), "")
 
 

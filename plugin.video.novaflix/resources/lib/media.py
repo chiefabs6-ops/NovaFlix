@@ -4,7 +4,7 @@ Optional fields stay None when TMDB does not know them and are shown as absent,
 never guessed (DEC-004).
 """
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from typing import List, Optional
 
 MOVIE, TV = "movie", "tv"
@@ -79,7 +79,8 @@ class Title:
 
     @classmethod
     def from_dict(cls, data):
-        data = dict(data)
+        known = {f.name for f in fields(cls)}
+        data = {k: v for k, v in data.items() if k in known}  # a newer version's cache entries (rollback)
         data["seasons"] = [SeasonRef(**s) for s in data.get("seasons", [])]
         for key in ("next_air", "last_aired", "collection"):
             data[key] = tuple(data[key]) if data.get(key) else None
