@@ -6,6 +6,7 @@ Missing data stays missing (DEC-004): no invented titles or art.
 """
 
 import datetime
+import re
 from dataclasses import dataclass
 from typing import Optional
 
@@ -38,6 +39,7 @@ class Card:
     rating: str = ""
     genres: str = ""
     kind_label: str = ""
+    badge: str = ""        # source rows: quality chip (4K, 1080p, 720p, CAM)
 
 
 def clock(seconds):
@@ -54,6 +56,16 @@ def more_card(key, text):
     return Card(label=text(30237), kind="more", action=("grid", key))
 
 
+_BADGES = (("4K", re.compile(r"\b(2160p|4k|uhd)\b", re.I)), ("1080p", re.compile(r"\b1080p\b", re.I)),
+           ("720p", re.compile(r"\b720p\b", re.I)), ("CAM", re.compile(r"\b(hd)?(cam|ts|telesync)\b", re.I)))
+
+
+def quality_badge(line1, line2):
+    """The quality chip of a source row: 4K, 1080p, 720p or CAM; "" when the name says none of them."""
+    text = f"{line1} {line2}".replace(".", " ").replace("_", " ")
+    return next((badge for badge, pattern in _BADGES if pattern.search(text)), "")
+
+
 def source_row(line1, line2, text):
     if not line2:
         return Card(label=line1, kind="source", status="action")
@@ -67,7 +79,7 @@ def source_row(line1, line2, text):
         status = "blocked"
     else:
         status = "unchecked"
-    return Card(label=line1, label2=line2, kind="source", status=status, note=last)
+    return Card(label=line1, label2=line2, kind="source", status=status, note=last, badge=quality_badge(line1, line2))
 
 
 def next_episode(numbers, states):

@@ -111,10 +111,16 @@ def _choose(request):
         note = ui.string(30408) % spoken if spoken else ui.string(30441)
     history = WatchHistory(paths.profile_dir())
     last_group, last_resolution = history.last_choice(media_type, tmdb_id)
-    return sources.pick_source(
-        request, service.client(), wanted, kept, filters, False, last_group, last_resolution, heading_base,
-        lambda rd, picked: _play(request, rd, library, title, season, episode, wanted, picked, heading_base), note,
-        row_note, tabs)
+    ui.set_window_property("novaflix.source_title", title.title)  # the source drawer names what is played
+    ui.set_window_property("novaflix.source_art", title.backdrop or "")
+    try:
+        return sources.pick_source(
+            request, service.client(), wanted, kept, filters, False, last_group, last_resolution, heading_base,
+            lambda rd, picked: _play(request, rd, library, title, season, episode, wanted, picked, heading_base), note,
+            row_note, tabs)
+    finally:
+        ui.clear_window_property("novaflix.source_title")
+        ui.clear_window_property("novaflix.source_art")
 
 
 def _release_language(title, candidates, titles):

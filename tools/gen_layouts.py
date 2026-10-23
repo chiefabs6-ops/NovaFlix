@@ -634,6 +634,69 @@ def show():
     )
 
 
+# -- Source picker (novaflix-sources.xml) -----------------------------------------------------------
+
+STATUS_COLOURS = (("ready", OK), ("download", WARN), ("blocked", BAD), ("unchecked", INK3))
+
+
+def _source_row(focused):
+    width, height = 912, 100
+    action = "String.IsEqual(ListItem.Property(status),action)"
+    is_4k = "String.IsEqual(ListItem.Property(badge),4K)"
+    has_badge = "!String.IsEmpty(ListItem.Property(badge))"
+    body = [
+        img(0, 4, width, height - 8, "av-r10.png", S3 if focused else S2, border=10),
+        # tab and action rows (language, quality, sort, check more): a plain row of text
+        lbl(28, 4, width - 56, height - 8, "font13", INK if focused else INK2, "[B]$INFO[ListItem.Label][/B]",
+            visible=action),
+        # sources: quality chip, name, details
+        img(24, 28, 90, 44, "av-r10.png", "2E00A6D6", border=10, visible=f"!{action} + {is_4k}"),
+        img(24, 28, 90, 44, "av-r10.png", S3 if not focused else "FF2A3440", border=10,
+            visible=f"!{action} + {has_badge} + !{is_4k}"),
+        lbl(24, 28, 90, 44, "font12", CYAN_HI, "[B]$INFO[ListItem.Property(badge)][/B]", align="center",
+            visible=f"!{action} + {is_4k}"),
+        lbl(24, 28, 90, 44, "font12", INK, "[B]$INFO[ListItem.Property(badge)][/B]", align="center",
+            visible=f"!{action} + {has_badge} + !{is_4k}"),
+        group(0, 0, width, height, lines(
+            lbl(136, 16, width - 160, 40, "font13", INK, "$INFO[ListItem.Label]",
+                extra="<scroll>true</scroll>" if focused else ""),
+            lbl(160, 56, width - 184, 32, "font12", INK3, "$INFO[ListItem.Label2]")), visible=f"!{action}"),
+    ]
+    body += [img(136, 67, 12, 12, "av-dot.png", colour,
+                 visible=f"!{action} + String.IsEqual(ListItem.Property(status),{state})")
+             for state, colour in STATUS_COLOURS]
+    if focused:
+        body.insert(1, img(-3, 1, width + 6, height - 2, "av-r10-ring.png", CYAN, border=10,
+                           visible="Control.HasFocus(600)"))
+    return "\n".join(body)
+
+
+def sources():
+    return lines(
+        img(0, 0, 1920, 1080, "av-white.png", GROUND),
+        img(0, 0, 1920, 1080, "$INFO[Window.Property(art)]",
+            extra="<aspectratio>scale</aspectratio>").replace("<texture>", '<texture background="true">'),
+        img(0, 0, 1920, 1080, "av-white.png", "B305070A"),
+        img(0, 0, 1920, 1080, "av-shade-bottom.png"),
+        lbl(120, 780, 700, 40, "font12", CYAN_HI, f"[B]{_addon(30219)}[/B]",
+            visible="!String.IsEmpty(Window.Property(title))"),
+        lbl(120, 820, 740, 180, "font52_title", INK, "$INFO[Window.Property(title)]", aligny="top",
+            extra="<wrapmultiline>true</wrapmultiline>"),
+        '<!-- the list is a drawer from the right -->',
+        img(880, 0, 1040, 1080, "av-white.png", S1,
+            extra='<animation effect="slide" start="300,0" end="0,0" time="250" tween="cubic" easing="out">WindowOpen</animation>'),
+        f'<control type="textbox"><left>944</left><top>48</top><width>912</width><height>100</height>'
+        f'<font>font30_title</font><textcolor>{INK}</textcolor><label>$INFO[Window.Property(heading)]</label></control>',
+        '<control type="list" id="600"><left>944</left><top>160</top><width>912</width><height>860</height>'
+        '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">160</scrolltime>'
+        '<onleft>600</onleft><onright>600</onright>'
+        '<animation effect="slide" start="300,0" end="0,0" time="250" tween="cubic" easing="out">WindowOpen</animation>',
+        '<itemlayout width="912" height="108">', _source_row(False), "</itemlayout>",
+        '<focusedlayout width="912" height="108">', _source_row(True), "</focusedlayout>",
+        "</control>",
+    )
+
+
 def loading():
     """The small spinner while something loads (grid pages, the next page of a grid)."""
     return group(1600, 990, 280, 60, lines(
@@ -652,6 +715,7 @@ SECTIONS = {
     ("novaflix-app.xml", "grid"): grid,
     ("novaflix-app.xml", "loading"): loading,
     ("novaflix-show.xml", "show"): show,
+    ("novaflix-sources.xml", "sources"): sources,
     ("novaflix-app.xml", "push-related"): menu_push,
     ("novaflix-app.xml", "related"): related,
 }

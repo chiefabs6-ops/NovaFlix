@@ -76,6 +76,9 @@ class _MenuWindow(_ListWindow):
 def pick_source(heading, rows, focus=0):
     window = _SourcesWindow("novaflix-sources.xml", _path(), "Default", "1080i")
     window.setProperty("heading", heading)
+    # the title being played, set by views/watch.py while its source list is open
+    window.setProperty("art", ui.get_window_property("novaflix.source_art"))
+    window.setProperty("title", ui.get_window_property("novaflix.source_title"))
     window.entries = items.to_listitems([cards.source_row(a, b, ui.string) for a, b in rows])
     window.focus = focus
     window.doModal()

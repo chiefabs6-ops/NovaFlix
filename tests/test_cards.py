@@ -105,3 +105,13 @@ def test_hero_fields_are_labelled_values():
                                                                           "Movie")
     empty = cards.title_hero(_title(), T)
     assert (empty["rating"], empty["year"], empty["genres"]) == ("", "", "")
+
+
+def test_quality_badge():
+    assert cards.quality_badge("Charade 1963 2160p UHD BluRay", "") == "4K"
+    assert cards.quality_badge("Charade.1963.UHD.REMUX", "") == "4K"
+    assert cards.quality_badge("Charade 1963", "1080p · 12.4 GB") == "1080p"
+    assert cards.quality_badge("720p BRRip", "") == "720p"
+    assert cards.quality_badge("Charade HDCAM", "") == "CAM"
+    assert cards.quality_badge("Charade DVDRip", "") == ""
+    assert cards.source_row("Charade 2160p", "Ready to play", T).badge == "4K"

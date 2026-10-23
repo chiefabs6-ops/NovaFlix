@@ -268,3 +268,22 @@ def test_only_polish_releases_open_the_polish_tab(monkeypatch):
     heading, rows = xbmcgui.select_calls[-1]
     assert not any(label.startswith("Language:") for label, _ in rows)  # no other language: no row
     assert "No English audio" not in heading and rows[0][0] == "Dune.2021.PL.1080p.mkv"
+
+
+def test_watch_names_the_title_for_the_source_drawer(monkeypatch):
+    monkeypatch.setattr(test_torbox, "FILE_NAME", MOVIE_FILE)
+    Net(FakeTorBox(), [stream(HASH, "Dune.2021.2160p.WEB-DL.x265-GRP", MOVIE_FILE)])
+    seen = []
+    from resources.lib.views import sources
+    real = sources.pick_source
+
+    def spy(*args, **kwargs):
+        seen.append((xbmcgui.window_properties.get("novaflix.source_title"),
+                     xbmcgui.window_properties.get("novaflix.source_art")))
+        return real(*args, **kwargs)
+    monkeypatch.setattr(sources, "pick_source", spy)
+    xbmcgui.select_answers.append(0)
+    router.dispatch([BASE + "watch", "5", "?type=movie&id=438631"])
+    title = fixture("tmdb/movie_438631.json")["title"]
+    assert seen and seen[0][0] == title and seen[0][1].endswith(fixture("tmdb/movie_438631.json")["backdrop_path"])
+    assert not xbmcgui.window_properties.get("novaflix.source_title")  # cleared afterwards

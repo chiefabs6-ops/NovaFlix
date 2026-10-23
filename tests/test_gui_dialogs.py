@@ -92,3 +92,13 @@ def test_source_dialog_focuses_the_requested_row():
     xbmcgui.modal_scripts.append(back)
     ui.select_details("Movie", rows, focus=1)
     assert xbmcgui.xml_dialogs[-1].getControl(ids.SOURCES_LIST).getSelectedPosition() == 1
+
+
+def test_source_dialog_shows_the_title_being_played():
+    ui.set_window_property("novaflix.source_art", "b.jpg")
+    ui.set_window_property("novaflix.source_title", "Charade")
+    xbmcgui.modal_scripts.append(back)
+    ui.select_details("Charade · Sources", [("Charade 2160p", "Ready to play")])
+    window = xbmcgui.xml_dialogs[-1]
+    assert (window.properties["art"], window.properties["title"]) == ("b.jpg", "Charade")
+    assert window.getControl(ids.SOURCES_LIST).items[0].properties["badge"] == "4K"
