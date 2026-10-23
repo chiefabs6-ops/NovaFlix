@@ -142,7 +142,7 @@ def test_warnings_are_coloured_on_the_details_line():
     spam = cand("street.fighter.2026.4rabetrip 1080p", "a" * 40)
     ranking.build([spam], ranking.Filters(), False)
     line = sources.details_line(spam)
-    assert "[COLOR FFFF4D6D]Looks like spam[/COLOR]" in line
+    assert "[COLOR FFFF6B7A]Looks like spam[/COLOR]" in line
     assert line.rsplit(" · ", 1)[-1] == "Not checked yet"  # status stays last and uncoloured
     clean = cand("Movie.2026.1080p.WEB-DL", "b" * 40)
     ranking.build([clean], ranking.Filters(), False)

@@ -21,7 +21,6 @@ LICENSE_URL = FONT_BASE + "LICENSE"
 
 # Cinematic UI (0.4.0, owner 2026-10-23): near-black ground, cyan the one accent; no purple or blue.
 BG = (5, 7, 10)
-PANEL = (12, 16, 21)
 CYAN = (0, 166, 214)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -46,17 +45,6 @@ def rounded(size, radius, fill=WHITE + (255,)):
 def outline(size, radius, width):
     img = Image.new("RGBA", size, (0, 0, 0, 0))
     ImageDraw.Draw(img).rounded_rectangle((0, 0, size[0] - 1, size[1] - 1), radius, outline=WHITE + (255,), width=width)
-    return img
-
-
-def fade(size, horizontal):
-    w, h = size
-    img = Image.new("RGBA", size)
-    px = img.load()
-    for x in range(w):
-        for y in range(h):
-            t = (x / (w - 1)) if horizontal else (1 - y / (h - 1))
-            px[x, y] = BG + (round(255 * (1 - t) ** 1.6),)
     return img
 
 
@@ -132,13 +120,6 @@ def icons():
         f.write("Icons av-icon-*.png are rendered from Material Symbols Rounded by Google.\n\n" + licence)
 
 
-def placeholder():
-    img = Image.new("RGBA", (230, 345), PANEL + (255,))
-    draw = ImageDraw.Draw(img)
-    draw.rounded_rectangle((85, 142, 145, 202), 12, outline=(74, 88, 217, 120), width=4)
-    return img
-
-
 LOGO_INSIDE = (50, 65, 1203, 1187)  # ~8 px outside the neon frame's glow (frame: x 58-1195, y 73-1179)
 LOGO_RADIUS = 150                   # the frame's rounded corners; the drawn checkerboard outside goes
 
@@ -199,14 +180,6 @@ def fanart():
 def main():
     os.makedirs(MEDIA, exist_ok=True)
     save(Image.new("RGBA", (8, 8), WHITE + (255,)), "av-white.png")
-    save(rounded((64, 64), 16), "av-round.png")
-    save(outline((64, 64), 16, 3), "av-round-border.png")
-    save(fade((512, 8), horizontal=True), "av-fade-left.png")
-    save(fade((8, 256), horizontal=False), "av-fade-bottom.png")
-    save(rounded((230, 345), 14), "av-mask-poster.png")
-    save(rounded((320, 180), 14), "av-mask-wide.png")
-    save(rounded((64, 32), 16), "av-pill.png")
-    save(rounded((32, 8), 4), "av-progress.png")
     # Cinematic UI
     save(rounded((64, 64), 10), "av-r10.png")
     save(outline((64, 64), 10, 3), "av-r10-ring.png")
@@ -238,7 +211,6 @@ def main():
     dot = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     ImageDraw.Draw(dot).ellipse((0, 0, 15, 15), fill=WHITE + (255,))
     save(dot, "av-dot.png")
-    save(placeholder(), "av-placeholder.png")
     icons()
     logo()
     fanart()

@@ -651,7 +651,7 @@ def _source_row(focused):
             visible=action),
         # sources: quality chip, name, details
         img(24, 28, 90, 44, "av-r10.png", "2E00A6D6", border=10, visible=f"!{action} + {is_4k}"),
-        img(24, 28, 90, 44, "av-r10.png", S3 if not focused else "FF2A3440", border=10,
+        img(24, 28, 90, 44, "av-r10.png", S3 if not focused else "26FFFFFF", border=10,
             visible=f"!{action} + {has_badge} + !{is_4k}"),
         lbl(24, 28, 90, 44, "font12", CYAN_HI, "[B]$INFO[ListItem.Property(badge)][/B]", align="center",
             visible=f"!{action} + {is_4k}"),

@@ -12,11 +12,7 @@ ICONS = ["home", "search", "play_circle", "format_list_bulleted", "star", "sched
          "play_arrow", "info", "check_circle", "favorite", "chevron_right", "history", "add_link", "folder", "movie",
          "explore", "expand_more", "expand_less",
          "visibility", "bookmark", "pause_circle", "cancel"]
-SHAPES = {"av-white.png": (8, 8), "av-round.png": (64, 64), "av-round-border.png": (64, 64), "av-glow.png": (128, 128),
-          "av-gradient.png": (256, 64), "av-fade-left.png": (512, 8), "av-fade-bottom.png": (8, 256),
-          "av-mask-poster.png": (230, 345), "av-mask-wide.png": (320, 180), "av-pill.png": (64, 32),
-          "av-progress.png": (32, 8), "av-divider.png": (8, 512), "av-dot.png": (16, 16),
-          "av-placeholder.png": (230, 345), "av-logo.png": (280, 280), "av-accent.png": (8, 256),
+SHAPES = {"av-white.png": (8, 8), "av-dot.png": (16, 16), "av-logo.png": (280, 280),
           # Cinematic UI (0.4.0)
           "av-r10.png": (64, 64), "av-r10-ring.png": (64, 64), "av-pill66.png": (132, 66),
           "av-pill66-ring.png": (132, 66), "av-r22.png": (96, 96), "av-shade-hero.png": (1920, 8),
@@ -133,3 +129,24 @@ def test_logo_comes_from_the_novaflix_artwork():
 def test_launcher_tile_uses_the_same_icon():
     plugin = open(os.path.join(ROOT, "plugin.video.novaflix", "novaflix-icon.png"), "rb").read()
     assert open(os.path.join(ROOT, "script.novaflix", "novaflix-icon.png"), "rb").read() == plugin
+
+
+RETIRED = ["av-glow.png", "av-gradient.png", "av-divider.png", "av-accent.png", "av-round.png", "av-round-border.png",
+           "av-pill.png", "av-mask-poster.png", "av-mask-wide.png", "av-placeholder.png", "av-progress.png",
+           "av-fade-left.png", "av-fade-bottom.png", "novaflix-white.png"]
+
+
+@pytest.mark.parametrize("name", RETIRED)
+def test_pre_cinematic_textures_are_gone(name):
+    assert not os.path.exists(os.path.join(MEDIA, name))
+
+
+def test_layouts_use_only_the_cinematic_palette():
+    import re
+    allowed = {"FF05070A", "FF0C1015", "FF141A21", "FF1E2630", "FFFFFFFF", "FFD3D8DF", "FF8F98A4", "FF00A6D6",
+               "FF35CDF5", "FF001820", "FF3FD28F", "FFF5B04F", "FFFF6B7A"}
+    layouts = os.path.join(MEDIA, "..", "1080i")
+    for name in os.listdir(layouts):
+        text = open(os.path.join(layouts, name), encoding="utf-8").read()
+        for colour in re.findall(r"\bFF[0-9A-Fa-f]{6}\b", text):
+            assert colour.upper() in allowed, f"{name}: {colour}"

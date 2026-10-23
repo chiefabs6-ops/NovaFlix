@@ -28,7 +28,7 @@ TIER_STRINGS = {quality.UHD: 30461, quality.FHD: 30462, quality.HD: 30463, quali
 SORT_STRINGS = {ranking.BEST: 30467, ranking.RESOLUTION: 30468, ranking.SOURCE: 30469, ranking.HDR: 30470,
                 ranking.SIZE: 30471}
 ALL_TIERS = "all"
-WARNING_COLOR = "FFFF4D6D"  # the skin's "blocked" red, so warnings stand out on the details line
+WARNING_COLOR = "FFFF6B7A"  # the skin's "blocked" red, so warnings stand out on the details line
 
 
 def _warning(text):
