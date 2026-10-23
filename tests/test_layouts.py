@@ -111,3 +111,27 @@ def test_title_page_buttons_fit_and_my_list_label_has_room():
               for i in (500, 501, 502, 503)}
     assert widths[501] >= 400
     assert sum(widths.values()) + 3 * 24 <= 1500
+
+
+def test_rail_returns_focus_to_each_view():
+    """Cinematic UI: the menu is group 9100 around the sidebar list and Settings; it opens while it has focus."""
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-app.xml")).getroot()
+    by_id = {int(c.get("id")): c for c in root.iter("control") if c.get("id", "").isdigit()}
+    menu = by_id[ids.MENU_GROUP]
+    inside = {int(c.get("id")) for c in menu.iter("control") if c.get("id", "").isdigit()}
+    assert {ids.SIDEBAR, ids.SIDEBAR_SETTINGS} <= inside
+    targets = {o.get("condition"): o.text for o in by_id[ids.SIDEBAR].findall("onright")}
+    assert targets["String.IsEqual(Window.Property(view),grid)"] == str(ids.GRID)
+    assert targets["String.IsEqual(Window.Property(view),related)"] == str(ids.RELATED_ROWS[0])
+    text = open(os.path.join(LAYOUTS, "novaflix-app.xml"), encoding="utf-8").read()
+    assert "ControlGroup(9100).HasFocus" in text
+
+
+def test_generated_sections_are_current():
+    """tools/gen_layouts.py writes the generated parts of the layouts; the files must match it."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("gen_layouts", os.path.join(SKIN, "..", "..", "..", "..", "tools",
+                                                                              "gen_layouts.py"))
+    gen = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(gen)
+    assert gen.stale() == [], "run tools/gen_layouts.py"

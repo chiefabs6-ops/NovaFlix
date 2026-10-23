@@ -16,6 +16,9 @@
     <control type="group">
       <visible>String.IsEqual(Window.Property(view),home)</visible>
       <animation effect="fade" start="0" end="100" time="200">Visible</animation>
+      <!-- gen:push-home -->
+<animation type="Conditional" condition="ControlGroup(9100).HasFocus" reversible="true"><effect type="fade" start="100" end="45" time="250"/><effect type="slide" start="0,0" end="40,0" time="250" tween="cubic" easing="out"/></animation>
+      <!-- /gen:push-home -->
       <control type="grouplist">
         <left>380</left><top>0</top><width>1540</width><height>1080</height>
         <orientation>vertical</orientation><itemgap>0</itemgap>
@@ -700,6 +703,9 @@
     <control type="group">
       <visible>String.IsEqual(Window.Property(view),grid)</visible>
       <animation effect="fade" start="0" end="100" time="200">Visible</animation>
+      <!-- gen:push-grid -->
+<animation type="Conditional" condition="ControlGroup(9100).HasFocus" reversible="true"><effect type="fade" start="100" end="45" time="250"/><effect type="slide" start="0,0" end="40,0" time="250" tween="cubic" easing="out"/></animation>
+      <!-- /gen:push-grid -->
       <control type="label">
         <left>440</left><top>36</top><width>1400</width><height>64</height>
         <font>font45_title</font><textcolor>FFF5F7FF</textcolor>
@@ -1160,6 +1166,9 @@
     <control type="group">
       <visible>String.IsEqual(Window.Property(view),related)</visible>
       <animation effect="fade" start="0" end="100" time="200">Visible</animation>
+      <!-- gen:push-related -->
+<animation type="Conditional" condition="ControlGroup(9100).HasFocus" reversible="true"><effect type="fade" start="100" end="45" time="250"/><effect type="slide" start="0,0" end="40,0" time="250" tween="cubic" easing="out"/></animation>
+      <!-- /gen:push-related -->
       <control type="label">
         <left>440</left><top>36</top><width>1400</width><height>64</height>
         <font>font45_title</font><textcolor>FFF5F7FF</textcolor>
@@ -1900,305 +1909,80 @@
       </control>
     </control>
 
-    <!-- ================= SIDEBAR =================
-         List 100: five main entries (kind main), Explore (kind explore) and, while Explore is open,
-         its six entries (kind sub, smaller icons). Settings is button 101, anchored at the bottom. The list never
-         scrolls: 12 x 56 = 672 px fits its 728 px, so the accent bar can sit at a fixed spot. -->
-    <control type="group">
-      <control type="image">
-        <left>0</left><top>0</top><width>380</width><height>1080</height>
-        <texture colordiffuse="FF071126">av-white.png</texture>
-      </control>
-      <control type="image">
-        <left>374</left><top>0</top><width>8</width><height>1080</height>
-        <texture>av-divider.png</texture>
-      </control>
-      <control type="image">
-        <left>100</left><top>14</top><width>180</width><height>180</height>
-        <aspectratio>keep</aspectratio>
-        <texture>av-logo.png</texture>
-      </control>
-      <!-- slim purple-to-cyan accent beside the open Explore submenu -->
-      <control type="image">
-        <left>53</left><top>556</top><width>4</width><height>320</height>
-        <texture border="2">av-accent.png</texture>
-        <visible>!String.IsEmpty(Window.Property(explore_open))</visible>
-        <animation effect="fade" start="0" end="100" time="200">Visible</animation>
-      </control>
-      <control type="list" id="100">
-        <left>16</left><top>212</top><width>352</width><height>728</height>
-        <orientation>vertical</orientation>
-        <scrolltime tween="quadratic" easing="out">120</scrolltime>
-        <ondown>101</ondown>
-        <onright condition="String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))">201</onright>
-        <onright condition="String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))">340</onright>
-        <onright condition="String.IsEqual(Window.Property(view),grid)">400</onright>
-        <onright condition="String.IsEqual(Window.Property(view),related)">800</onright>
-        <onright condition="String.IsEqual(Window.Property(view),mal)">420</onright>
-        <!-- One row height for every kind: Kodi picks item layouts per list, not per item, so each
-             row draws the parts for its kind (main / explore / sub). -->
-        <itemlayout width="352" height="56">
-          <control type="image">
-            <left>12</left><top>0</top><width>328</width><height>2</height>
-            <texture colordiffuse="26A8B5D1">av-white.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore)</visible>
-          </control>
-          <control type="image">
-            <left>0</left><top>3</top><width>352</width><height>50</height>
-            <texture border="20" colordiffuse="38FFFFFF">av-gradient.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>0</left><top>3</top><width>352</width><height>50</height>
-            <texture border="14" colordiffuse="CC8B3FE0">av-round-border.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FF7F8CAD">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="label">
-            <left>70</left><top>0</top><width>278</width><height>56</height>
-            <font>font13</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="label">
-            <left>70</left><top>0</top><width>278</width><height>56</height>
-            <font>font13</font><aligny>center</aligny><textcolor>FFA8B5D1</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>2</left><top>12</top><width>5</width><height>32</height>
-            <texture border="2" colordiffuse="FF00A6D6">av-pill.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEmpty(Window.Property(explore_open)) + String.IsEqual(Window.Property(current_group),explore)</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + [!String.IsEmpty(Window.Property(explore_open)) | String.IsEqual(Window.Property(current_group),explore)]</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FF7F8CAD">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEmpty(Window.Property(explore_open)) + !String.IsEqual(Window.Property(current_group),explore)</visible>
-          </control>
-          <control type="label">
-            <left>70</left><top>0</top><width>230</width><height>56</height>
-            <font>font13</font><aligny>center</aligny><textcolor>FFA8B5D1</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),explore)</visible>
-          </control>
-          <control type="image">
-            <left>312</left><top>14</top><width>28</width><height>28</height>
-            <texture colordiffuse="FF7F8CAD">av-icon-expand_more.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEmpty(Window.Property(explore_open))</visible>
-          </control>
-          <control type="image">
-            <left>312</left><top>14</top><width>28</width><height>28</height>
-            <texture colordiffuse="FF00A6D6">av-icon-expand_less.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + !String.IsEmpty(Window.Property(explore_open))</visible>
-          </control>
-          <control type="image">
-            <left>68</left><top>15</top><width>26</width><height>26</height>
-            <texture colordiffuse="FF00A6D6">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>68</left><top>15</top><width>26</width><height>26</height>
-            <texture colordiffuse="FF7F8CAD">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="label">
-            <left>106</left><top>0</top><width>242</width><height>56</height>
-            <font>font12</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="label">
-            <left>106</left><top>0</top><width>242</width><height>56</height>
-            <font>font12</font><aligny>center</aligny><textcolor>FF97A4C2</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-        </itemlayout>
-        <focusedlayout width="352" height="56">
-          <control type="image">
-            <left>12</left><top>0</top><width>328</width><height>2</height>
-            <texture colordiffuse="26A8B5D1">av-white.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore)</visible>
-          </control>
-          <control type="image">
-            <left>-14</left><top>-10</top><width>380</width><height>76</height>
-            <texture border="40" colordiffuse="808B3FE0">av-glow.png</texture>
-            <visible>Control.HasFocus(100) + !String.IsEqual(ListItem.Property(kind),sub)</visible>
-          </control>
-          <control type="image">
-            <left>0</left><top>3</top><width>352</width><height>50</height>
-            <texture border="20">av-gradient.png</texture>
-            <visible>Control.HasFocus(100) + !String.IsEqual(ListItem.Property(kind),sub)</visible>
-          </control>
-          <control type="image">
-            <left>58</left><top>5</top><width>294</width><height>46</height>
-            <texture border="20">av-gradient.png</texture>
-            <visible>Control.HasFocus(100) + String.IsEqual(ListItem.Property(kind),sub)</visible>
-          </control>
-          <control type="image">
-            <left>0</left><top>3</top><width>352</width><height>50</height>
-            <texture border="20" colordiffuse="38FFFFFF">av-gradient.png</texture>
-            <visible>!Control.HasFocus(100) + String.IsEqual(ListItem.Property(kind),main) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>0</left><top>3</top><width>352</width><height>50</height>
-            <texture border="14" colordiffuse="CC8B3FE0">av-round-border.png</texture>
-            <visible>!Control.HasFocus(100) + String.IsEqual(ListItem.Property(kind),main) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + [Control.HasFocus(100) | !String.IsEmpty(ListItem.Property(active))]</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FF7F8CAD">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + !Control.HasFocus(100) + String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="label">
-            <left>70</left><top>0</top><width>278</width><height>56</height>
-            <font>font13</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + [Control.HasFocus(100) | !String.IsEmpty(ListItem.Property(active))]</visible>
-          </control>
-          <control type="label">
-            <left>70</left><top>0</top><width>278</width><height>56</height>
-            <font>font13</font><aligny>center</aligny><textcolor>FFA8B5D1</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),main) + !Control.HasFocus(100) + String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>2</left><top>12</top><width>5</width><height>32</height>
-            <texture border="2" colordiffuse="FF00A6D6">av-pill.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100) + String.IsEmpty(Window.Property(explore_open)) + String.IsEqual(Window.Property(current_group),explore)</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + Control.HasFocus(100)</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100) + [!String.IsEmpty(Window.Property(explore_open)) | String.IsEqual(Window.Property(current_group),explore)]</visible>
-          </control>
-          <control type="image">
-            <left>22</left><top>11</top><width>34</width><height>34</height>
-            <texture colordiffuse="FF7F8CAD">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100) + String.IsEmpty(Window.Property(explore_open)) + !String.IsEqual(Window.Property(current_group),explore)</visible>
-          </control>
-          <control type="label">
-            <left>70</left><top>0</top><width>230</width><height>56</height>
-            <font>font13</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + Control.HasFocus(100)</visible>
-          </control>
-          <control type="label">
-            <left>70</left><top>0</top><width>230</width><height>56</height>
-            <font>font13</font><aligny>center</aligny><textcolor>FFA8B5D1</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100)</visible>
-          </control>
-          <control type="image">
-            <left>312</left><top>14</top><width>28</width><height>28</height>
-            <texture colordiffuse="FFFFFFFF">av-icon-expand_more.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEmpty(Window.Property(explore_open)) + Control.HasFocus(100)</visible>
-          </control>
-          <control type="image">
-            <left>312</left><top>14</top><width>28</width><height>28</height>
-            <texture colordiffuse="FF7F8CAD">av-icon-expand_more.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEmpty(Window.Property(explore_open)) + !Control.HasFocus(100)</visible>
-          </control>
-          <control type="image">
-            <left>312</left><top>14</top><width>28</width><height>28</height>
-            <texture colordiffuse="FFFFFFFF">av-icon-expand_less.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + !String.IsEmpty(Window.Property(explore_open)) + Control.HasFocus(100)</visible>
-          </control>
-          <control type="image">
-            <left>312</left><top>14</top><width>28</width><height>28</height>
-            <texture colordiffuse="FF00A6D6">av-icon-expand_less.png</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),explore) + !String.IsEmpty(Window.Property(explore_open)) + !Control.HasFocus(100)</visible>
-          </control>
-          <control type="image">
-            <left>68</left><top>15</top><width>26</width><height>26</height>
-            <texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + Control.HasFocus(100)</visible>
-          </control>
-          <control type="image">
-            <left>68</left><top>15</top><width>26</width><height>26</height>
-            <texture colordiffuse="FF00A6D6">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + !Control.HasFocus(100) + !String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="image">
-            <left>68</left><top>15</top><width>26</width><height>26</height>
-            <texture colordiffuse="FF7F8CAD">$INFO[ListItem.Property(icon)]</texture>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + !Control.HasFocus(100) + String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-          <control type="label">
-            <left>106</left><top>0</top><width>242</width><height>56</height>
-            <font>font12</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + [Control.HasFocus(100) | !String.IsEmpty(ListItem.Property(active))]</visible>
-          </control>
-          <control type="label">
-            <left>106</left><top>0</top><width>242</width><height>56</height>
-            <font>font12</font><aligny>center</aligny><textcolor>FF97A4C2</textcolor>
-            <label>$INFO[ListItem.Label]</label>
-            <visible>String.IsEqual(ListItem.Property(kind),sub) + !Control.HasFocus(100) + String.IsEmpty(ListItem.Property(active))</visible>
-          </control>
-        </focusedlayout>
-      </control>
-
-      <!-- Settings, anchored at the bottom (opens the Settings menu: add-on settings, My TorBox) -->
-      <control type="image">
-        <left>36</left><top>948</top><width>308</width><height>2</height>
-        <texture colordiffuse="26A8B5D1">av-white.png</texture>
-      </control>
-      <control type="image">
-        <left>2</left><top>956</top><width>380</width><height>76</height>
-        <texture border="40" colordiffuse="808B3FE0">av-glow.png</texture>
-        <visible>Control.HasFocus(101)</visible>
-      </control>
-      <control type="button" id="101">
-        <left>16</left><top>966</top><width>352</width><height>56</height>
-        <font>font13</font><aligny>center</aligny><textoffsetx>70</textoffsetx>
-        <textcolor>FFA8B5D1</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-        <texturefocus border="20">av-gradient.png</texturefocus>
-        <texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus>
-        <label>$INFO[Window.Property(settings_label)]</label>
-        <onup>100</onup>
-        <onright condition="String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))">201</onright>
-        <onright condition="String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))">340</onright>
-        <onright condition="String.IsEqual(Window.Property(view),grid)">400</onright>
-        <onright condition="String.IsEqual(Window.Property(view),related)">800</onright>
-        <onright condition="String.IsEqual(Window.Property(view),mal)">420</onright>
-      </control>
-      <control type="image">
-        <left>38</left><top>977</top><width>34</width><height>34</height>
-        <texture colordiffuse="FFFFFFFF">av-icon-settings.png</texture>
-        <visible>Control.HasFocus(101)</visible>
-      </control>
-      <control type="image">
-        <left>38</left><top>977</top><width>34</width><height>34</height>
-        <texture colordiffuse="FF7F8CAD">av-icon-settings.png</texture>
-        <visible>!Control.HasFocus(101)</visible>
-      </control>
-    </control>
+    <!-- ================= SIDEBAR / MENU (generated: tools/gen_layouts.py) ================= -->
+    <!-- gen:sidebar -->
+<!-- Closed: a 112 px rail of icons over the page. Open (focus in group 9100): a dark fade from the left,
+     labels beside the icons, the page dimmed and pushed right (each view group animates on the same
+     condition). List 100 rows: main entries, Explore, and Explore's lists while it is open. -->
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture>av-shade-menu.png</texture><animation effect="fade" start="0" end="100" time="250">Visible</animation><animation effect="fade" start="100" end="0" time="200">Hidden</animation><visible>ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>30</left><top>40</top><width>52</width><height>52</height><texture>av-logo.png</texture><aspectratio>keep</aspectratio></control>
+<control type="label"><left>98</left><top>40</top><width>320</width><height>52</height><font>font30_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>NOVA[COLOR FF00A6D6]FLIX[/COLOR]</label><animation effect="fade" start="0" end="100" time="200">Visible</animation><visible>ControlGroup(9100).HasFocus</visible></control>
+<control type="group" id="9100">
+<control type="list" id="100">
+<left>0</left><top>160</top><width>420</width><height>800</height>
+<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">120</scrolltime>
+<ondown>101</ondown><onright condition="String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))">201</onright><onright condition="String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))">340</onright><onright condition="String.IsEqual(Window.Property(view),grid)">400</onright><onright condition="String.IsEqual(Window.Property(view),related)">800</onright><onright condition="String.IsEqual(Window.Property(view),mal)">420</onright>
+<itemlayout width="420" height="60">
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + false</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF00A6D6">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + true + !String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + true + !String.IsEmpty(ListItem.Property(active)) + !ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF8F98A4">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + true + String.IsEmpty(ListItem.Property(active))</visible></control>
+<control type="image"><left>53</left><top>50</top><width>6</width><height>6</height><texture colordiffuse="FF00A6D6">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(kind),main) + !String.IsEmpty(ListItem.Property(active)) + !ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font30_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),main) + false</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),main) + true + !String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font13</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),main) + true + String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + false</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF00A6D6">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + true + String.IsEqual(Window.Property(current_group),explore) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + true + String.IsEqual(Window.Property(current_group),explore) + !ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF8F98A4">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + true + !String.IsEqual(Window.Property(current_group),explore)</visible></control>
+<control type="image"><left>53</left><top>50</top><width>6</width><height>6</height><texture colordiffuse="FF00A6D6">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEqual(Window.Property(current_group),explore) + !ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font30_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),explore) + false</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),explore) + true + String.IsEqual(Window.Property(current_group),explore) + ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font13</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),explore) + true + !String.IsEqual(Window.Property(current_group),explore) + ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>110</left><top>0</top><width>290</width><height>60</height><font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),sub) + false</visible></control>
+<control type="label"><left>110</left><top>0</top><width>290</width><height>60</height><font>font12</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),sub) + true + !String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>110</left><top>0</top><width>290</width><height>60</height><font>font12</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),sub) + true + String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>352</left><top>18</top><width>24</width><height>24</height><texture colordiffuse="FF8F98A4">av-icon-expand_more.png</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEmpty(Window.Property(explore_open)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>352</left><top>18</top><width>24</width><height>24</height><texture colordiffuse="FF8F98A4">av-icon-expand_less.png</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + !String.IsEmpty(Window.Property(explore_open)) + ControlGroup(9100).HasFocus</visible></control>
+</itemlayout>
+<focusedlayout width="420" height="60">
+<control type="image"><left>0</left><top>12</top><width>5</width><height>36</height><texture colordiffuse="FF00A6D6">av-white.png</texture><visible>Control.HasFocus(100)</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + Control.HasFocus(100)</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF00A6D6">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + !Control.HasFocus(100) + !String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + !Control.HasFocus(100) + !String.IsEmpty(ListItem.Property(active)) + !ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF8F98A4">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),main) + !Control.HasFocus(100) + String.IsEmpty(ListItem.Property(active))</visible></control>
+<control type="image"><left>53</left><top>50</top><width>6</width><height>6</height><texture colordiffuse="FF00A6D6">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(kind),main) + !String.IsEmpty(ListItem.Property(active)) + !ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font30_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),main) + Control.HasFocus(100)</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),main) + !Control.HasFocus(100) + !String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font13</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),main) + !Control.HasFocus(100) + String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + Control.HasFocus(100)</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF00A6D6">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100) + String.IsEqual(Window.Property(current_group),explore) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100) + String.IsEqual(Window.Property(current_group),explore) + !ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>41</left><top>15</top><width>30</width><height>30</height><texture colordiffuse="FF8F98A4">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100) + !String.IsEqual(Window.Property(current_group),explore)</visible></control>
+<control type="image"><left>53</left><top>50</top><width>6</width><height>6</height><texture colordiffuse="FF00A6D6">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEqual(Window.Property(current_group),explore) + !ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font30_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),explore) + Control.HasFocus(100)</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100) + String.IsEqual(Window.Property(current_group),explore) + ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>96</left><top>0</top><width>300</width><height>60</height><font>font13</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),explore) + !Control.HasFocus(100) + !String.IsEqual(Window.Property(current_group),explore) + ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>110</left><top>0</top><width>290</width><height>60</height><font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),sub) + Control.HasFocus(100)</visible></control>
+<control type="label"><left>110</left><top>0</top><width>290</width><height>60</height><font>font12</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),sub) + !Control.HasFocus(100) + !String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="label"><left>110</left><top>0</top><width>290</width><height>60</height><font>font12</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(kind),sub) + !Control.HasFocus(100) + String.IsEmpty(ListItem.Property(active)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>352</left><top>18</top><width>24</width><height>24</height><texture colordiffuse="FF8F98A4">av-icon-expand_more.png</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + String.IsEmpty(Window.Property(explore_open)) + ControlGroup(9100).HasFocus</visible></control>
+<control type="image"><left>352</left><top>18</top><width>24</width><height>24</height><texture colordiffuse="FF8F98A4">av-icon-expand_less.png</texture><visible>String.IsEqual(ListItem.Property(kind),explore) + !String.IsEmpty(Window.Property(explore_open)) + ControlGroup(9100).HasFocus</visible></control>
+</focusedlayout>
+</control>
+<!-- Settings, at the bottom (opens the Settings menu: add-on settings, My TorBox) -->
+<control type="button" id="101">
+<left>0</left><top>990</top><width>420</width><height>60</height>
+<texturefocus colordiffuse="00FFFFFF">av-white.png</texturefocus><texturenofocus colordiffuse="00FFFFFF">av-white.png</texturenofocus>
+<label></label><onup>100</onup><onright condition="String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))">201</onright><onright condition="String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))">340</onright><onright condition="String.IsEqual(Window.Property(view),grid)">400</onright><onright condition="String.IsEqual(Window.Property(view),related)">800</onright><onright condition="String.IsEqual(Window.Property(view),mal)">420</onright>
+</control>
+</control>
+<control type="image"><left>0</left><top>1002</top><width>5</width><height>36</height><texture colordiffuse="FF00A6D6">av-white.png</texture><visible>Control.HasFocus(101)</visible></control>
+<control type="image"><left>41</left><top>1005</top><width>30</width><height>30</height><texture colordiffuse="FFFFFFFF">av-icon-settings.png</texture><visible>Control.HasFocus(101)</visible></control>
+<control type="image"><left>41</left><top>1005</top><width>30</width><height>30</height><texture colordiffuse="FF8F98A4">av-icon-settings.png</texture><visible>!Control.HasFocus(101)</visible></control>
+<control type="label"><left>96</left><top>990</top><width>300</width><height>60</height><font>font30_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(settings_label)]</label><visible>Control.HasFocus(101)</visible></control>
+<control type="label"><left>96</left><top>990</top><width>300</width><height>60</height><font>font13</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[Window.Property(settings_label)]</label><visible>!Control.HasFocus(101) + ControlGroup(9100).HasFocus</visible></control>
+    <!-- /gen:sidebar -->
 
     <!-- loading -->
     <control type="label">

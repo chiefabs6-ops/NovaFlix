@@ -256,6 +256,15 @@ class App:
         else:
             self.show_home()
 
+    def focus_view(self):
+        """Focus the shown view, as Right from the menu does."""
+        if self.view == "grid":
+            self.window.setFocusId(ids.GRID)
+        elif self.view == "related":
+            self.related.focus()
+        else:
+            self.window.setFocusId(ids.HOME_RETRY if self.window.getProperty("offline") else ids.HERO_PLAY)
+
     def _refresh(self):
         if self.view == "home":
             self.home.refresh_continue()
@@ -266,7 +275,9 @@ class App:
 
     def on_action(self, action):
         action_id = action.getId()
-        if action_id in ids.ACTION_BACK:
+        if action_id in ids.ACTION_BACK and self.window.getFocusId() in (ids.SIDEBAR, ids.SIDEBAR_SETTINGS):
+            self.focus_view()  # Back closes the open menu first
+        elif action_id in ids.ACTION_BACK:
             self.back()
         elif action_id in ids.ACTION_CONTEXT:
             self._context_menu()

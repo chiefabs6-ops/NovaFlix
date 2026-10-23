@@ -4,6 +4,7 @@ tests/test_layouts.py checks every ID listed in WINDOW_IDS exists in its layout.
 
 SIDEBAR = 100
 SIDEBAR_SETTINGS = 101
+MENU_GROUP = 9100      # group around 100 + 101: the menu is open while it has focus (Cinematic UI)
 HERO_PLAY = 201
 HERO_INFO = 202
 HOME_ROWS = (300, 310, 320, 330)
@@ -40,6 +41,6 @@ WINDOW_IDS = {
     "novaflix-sources.xml": [SOURCES_LIST],
     "novaflix-menu.xml": [MENU_LIST],
     "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_SEASON, SHOW_EPISODES],
-    "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, *MAL_CARDS, *MAL_BARS,
+    "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, *MAL_CARDS, *MAL_BARS,
                          *RELATED_ROWS],
 }

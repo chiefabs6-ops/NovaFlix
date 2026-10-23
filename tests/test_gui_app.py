@@ -469,3 +469,13 @@ def test_filter_menu_back_changes_nothing(monkeypatch):
     monkeypatch.setattr(actions.Library, "genres", lambda self, media_type: [(28, "Action")])
     xbmcgui.modal_scripts.append(lambda w: w.onAction(xbmcgui.Action(92)))
     assert actions.choose_filter("popular_movies", "") is None
+
+
+def test_back_from_the_open_menu_returns_to_the_view(app):
+    app.window.setFocusId(ids.SIDEBAR)
+    app.window.onAction(xbmcgui.Action(92))
+    assert not app.window.closed and app.window.getFocusId() == ids.HERO_PLAY
+    select_sidebar(app, "trending")
+    app.window.setFocusId(ids.SIDEBAR_SETTINGS)
+    app.window.onAction(xbmcgui.Action(92))
+    assert app.view == "grid" and app.window.getFocusId() == ids.GRID
