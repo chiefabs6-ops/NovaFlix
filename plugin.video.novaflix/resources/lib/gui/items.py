@@ -3,6 +3,8 @@
 
 import xbmcgui
 
+CHIPS = 6  # tab chips the source drawer draws (All + five qualities)
+
 
 def to_listitem(card):
     item = xbmcgui.ListItem(label=card.label, label2=card.label2, offscreen=True)
@@ -23,8 +25,10 @@ def to_listitem(card):
     item.setProperty("avail", card.avail)
     item.setProperty("icon", icon)
     item.setProperty("has_wide", "true" if card.wide and not icon else "")
-    for key in ("plot", "year", "rating", "genres", "kind_label", "badge"):
+    for key in ("plot", "year", "rating", "genres", "kind_label", "badge", "details"):
         item.setProperty(key, getattr(card, key))
+    for n in range(CHIPS):
+        item.setProperty(f"chip{n}", card.chips[n] if n < len(card.chips) else "")
     if card.position > 0 and card.duration > 0:
         item.getVideoInfoTag().setResumePoint(card.position, card.duration)
     return item

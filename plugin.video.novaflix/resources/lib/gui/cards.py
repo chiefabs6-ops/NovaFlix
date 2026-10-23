@@ -40,6 +40,8 @@ class Card:
     genres: str = ""
     kind_label: str = ""
     badge: str = ""        # source rows: quality chip (4K, 1080p, 720p, CAM)
+    details: str = ""      # source rows: the details line without the status
+    chips: tuple = ()      # tab rows: one label per tab, the open one first
 
 
 def clock(seconds):
@@ -68,8 +70,16 @@ def quality_badge(line1, line2):
     return next((badge for badge, pattern in _BADGES if pattern.search(text)), "")
 
 
+# "Quality: All (37) — 4K / UHD 7 · 1080p 19" (views/sources.py tab rows): the open tab, then the others
+_TAB_ROW = re.compile(r"^(?P<title>[^:]+): (?P<open>.+?) \((?P<count>\d+)\) — (?P<rest>.+)$")
+
+
 def source_row(line1, line2, text):
     if not line2:
+        tabs = _TAB_ROW.match(line1)
+        if tabs:  # drawn as a grey title and one chip per tab, the open one first
+            chips = (f"{tabs['open']} {tabs['count']}",) + tuple(tabs["rest"].split(" · "))
+            return Card(label=tabs["title"], kind="tabs", status="action", chips=chips)
         return Card(label=line1, kind="source", status="action")
     last = line2.rsplit(" · ", 1)[-1]
     ready_in = text(30144).split("%s")[0]
@@ -81,7 +91,10 @@ def source_row(line1, line2, text):
         status = "blocked"
     else:
         status = "unchecked"
-    return Card(label=line1, label2=line2, kind="source", status=status, note=last, badge=quality_badge(line1, line2))
+    # the status is drawn on the right in its colour, so the details line leaves it out
+    details = line2.rsplit(" · ", 1)[0] if status != "unchecked" and " · " in line2 else line2
+    return Card(label=line1, label2=line2, kind="source", status=status, note=last, badge=quality_badge(line1, line2),
+                details=details)
 
 
 def next_episode(numbers, states):

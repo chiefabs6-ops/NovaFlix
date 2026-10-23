@@ -698,30 +698,46 @@ STATUS_COLOURS = (("ready", OK), ("download", WARN), ("blocked", BAD), ("uncheck
 
 def _source_row(focused):
     width, height = 912, 100
+    tabs = "String.IsEqual(ListItem.Property(kind),tabs)"
     action = "String.IsEqual(ListItem.Property(status),action)"
+    source = f"!{action}"
+    plain_action = f"{action} + !{tabs}"
     is_4k = "String.IsEqual(ListItem.Property(badge),4K)"
     has_badge = "!String.IsEmpty(ListItem.Property(badge))"
     body = [
         img(0, 4, width, height - 8, "av-r10.png", S3 if focused else S2, border=10),
-        # tab and action rows (language, quality, sort, check more): a plain row of text
-        lbl(28, 4, width - 56, height - 8, "font13", INK if focused else INK2, "[B]$INFO[ListItem.Label][/B]",
-            visible=action),
-        # sources: quality chip, name, details
-        img(24, 28, 90, 44, "av-r10.png", "2E00A6D6", border=10, visible=f"!{action} + {is_4k}"),
-        img(24, 28, 90, 44, "av-r10.png", S3 if not focused else "26FFFFFF", border=10,
-            visible=f"!{action} + {has_badge} + !{is_4k}"),
-        lbl(24, 28, 90, 44, "font12", CYAN_HI, "[B]$INFO[ListItem.Property(badge)][/B]", align="center",
-            visible=f"!{action} + {is_4k}"),
-        lbl(24, 28, 90, 44, "font12", INK, "[B]$INFO[ListItem.Property(badge)][/B]", align="center",
-            visible=f"!{action} + {has_badge} + !{is_4k}"),
-        group(0, 0, width, height, lines(
-            lbl(136, 16, width - 160, 40, "font13", INK, "$INFO[ListItem.Label]",
-                extra="<scroll>true</scroll>" if focused else ""),
-            lbl(160, 56, width - 184, 32, "font12", INK3, "$INFO[ListItem.Label2]")), visible=f"!{action}"),
+        # tab rows (language, quality): a grey title, then one chip per tab with the open one in white
+        lbl(28, 4, 130, height - 8, "font12", INK3, "$INFO[ListItem.Label]", visible=tabs),
     ]
-    body += [img(136, 67, 12, 12, "av-dot.png", colour,
-                 visible=f"!{action} + String.IsEqual(ListItem.Property(status),{state})")
-             for state, colour in STATUS_COLOURS]
+    for n in range(6):
+        chip = f"ListItem.Property(chip{n})"
+        left = 150 + n * 126
+        fill, text = (INK, GROUND) if n == 0 else (S3 if not focused else "33FFFFFF", INK2)
+        body += [img(left, 28, 118, 44, "av-pill66.png", fill, border=22, visible=f"{tabs} + !String.IsEmpty({chip})"),
+                 lbl(left, 28, 118, 44, "font10", text, f"[B]$INFO[{chip}][/B]", align="center",
+                     visible=f"{tabs} + !String.IsEmpty({chip})")]
+    body += [
+        # other actions (check more sources, sort): a plain row of words
+        lbl(28, 4, width - 56, height - 8, "font13", INK if focused else INK2, "[B]$INFO[ListItem.Label][/B]",
+            visible=plain_action),
+        # sources: quality chip, name, details, and the status in its colour on the right
+        img(24, 28, 90, 44, "av-r10.png", "2E00A6D6", border=10, visible=f"{source} + {is_4k}"),
+        img(24, 28, 90, 44, "av-r10.png", S3 if not focused else "26FFFFFF", border=10,
+            visible=f"{source} + {has_badge} + !{is_4k}"),
+        lbl(24, 28, 90, 44, "font12", CYAN_HI, "[B]$INFO[ListItem.Property(badge)][/B]", align="center",
+            visible=f"{source} + {is_4k}"),
+        lbl(24, 28, 90, 44, "font12", INK, "[B]$INFO[ListItem.Property(badge)][/B]", align="center",
+            visible=f"{source} + {has_badge} + !{is_4k}"),
+        group(0, 0, width, height, lines(
+            lbl(136, 14, width - 160, 42, "font13", INK, "$INFO[ListItem.Label]",
+                extra="<scroll>true</scroll>" if focused else ""),
+            lbl(136, 56, width - 380, 32, "font12", INK3, "$INFO[ListItem.Property(details)]")), visible=source),
+    ]
+    for state, colour in STATUS_COLOURS:
+        here = f"{source} + String.IsEqual(ListItem.Property(status),{state})"
+        body += [img(width - 232, 67, 10, 10, "av-dot.png", colour, visible=here),
+                 lbl(width - 214, 52, 190, 40, "font12", colour, "[B]$INFO[ListItem.Property(note)][/B]",
+                     visible=here)]
     if focused:
         body.insert(1, img(-3, 1, width + 6, height - 2, "av-r10-ring.png", CYAN, border=10,
                            visible="Control.HasFocus(600)"))
@@ -733,7 +749,7 @@ def sources():
         img(0, 0, 1920, 1080, "av-white.png", GROUND),
         img(0, 0, 1920, 1080, "$INFO[Window.Property(art)]",
             extra="<aspectratio>scale</aspectratio>").replace("<texture>", '<texture background="true">'),
-        img(0, 0, 1920, 1080, "av-white.png", "B305070A"),
+        img(0, 0, 1920, 1080, "av-white.png", "7305070A"),  # the picture shows, as in the concept
         img(0, 0, 1920, 1080, "av-shade-bottom.png"),
         lbl(120, 780, 700, 40, "font12", CYAN_HI, f"[B]{_addon(30219)}[/B]",
             visible="!String.IsEmpty(Window.Property(title))"),

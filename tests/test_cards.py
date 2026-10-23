@@ -120,3 +120,20 @@ def test_quality_badge():
 def test_quality_badge_says_cam_before_resolution():
     assert cards.quality_badge("Movie.2024.1080p.HDCAM.x264", "") == "CAM"
     assert cards.quality_badge("Movie.2024.1080p.WEB-DL.ts", "") == "1080p"  # .ts is a file extension
+
+
+def test_tab_rows_become_chips():
+    row = cards.source_row("Quality: All (37) — 4K / UHD 7 · 1080p 19 · 720p 5", "", T)
+    assert row.kind == "tabs" and row.label == "Quality"
+    assert row.chips == ("All 37", "4K / UHD 7", "1080p 19", "720p 5")
+    lang = cards.source_row("Language: English (23) — Polish 4", "", T)
+    assert lang.label == "Language" and lang.chips == ("English 23", "Polish 4")
+    other = cards.source_row("Check more sources (4 not checked)", "", T)
+    assert other.kind == "source" and other.status == "action" and other.chips == ()
+
+
+def test_source_details_drop_the_status_shown_on_the_right():
+    row = cards.source_row("A 2160p", "2160p · WEB-DL · 7.2 GB · Ready to play", T)
+    assert row.note == "Ready to play" and row.details == "2160p · WEB-DL · 7.2 GB"
+    unknown = cards.source_row("A", "1080p · 2 GB", T)
+    assert unknown.details == "1080p · 2 GB"
