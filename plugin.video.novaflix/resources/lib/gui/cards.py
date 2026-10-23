@@ -177,8 +177,12 @@ def title_hero(title, text=None):
     if len(plot) > PLOT_MAX:
         plot = plot[:PLOT_MAX - 1].rsplit(" ", 1)[0] + "…"
     alt = title.original_title if title.original_title and title.original_title != title.title else ""
+    kind = (text(30429) if title.is_movie else text(30430)) if text else ""
     return {"title": title.title, "alt": alt, "plot": plot, "art": title.backdrop or title.poster or "",
-            "dark": not title.backdrop, "meta": title_meta(title, text) if text else ""}
+            "dark": not title.backdrop, "meta": title_meta(title, text) if text else "",
+            # labelled fields (Cinematic UI): each one hides, label and all, when empty
+            "year": str(title.year) if title.year else "", "rating": rating_text(title.rating),
+            "genres": ", ".join(title.genres[:2]), "kind": kind}
 
 
 # -- availability (sources/availability.py) ------------------------------------------------------------

@@ -885,3 +885,19 @@ msgstr ""
 msgctxt "#30495"
 msgid "Rated %d+"
 msgstr ""
+
+msgctxt "#30510"
+msgid "Rating"
+msgstr ""
+
+msgctxt "#30511"
+msgid "Year"
+msgstr ""
+
+msgctxt "#30512"
+msgid "Type"
+msgstr ""
+
+msgctxt "#30513"
+msgid "Genre"
+msgstr ""

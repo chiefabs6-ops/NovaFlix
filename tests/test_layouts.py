@@ -135,3 +135,16 @@ def test_generated_sections_are_current():
     gen = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(gen)
     assert gen.stale() == [], "run tools/gen_layouts.py"
+
+
+def test_labelled_fields_hide_when_empty():
+    """Cinematic UI: a labelled value (small grey title over the value) sits in a group that hides,
+    title and all, when its property is empty."""
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-app.xml")).getroot()
+    for key in ("hero_rating", "hero_year", "hero_kind", "hero_genres"):
+        wanted = f"!String.IsEmpty(Window.Property({key}))"
+        groups = [g for g in root.iter("control") if g.get("type") == "group" and g.findtext("visible") == wanted]
+        assert groups, f"no group hides with {key}"
+        labels = [c for g in groups for c in g.iter("control") if c.get("type") == "label"]
+        assert any(f"Window.Property({key})" in (c.findtext("label") or "") for c in labels)
+        assert len(labels) >= 2, f"{key}: the grey title must hide with the value"

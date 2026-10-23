@@ -164,11 +164,259 @@ def menu_push():
             '<effect type="slide" start="0,0" end="40,0" time="250" tween="cubic" easing="out"/></animation>')
 
 
+# -- shared pieces -------------------------------------------------------------------------------------
+
+X = 184             # content left edge on every app-window view
+PULSE = '<animation effect="fade" start="55" end="100" time="900" pulse="true" condition="true">Conditional</animation>'
+SPIN = '<animation effect="rotate" end="-360" center="auto" time="900" loop="true" condition="true">Conditional</animation>'
+
+
+def group(left, top, width, height, children, visible=None, extra="", control_id=None):
+    gid = f' id="{control_id}"' if control_id else ""
+    return lines(f'<control type="group"{gid}><left>{left}</left><top>{top}</top><width>{width}</width>'
+                 f'<height>{height}</height>{extra}{_visible(visible)}', children, "</control>")
+
+
+def zoom_when(condition, percent, center):
+    return (f'<animation effect="zoom" start="100" end="{percent}" time="150" center="{center}" '
+            f'condition="{condition}" reversible="true">Conditional</animation>')
+
+
+def pill_button(control_id, left, top, width, label, primary, nav, icon=None, label_left=None):
+    """A 66 px pill. primary: white fill and dark text; else a translucent white fill. Focus: a cyan
+    ring and 105 % zoom (both in the group, so they move together)."""
+    fill, text = ("FFFFFFFF", GROUND) if primary else ("24FFFFFF", INK)
+    offset = 70 if icon else 34
+    parts = [
+        img(-6, -6, width + 12, 78, "av-pill66-ring.png", CYAN, border=33, visible=f"Control.HasFocus({control_id})"),
+        f'<control type="button" id="{control_id}"><left>0</left><top>0</top><width>{width}</width><height>66</height>'
+        f'<font>font30_title</font><aligny>center</aligny><textoffsetx>{offset}</textoffsetx>'
+        f'<textcolor>{text}</textcolor><focusedcolor>{text}</focusedcolor>'
+        f'<texturefocus border="33" colordiffuse="{fill}">av-pill66.png</texturefocus>'
+        f'<texturenofocus border="33" colordiffuse="{fill}">av-pill66.png</texturenofocus>'
+        f"<label>{label}</label>{nav}</control>",
+    ]
+    if icon:
+        parts.append(img(30, 18, 30, 30, icon, CYAN if primary else INK))
+    return group(left, top, width, 66, "\n".join(parts),
+                 extra=zoom_when(f"Control.HasFocus({control_id})", 105, f"{width // 2},33"))
+
+
+def labelled_fields(top, fields):
+    """Grey titles over values, laid out left to right; a field with no value hides, title and all.
+    fields: (title label, property, width)."""
+    items = []
+    for title, prop, width in fields:
+        items.append(group(0, 0, width, 64, lines(
+            lbl(0, 0, width, 24, "font10", INK3, title, aligny="top"),
+            lbl(0, 26, width, 38, "font13", INK2, f"$INFO[Window.Property({prop})]", aligny="top")),
+            visible=f"!String.IsEmpty(Window.Property({prop}))"))
+    return lines(f'<control type="grouplist"><left>{X}</left><top>{top}</top><width>1200</width><height>64</height>'
+                 '<orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>',
+                 "\n".join(items), "</control>")
+
+
+# -- cards ---------------------------------------------------------------------------------------------
+
+def _wide_art(width, height):
+    mask = "av-mask-wide10.png"
+    return lines(
+        img(0, 0, width, height, "av-r10.png", S2, border=10),
+        img(0, 0, width, height, "$INFO[ListItem.Art(thumb)]", visible="!String.IsEmpty(ListItem.Property(has_wide))",
+            extra=f'<aspectratio>scale</aspectratio>').replace("<texture>", f'<texture diffuse="{mask}" background="true">'),
+        img(0, 0, width, height, "$INFO[ListItem.Art(poster)]", visible="String.IsEmpty(ListItem.Property(has_wide))",
+            extra='<aspectratio>scale</aspectratio>').replace("<texture>", f'<texture diffuse="{mask}" background="true">'),
+        img(0, 0, width, height, "av-shade-card.png").replace("<texture>", f'<texture diffuse="{mask}">'),
+    )
+
+
+AVAIL_DOTS = (("available", OK), ("upcoming", WARN), ("sub_only", INK2), ("unavailable", BAD),
+              ("unknown", INK3), ("checking", INK3))
+
+
+def wide_card(width, height, focused):
+    """Continue Watching / episodes: the picture with its title, details and progress over it."""
+    body = [
+        _wide_art(width, height),
+        lbl(20, height - 92, width - 40, 40, "font13", INK, "[B]$INFO[ListItem.Label][/B]",
+            extra="<scroll>true</scroll>" if focused else ""),
+    ]
+    for state, colour in AVAIL_DOTS:
+        body.append(img(20, height - 42, 10, 10, "av-dot.png", colour,
+                        visible=f"String.IsEqual(ListItem.Property(avail),{state})"))
+    body += [
+        lbl(20, height - 56, width - 40, 36, "font12", INK2, "$INFO[ListItem.Label2]",
+            visible="String.IsEmpty(ListItem.Property(avail))"),
+        lbl(38, height - 56, width - 58, 36, "font12", INK2, "$INFO[ListItem.Label2]",
+            visible="!String.IsEmpty(ListItem.Property(avail))"),
+        f'<control type="progress"><left>20</left><top>{height - 16}</top><width>{width - 40}</width><height>4</height>'
+        '<info>ListItem.PercentPlayed</info>'
+        '<texturebg border="2" colordiffuse="40FFFFFF">av-bar.png</texturebg>'
+        f'<midtexture border="2" colordiffuse="{CYAN}">av-bar.png</midtexture>'
+        '<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible></control>',
+    ]
+    if focused:
+        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10))
+        return group(0, 12, width, height, "\n".join(body),
+                     extra=f'<animation effect="zoom" start="100" end="104" time="150" center="{width // 2},{height // 2}">'
+                           'Focus</animation>')
+    return group(0, 12, width, height, "\n".join(body))
+
+
+def poster_card(width, height, focused):
+    """A poster; tiles (search, filter, genres before pictures) and View All are drawn on a surface."""
+    mask = "av-mask-poster10.png"
+    tile = "[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]"
+    body = [
+        img(0, 0, width, height, "av-r10.png", S2, border=10),
+        lbl(16, 16, width - 32, height - 32, "font12", INK2, "$INFO[ListItem.Label]", aligny="center", align="center",
+            visible=f"!{tile} + String.IsEmpty(ListItem.Art(poster))", extra="<wrapmultiline>true</wrapmultiline>"),
+        img(0, 0, width, height, "$INFO[ListItem.Art(poster)]", visible=f"!{tile}",
+            extra="<aspectratio>scale</aspectratio>").replace("<texture>", f'<texture diffuse="{mask}" background="true">'),
+        img(width // 2 - 32, height // 2 - 70, 64, 64, "$INFO[ListItem.Property(icon)]", INK2,
+            visible="String.IsEqual(ListItem.Property(kind),tile)"),
+        img(width // 2 - 32, height // 2 - 70, 64, 64, "av-icon-chevron_right.png", CYAN,
+            visible="String.IsEqual(ListItem.Property(kind),more)"),
+        lbl(14, height // 2 + 6, width - 28, 70, "font12", INK, "$INFO[ListItem.Label]", align="center", aligny="top",
+            visible=tile, extra="<wrapmultiline>true</wrapmultiline>"),
+        lbl(14, height // 2 + 76, width - 28, 60, "font10", INK3, "$INFO[ListItem.Label2]", align="center", aligny="top",
+            visible="String.IsEqual(ListItem.Property(kind),tile)", extra="<wrapmultiline>true</wrapmultiline>"),
+        img(12, 12, 130, 32, "av-pill66.png", "D9000000", border=16, visible="!String.IsEmpty(ListItem.Property(dub))"),
+        lbl(12, 12, 130, 32, "font10", INK, "$INFO[ListItem.Property(dub)]", align="center",
+            visible="!String.IsEmpty(ListItem.Property(dub))"),
+    ]
+    if focused:
+        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10))
+        return group(0, 14, width, height, "\n".join(body),
+                     extra=f'<animation effect="zoom" start="100" end="104" time="150" center="{width // 2},{height // 2}">'
+                           'Focus</animation>')
+    return group(0, 14, width, height, "\n".join(body))
+
+
+def card_list(control_id, left, top, width, kind, nav, item_gap=20):
+    """A horizontal row of `kind` cards ('wide' 420x236 or 'poster' 200x300)."""
+    cw, ch = (420, 236) if kind == "wide" else (200, 300)
+    build = wide_card if kind == "wide" else poster_card
+    height = ch + 30
+    return lines(
+        f'<control type="list" id="{control_id}"><left>{left}</left><top>{top}</top><width>{width}</width>'
+        f'<height>{height}</height><orientation>horizontal</orientation>'
+        f'<scrolltime tween="quadratic" easing="out">200</scrolltime>{nav}',
+        f'<itemlayout width="{cw + item_gap}" height="{height}">', build(cw, ch, False), "</itemlayout>",
+        f'<focusedlayout width="{cw + item_gap}" height="{height}">', build(cw, ch, True), "</focusedlayout>",
+        "</control>")
+
+
+# -- Home -----------------------------------------------------------------------------------------------
+
+def _nav(**moves):
+    out = []
+    for direction, target in moves.items():
+        if isinstance(target, list):
+            out += [f'<on{direction} condition="{c}">{t}</on{direction}>' for c, t in target]
+        else:
+            out.append(f"<on{direction}>{target}</on{direction}>")
+    return "".join(out)
+
+
+HAS_CONTINUE = "Integer.IsGreater(Container(300).NumItems,0)"
+HERO_FOCUS = "[Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(300)]"
+
+
+def _hero_dots():
+    items = []
+    for n in range(5):
+        here = f"String.IsEqual(Window.Property(hero_index),{n})"
+        exists = f"Integer.IsGreater(Window.Property(hero_count),{n})"
+        items.append(img(0, 0, 28, 8, "av-bar.png", INK, border=3, visible=f"{here} + {exists}"))
+        items.append(img(0, 0, 8, 8, "av-dot.png", "47FFFFFF", visible=f"!{here} + {exists}"))
+    return lines(f'<control type="grouplist"><left>{X}</left><top>648</top><width>400</width><height>8</height>'
+                 '<orientation>horizontal</orientation><itemgap>8</itemgap><usecontrolwidth>true</usecontrolwidth>',
+                 "\n".join(items), "</control>")
+
+
+def _row_title(n, top):
+    return lines(lbl(X, top, 1200, 44, "font30_title", INK2, f"$INFO[Window.Property(row{n}_title)]"),
+                 lbl(X, top + 44, 1200, 36, "font12", INK3, f"$INFO[Window.Property(row{n}_status)]",
+                     visible=f"!String.IsEmpty(Window.Property(row{n}_status))"))
+
+
+def home():
+    has_art = "!String.IsEmpty(Window.Property(hero_art))"
+    logo = "!String.IsEmpty(Window.Property(hero_logo))"
+    rows_focus = "[Control.HasFocus(310) | Control.HasFocus(320) | Control.HasFocus(330)]"
+    hero = lines(
+        lbl(X, 160, 1000, 36, "font12", CYAN_HI, "[B]$INFO[Window.Property(featured)][/B]",
+            visible="!String.IsEmpty(Window.Property(hero_title))"),
+        img(X, 200, 760, 125, "$INFO[Window.Property(hero_logo)]", visible=logo,
+            extra='<aspectratio align="left" aligny="bottom">keep</aspectratio><fadetime>300</fadetime>'),
+        lbl(X, 200, 1100, 125, "font52_title", INK, "$INFO[Window.Property(hero_title)]", aligny="bottom",
+            visible="!" + logo),
+        labelled_fields(345, [("$ADDON[plugin.video.novaflix 30510]", "hero_rating", 110),
+                              ("$ADDON[plugin.video.novaflix 30511]", "hero_year", 100),
+                              ("$ADDON[plugin.video.novaflix 30512]", "hero_kind", 140),
+                              ("$ADDON[plugin.video.novaflix 30513]", "hero_genres", 420)]),
+        f'<control type="textbox"><left>{X}</left><top>424</top><width>640</width><height>114</height>'
+        f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(hero_plot)]</label></control>',
+        pill_button(201, X, 562, 250, "$INFO[Window.Property(play_label)]", True,
+                    _nav(left=100, right=202, down=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]),
+                    icon="av-icon-play_arrow.png"),
+        pill_button(202, X + 268, 562, 270, "$INFO[Window.Property(info_label)]", False,
+                    _nav(left=201, down=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]), icon="av-icon-info.png"),
+        _hero_dots(),
+    )
+    rows = lines(
+        group(0, 0, 1920, 330, lines(_row_title(0, 6), card_list(300, X - 6, 50, 1920 - X + 6, "wide",
+                                                                 _nav(left=100, up=201, down=310))),
+              visible=HAS_CONTINUE),
+        group(0, 0, 1920, 420, lines(_row_title(1, 16), card_list(
+            310, X - 6, 60, 1920 - X + 6, "poster",
+            _nav(left=100, up=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 201)], down=320)))),
+        group(0, 0, 1920, 420, lines(_row_title(2, 16), card_list(320, X - 6, 60, 1920 - X + 6, "poster",
+                                                                  _nav(left=100, up=310, down=330)))),
+        group(0, 0, 1920, 420, lines(_row_title(3, 16), card_list(330, X - 6, 60, 1920 - X + 6, "poster",
+                                                                  _nav(left=100, up=320)))),
+    )
+    skeleton = lines(*[img(l, t, w, h, "av-r10.png", S2, border=10, extra=PULSE) for l, t, w, h in (
+        (X, 170, 200, 24), (X, 214, 560, 96), (X, 345, 460, 56), (X, 430, 620, 22), (X, 466, 540, 22),
+        (X, 562, 250, 66), (X + 268, 562, 270, 66), (X, 702, 420, 236), (X + 440, 702, 420, 236),
+        (X + 880, 702, 420, 236), (X + 1320, 702, 420, 236))])
+    return lines(
+        '<!-- the hero picture stays behind the page; the rows scroll over it, darker once focus leaves the hero -->',
+        img(0, 0, 1920, 1080, "$INFO[Window.Property(hero_art)]",
+            extra='<aspectratio>scale</aspectratio><fadetime>400</fadetime>').replace(
+            "<texture>", '<texture background="true">'),
+        img(0, 0, 1920, 1080, "av-white.png", "B305070A", visible="!String.IsEmpty(Window.Property(hero_dark))"),
+        img(0, 0, 1920, 1080, "av-vignette.png"),
+        img(0, 0, 1920, 1080, "av-shade-hero.png"),
+        img(0, 0, 1920, 1080, "av-shade-bottom.png"),
+        img(0, 0, 1920, 1080, "av-white.png", "D905070A", visible=rows_focus,
+            extra='<animation effect="fade" time="250">VisibleChange</animation>'),
+        f'<control type="grouplist"><left>0</left><top>0</top><width>1920</width><height>1080</height>'
+        '<orientation>vertical</orientation><itemgap>0</itemgap><scrolltime tween="quadratic" easing="out">260</scrolltime>',
+        group(0, 0, 1920, 690, hero, visible="String.IsEmpty(Window.Property(offline))"),
+        rows,
+        "</control>",
+        '<!-- first load: the page\'s own shapes, softly pulsing -->',
+        group(0, 0, 1920, 1080, skeleton, visible="String.IsEmpty(Window.Property(hero_title)) + "
+                                                  "String.IsEmpty(Window.Property(offline))"),
+        '<!-- offline -->',
+        group(0, 0, 1920, 1080, lines(
+            img(902, 300, 116, 116, "av-dot.png", S2),
+            img(934, 332, 52, 52, "av-icon-cancel.png", INK3),
+            lbl(X, 450, 1920 - 2 * X, 90, "font52_title", INK, "$ADDON[plugin.video.novaflix 30241]", align="center"),
+            lbl(X, 548, 1920 - 2 * X, 44, "font13", INK2, "$INFO[Window.Property(offline)]", align="center"),
+            pill_button(340, 835, 630, 250, "$INFO[Window.Property(retry_label)]", True, _nav(left=100)),
+        ), visible="!String.IsEmpty(Window.Property(offline))"),
+    )
+
+
 # -- splicing ----------------------------------------------------------------------------------------
 
 SECTIONS = {
     ("novaflix-app.xml", "sidebar"): sidebar,
     ("novaflix-app.xml", "push-home"): menu_push,
+    ("novaflix-app.xml", "home"): home,
     ("novaflix-app.xml", "push-grid"): menu_push,
     ("novaflix-app.xml", "push-related"): menu_push,
 }

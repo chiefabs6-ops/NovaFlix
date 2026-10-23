@@ -78,7 +78,7 @@ class HomeView:
     def show_hero(self, index, now=None):
         data = cards.title_hero(self.featured[index], ui.string)
         w = self.app.window
-        for key in ("title", "alt", "plot", "meta", "art"):
+        for key in ("title", "alt", "plot", "meta", "art", "year", "rating", "genres", "kind"):
             w.setProperty(f"hero_{key}", data[key])
         w.setProperty("hero_dark", "true" if data["dark"] else "")
         w.setProperty("hero_logo", self.logos.get(self.featured[index].tmdb_id, ""))

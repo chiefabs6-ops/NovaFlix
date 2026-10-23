@@ -97,3 +97,11 @@ def test_card_details_leave_missing_fields_empty():
     card = cards.title_card(_title(), T)
     assert (card.plot, card.year, card.rating, card.genres) == ("", "", "", "")
     assert cards.title_card(_title()).kind_label == ""  # without text: nothing worded
+
+
+def test_hero_fields_are_labelled_values():
+    hero = cards.title_hero(_title(year=1963, rating=7.94, genres=["Thriller", "Romance"]), T)
+    assert (hero["rating"], hero["year"], hero["genres"], hero["kind"]) == ("★ 7.9", "1963", "Thriller, Romance",
+                                                                          "Movie")
+    empty = cards.title_hero(_title(), T)
+    assert (empty["rating"], empty["year"], empty["genres"]) == ("", "", "")
