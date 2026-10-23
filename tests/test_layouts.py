@@ -341,3 +341,16 @@ def test_home_plot_and_dots_can_be_focused():
     assert dots.findtext("onup") == str(ids.HERO_PLAY)
     box = next(c for c in root.iter("control") if c.get("type") == "textbox" and "hero_plot" in (c.findtext("label") or ""))
     assert f"Control.HasFocus({ids.HERO_PLOT})" in box.findtext("autoscroll")
+
+
+def test_up_next_buttons_line_up_with_the_picture():
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-prompt.xml")).getroot()
+    text = open(os.path.join(LAYOUTS, "novaflix-prompt.xml"), encoding="utf-8").read()
+    assert '"8C05070A"' not in text and "8C05070A" not in text  # no hard-edged box over the video
+    by_id = {c.get("id"): c for c in root.iter("control") if c.get("id")}
+    for control_id, left in (("9001", 1196), ("9000", 1504)):
+        button = by_id[control_id]
+        assert int(button.findtext("left")) == left
+        slides = [a for a in button.findall("animation") if a.get("effect") == "slide"
+                  and "Property(title)" in (a.get("condition") or "")]
+        assert slides and slides[0].get("end") == "-132,0", control_id  # 1196 - 132 = 1064, the picture's left

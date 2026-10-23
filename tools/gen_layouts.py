@@ -927,12 +927,15 @@ def prompt():
     """Up next (text and two buttons, bottom right over a shade) or a lone Skip pill at the top right."""
     two = "!String.IsEmpty(Window.Property(button2))"
     skip_only = "String.IsEmpty(Window.Property(button2)) + String.IsEmpty(Window.Property(text))"
+    # with the saved episode the block is left-aligned: the buttons move under the picture (x 1064)
+    under_picture = ('<animation effect="slide" start="0,0" end="-132,0" time="0" '
+                     'condition="!String.IsEmpty(Window.Property(title))">Conditional</animation>')
     main = _placed(row_button(9000, 320, "$INFO[Window.Property(button)]", True), 1504, 930).replace(
         "</label>", "</label><onleft>9001</onleft>", 1).replace(
         "</control>", '<animation effect="slide" start="0,0" end="0,-858" time="0" condition="'
-        + skip_only + '">Conditional</animation></control>', 1)
+        + skip_only + '">Conditional</animation>' + under_picture + '</control>', 1)
     second = _placed(row_button(9001, 300, "$INFO[Window.Property(button2)]", False, visible=two), 1196, 930).replace(
-        "</label>", "</label><onright>9000</onright>", 1)
+        "</label>", "</label><onright>9000</onright>", 1).replace("</control>", under_picture + "</control>", 1)
     has_text = "!String.IsEmpty(Window.Property(text))"
     has_title = "!String.IsEmpty(Window.Property(title))"
     has_art = "!String.IsEmpty(Window.Property(art))"
@@ -944,7 +947,6 @@ def prompt():
         f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(plot)]</label></control>')
     return lines(
         img(0, 400, 1920, 680, "av-shade-bottom.png", visible=has_text),
-        img(900, 560, 1020, 520, "av-white.png", "8C05070A", visible=has_title),
         lbl(1064, 672, 760, 40, "font12", CYAN_HI, f"[B]{_addon(30533)}[/B]", visible=has_title),
         group(0, 0, 1920, 1080, lines(
             img(1064, 722, 300, 169, "$INFO[Window.Property(art)]", extra="<aspectratio>scale</aspectratio>").replace(
