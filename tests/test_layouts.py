@@ -181,7 +181,7 @@ def test_remote_images_load_in_the_background(name):
     root = ET.parse(os.path.join(LAYOUTS, name)).getroot()
     for texture in root.iter("texture"):
         text = texture.text or ""
-        if any(k in text for k in ("Property(hero_logo)", "Property(logo)", "Property(art)", "Property(hero_art)",
+        if any(k in text for k in ("Property(hero_logo)", "Property(logo)", "Property(art)", "Property(hero_art)", "search_art",
                                    "Art(")):
             assert texture.get("background") == "true", f"{name}: {text}"
 

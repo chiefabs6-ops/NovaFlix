@@ -549,3 +549,13 @@ def test_back_from_the_menu_on_an_empty_personal_list_goes_to_its_offer(app, mon
     app.window.setFocusId(ids.SIDEBAR)
     app.window.onAction(xbmcgui.Action(92))
     assert app.view == "grid" and app.window.getFocusId() == ids.GRID_EMPTY_ACTION
+
+
+def test_search_page_gets_wide_tiles_and_a_backdrop(app, monkeypatch):
+    monkeypatch.setattr(lists, "search_art", lambda: "trend.jpg")
+    select_sidebar(app, "search")
+    w = app.window
+    assert w.properties["grid_tiles"] == "wide"
+    assert xbmcgui.window_properties["novaflix.search_art"] == "trend.jpg"
+    select_sidebar(app, "trending")
+    assert w.properties["grid_tiles"] == ""

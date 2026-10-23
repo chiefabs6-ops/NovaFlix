@@ -81,7 +81,15 @@ class GridView:
         for prop in ("grid_title", "grid_empty", "grid_empty_hint", "grid_empty_action", "grid_empty_icon", "grid_peek"):
             w.setProperty(prop, "")
         w.setProperty("grid_genre_tab", genre_tab(key))
+        search_page = key == "search"
+        w.setProperty("grid_tiles", "wide" if search_page else "")  # Search: wide tiles over a backdrop
         self._fetch(1)
+        if search_page:
+            self.app.loader.start({"search_art": lists.search_art}, self._search_art)
+
+    def _search_art(self, name, url, error):
+        if not error:  # Home window: the phone QR screen shows the same picture
+            ui.set_window_property("novaflix.search_art", url or "")
 
     def _fetch(self, page_no):
         self.loading = True

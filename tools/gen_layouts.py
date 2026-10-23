@@ -470,6 +470,35 @@ def genre_card(width, height, focused, cid=None):
 
 
 GENRES_SHOWN = "!String.IsEmpty(Window.Property(grid_genre_tab))"
+WIDE_TILES = "String.IsEqual(Window.Property(grid_tiles),wide)"
+SEARCH_ART = "$INFO[Window(Home).Property(novaflix.search_art)]"
+
+
+def wide_tile(width, height, focused, cid=None):
+    """Search page tiles: icon and words side by side on a see-through surface over the backdrop."""
+    body = [
+        img(0, 0, width, height, "av-r10.png", "B3141A21", border=10),
+        img(28, height // 2 - 24, 48, 48, "$INFO[ListItem.Property(icon)]", INK if focused else INK2),
+        lbl(96, 18, width - 116, 50, "font13", INK, "[B]$INFO[ListItem.Label][/B]",
+            extra="<scroll>true</scroll>" if focused else ""),
+        lbl(96, 64, width - 116, 40, "font10", INK3, "$INFO[ListItem.Label2]"),
+    ]
+    if focused:
+        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10,
+                           visible=f"Control.HasFocus({cid})"))
+        return group(PAD, 16, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
+    return group(PAD, 16, width, height, "\n".join(body))
+
+
+def backdrop(texture):
+    """A full-screen picture under the page's shades (Search page, phone QR screen)."""
+    return lines(
+        img(0, 0, 1920, 1080, texture, extra="<aspectratio>scale</aspectratio><fadetime>400</fadetime>").replace(
+            "<texture>", '<texture background="true">'),
+        img(0, 0, 1920, 1080, "av-white.png", "8C05070A"),
+        img(0, 0, 1920, 1080, "av-vignette.png"),
+        img(0, 0, 1920, 1080, "av-shade-hero.png"),
+        img(0, 0, 1920, 1080, "av-shade-bottom.png"))
 
 
 def genre_tabs():
@@ -510,6 +539,11 @@ def grid():
         "</itemlayout>",
         f'<focusedlayout width="{gw + 22}" height="{gh + 28}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, True, cid=400),
         "</focusedlayout>",
+        # Search: four wide tiles across, four rows of 153 px in the 612 px grid
+        f'<itemlayout width="422" height="153" condition="{WIDE_TILES}">', wide_tile(400, 125, False, cid=400),
+        "</itemlayout>",
+        f'<focusedlayout width="422" height="153" condition="{WIDE_TILES}">', wide_tile(400, 125, True, cid=400),
+        "</focusedlayout>",
         f'<itemlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, False, cid=400), "</itemlayout>",
         f'<focusedlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, True, cid=400), "</focusedlayout>",
         "</control>")
@@ -526,6 +560,7 @@ def grid():
     ), visible="!String.IsEmpty(Window.Property(grid_empty))")
     skeleton = lines(*[img(X + i * 202, 534, cw, ch, "av-r10.png", S2, border=10, extra=PULSE) for i in range(8)])
     return lines(
+        group(0, 0, 1920, 1080, backdrop(SEARCH_ART), visible=WIDE_TILES),
         group(0, 0, 1920, 640, peek(400), visible=peek_on + " + Integer.IsGreater(Container(400).NumItems,0)"),
         lbl(X, 52, 1500, 64, "font45_title", INK, "$INFO[Window.Property(grid_title)]"),
         genre_tabs(),
@@ -823,8 +858,8 @@ def prompt():
 def login():
     """Phone search: the steps, the address and the QR code on a white card."""
     return lines(
-        img(0, 0, 1920, 1080, "av-white.png", "F205070A"),
-        img(0, 0, 1920, 1080, "av-vignette.png"),
+        img(0, 0, 1920, 1080, "av-white.png", GROUND),
+        backdrop(SEARCH_ART),
         lbl(X, 150, 900, 40, "font12", CYAN_HI, f"[B]{_addon(30002)}[/B]"),
         lbl(X, 190, 960, 100, "font52_title", INK, "$INFO[Window.Property(heading)]"),
         f'<control type="textbox"><left>{X}</left><top>300</top><width>800</width><height>160</height>'

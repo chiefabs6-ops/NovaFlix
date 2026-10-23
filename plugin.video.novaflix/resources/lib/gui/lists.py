@@ -177,6 +177,17 @@ def _next_air(title, row):
     return None
 
 
+def search_art():
+    """A backdrop for the Search page and the phone QR screen: the first Trending title with one
+    (the list Home already loads, so it is cached). "" when it cannot be had."""
+    try:
+        titles, _ = _library().list("trending")
+    except Exception as exc:  # noqa: BLE001 - a picture is decoration, never an error
+        log.warning(f"search art: {type(exc).__name__}")
+        return ""
+    return next((t.backdrop for t in titles if t.backdrop), "")
+
+
 def genre_pictures(tiles):
     """{tile index: backdrop} from the first title with one in each genre's list (cached by the Library).
     A genre that fails is left out: its tile keeps its name on the plain surface."""
