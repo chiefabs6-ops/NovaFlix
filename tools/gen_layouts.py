@@ -479,9 +479,13 @@ def wide_tile(width, height, focused, cid=None):
     body = [
         img(0, 0, width, height, "av-r10.png", "B3141A21", border=10),
         img(28, height // 2 - 24, 48, 48, "$INFO[ListItem.Property(icon)]", INK if focused else INK2),
-        lbl(96, 18, width - 116, 50, "font13", INK, "[B]$INFO[ListItem.Label][/B]",
-            extra="<scroll>true</scroll>" if focused else ""),
-        lbl(96, 64, width - 116, 40, "font10", INK3, "$INFO[ListItem.Label2]"),
+        # one line: centred beside the icon; with a second line: the two stacked around the middle
+        lbl(96, 0, width - 116, height, "font13", INK, "[B]$INFO[ListItem.Label][/B]",
+            visible="String.IsEmpty(ListItem.Label2)", extra="<scroll>true</scroll>" if focused else ""),
+        lbl(96, height // 2 - 46, width - 116, 50, "font13", INK, "[B]$INFO[ListItem.Label][/B]",
+            visible="!String.IsEmpty(ListItem.Label2)", extra="<scroll>true</scroll>" if focused else ""),
+        lbl(96, height // 2 + 2, width - 116, 40, "font10", INK3, "$INFO[ListItem.Label2]",
+            visible="!String.IsEmpty(ListItem.Label2)"),
     ]
     if focused:
         body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10,
@@ -495,10 +499,9 @@ def backdrop(texture):
     return lines(
         img(0, 0, 1920, 1080, texture, extra="<aspectratio>scale</aspectratio><fadetime>400</fadetime>").replace(
             "<texture>", '<texture background="true">'),
-        img(0, 0, 1920, 1080, "av-white.png", "8C05070A"),
+        img(0, 0, 1920, 1080, "av-white.png", "4005070A"),
         img(0, 0, 1920, 1080, "av-vignette.png"),
-        img(0, 0, 1920, 1080, "av-shade-hero.png"),
-        img(0, 0, 1920, 1080, "av-shade-bottom.png"))
+        img(0, 0, 1920, 1080, "av-shade-hero.png"))
 
 
 def genre_tabs():
