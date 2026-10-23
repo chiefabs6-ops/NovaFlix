@@ -69,8 +69,8 @@ def load(key, page=1):
     if name == "continue":
         return Page(text(30001), _continue_cards(network=arg != "local"), False, text(30226))
     if name == "mylist":
-        return Page(text(30415), [cards.title_card(t, text) for t in MyList(paths.profile_dir()).all()], False,
-                    text(30428))
+        saved = MyList(paths.profile_dir()).all()
+        return Page(text(30415), [cards.title_card(t, text) for t in _with_details(saved)], False, text(30428))
     if name == "genres":  # "genres" / "genres:movie" for films, "genres:tv" for shows (one tab each)
         media_type = media.TV if arg == media.TV else media.MOVIE
         tiles = [cards.Card(label=genre, kind="genre", action=("grid", f"genre:{media_type}:{genre_id}"))
@@ -175,6 +175,23 @@ def _next_air(title, row):
     if nxt and (nxt[0], nxt[1]) > (row["season"], row["episode"]):
         return nxt
     return None
+
+
+def _with_details(saved):
+    """My List keeps title, poster and year only; the full details (backdrop, plot, rating) come from the
+    Library, cached after the first time. A title that cannot be had stays as saved."""
+    try:
+        library = _library()
+    except TmdbKeyMissing:
+        return saved
+    full = []
+    for title in saved:
+        try:
+            full.append(library.title(title.media_type, title.tmdb_id))
+        except Exception as exc:  # noqa: BLE001 - the saved card is still a good card
+            log.warning(f"my list details {title.key}: {type(exc).__name__}")
+            full.append(title)
+    return full
 
 
 def genre_pictures(tiles):

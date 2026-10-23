@@ -249,3 +249,11 @@ def test_focused_cards_have_room_for_their_ring_and_zoom():
 def test_search_screens_use_the_shipped_backdrop(name):
     text = open(os.path.join(LAYOUTS, name), encoding="utf-8").read()
     assert "av-search-backdrop.jpg" in text and "search_art" not in text
+
+
+def test_peek_pictures_fill_the_screen_and_fade_out():
+    """A 640 px band left a hard edge behind the posters; the picture fills the screen like Home's."""
+    for image in _app_root().iter("control"):
+        tex = image.find("texture")
+        if image.get("type") == "image" and tex is not None and ".ListItem.Art(fanart)" in (tex.text or ""):
+            assert int(image.findtext("height")) == 1080

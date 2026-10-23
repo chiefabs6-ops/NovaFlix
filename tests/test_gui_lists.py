@@ -254,3 +254,21 @@ def test_genre_pictures_do_not_repeat(monkeypatch):
     monkeypatch.setattr(lists, "_library", lambda: Same())
     tiles = [lists.cards.Card(label=n, kind="genre", action=("grid", f"genre:movie:{i}")) for i, n in ((28, "A"), (12, "B"))]
     assert lists.genre_pictures(tiles) == {0: "same.jpg", 1: "b12.jpg"}
+
+
+def test_my_list_cards_carry_the_title_details(monkeypatch):
+    MyList(paths.profile_dir()).add(media.Title(media_type="movie", tmdb_id=1, title="A", poster="p1.jpg"))
+    MyList(paths.profile_dir()).add(media.Title(media_type="movie", tmdb_id=2, title="B", poster="p2.jpg"))
+
+    class Shelf:
+        has_token = True
+
+        def title(self, media_type, tmdb_id):
+            if tmdb_id == 2:
+                raise OSError("offline")
+            return media.Title(media_type=media_type, tmdb_id=tmdb_id, title="A", poster="p1.jpg",
+                               backdrop="b1.jpg", overview="Plot.", rating=7.5, genres=["Drama"])
+    monkeypatch.setattr(lists, "_library", lambda: Shelf())
+    cards = {c.label: c for c in lists.load("mylist").cards}
+    assert cards["A"].wide == "b1.jpg" and cards["A"].plot == "Plot." and cards["A"].rating == "★ 7.5"
+    assert cards["B"].poster == "p2.jpg" and cards["B"].wide is None  # offline: the saved card

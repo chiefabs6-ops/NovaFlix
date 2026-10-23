@@ -438,12 +438,13 @@ def peek(container, top=150):
     """The focused card's picture, title, labelled details and plot above a grid or rows."""
     item = f"Container({container}).ListItem"
     return lines(
-        img(0, 0, 1920, 640, f"$INFO[{item}.Art(fanart)]",
+        # the whole screen, faded like Home's hero, so no edge shows behind the posters
+        img(0, 0, 1920, 1080, f"$INFO[{item}.Art(fanart)]",
             extra='<aspectratio>scale</aspectratio><fadetime>300</fadetime>').replace(
             "<texture>", '<texture background="true">'),
-        img(0, 0, 1920, 640, "av-shade-hero.png"),
-        img(0, 0, 1920, 640, "av-shade-bottom.png"),
-        img(0, 0, 1920, 640, "av-white.png", "4005070A"),
+        img(0, 0, 1920, 1080, "av-vignette.png"),
+        img(0, 0, 1920, 1080, "av-shade-hero.png"),
+        img(0, 0, 1920, 1080, "av-shade-bottom.png"),
         lbl(X, top, 1300, 90, "font52_title", INK, f"$INFO[{item}.Label]"),
         labelled_fields(top + 100, PEEK_FIELDS, source=item + ".Property({})"),
         f'<control type="textbox"><left>{X}</left><top>{top + 178}</top><width>720</width><height>76</height>'
@@ -564,7 +565,7 @@ def grid():
     skeleton = lines(*[img(X + i * 202, 534, cw, ch, "av-r10.png", S2, border=10, extra=PULSE) for i in range(8)])
     return lines(
         group(0, 0, 1920, 1080, backdrop(SEARCH_ART), visible=WIDE_TILES),
-        group(0, 0, 1920, 640, peek(400), visible=peek_on + " + Integer.IsGreater(Container(400).NumItems,0)"),
+        group(0, 0, 1920, 1080, peek(400), visible=peek_on + " + Integer.IsGreater(Container(400).NumItems,0)"),
         lbl(X, 52, 1500, 64, "font45_title", INK, "$INFO[Window.Property(grid_title)]"),
         genre_tabs(),
         panel,
@@ -577,7 +578,7 @@ def grid():
 def related():
     """More like this: the focused row's title in the peek, a collection row of wide cards, then posters."""
     rows_ids = (800, 810, 820, 830, 840, 850)
-    peeks = [group(0, 0, 1920, 640, peek(rid, top=140), visible=f"Control.HasFocus({rid})") for rid in rows_ids]
+    peeks = [group(0, 0, 1920, 1080, peek(rid, top=140), visible=f"Control.HasFocus({rid})") for rid in rows_ids]
     rows = []
     for n, rid in enumerate(rows_ids):
         kind = "wide" if n == 0 else "poster"
