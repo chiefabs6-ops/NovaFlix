@@ -27,6 +27,7 @@ VIEW_TARGETS = [  # (condition, control) the sidebar and Settings hand focus to 
     ("String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))", 201),
     ("String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))", 340),
     ("String.IsEqual(Window.Property(view),grid) + !String.IsEmpty(Window.Property(grid_empty_action))", 410),
+    ("String.IsEqual(Window.Property(view),grid) + !String.IsEmpty(Window.Property(grid_panel))", 401),
     ("String.IsEqual(Window.Property(view),grid)", 400),
     ("String.IsEqual(Window.Property(view),related)", 800),
 ]
@@ -509,8 +510,8 @@ def genre_tabs():
     """Films / Shows at the top right of the Genres page; the open one white."""
     tabs = []
     for control_id, left, string_id, tab, nav in (
-            (411, 1460, 30515, "movie", _nav(left=100, right=412, down=400)),
-            (412, 1640, 30516, "tv", _nav(left=411, down=400))):
+            (411, 1460, 30515, "movie", _nav(left=100, right=412, down=401)),
+            (412, 1640, 30516, "tv", _nav(left=411, down=401))):
         here = f"String.IsEqual(Window.Property(grid_genre_tab),{tab})"
         tabs.append(group(left, 60, 160, 56, lines(
             img(-5, -5, 170, 66, "av-pill66-ring.png", CYAN, border=28, visible=f"Control.HasFocus({control_id})"),
@@ -531,26 +532,35 @@ def genre_tabs():
 def grid():
     peek_on = "!String.IsEmpty(Window.Property(grid_peek))"
     cw, ch = 180, 270
-    gw, gh = 400, 176
+    tiles_on = "!String.IsEmpty(Window.Property(grid_panel))"
+    # title pages: two rows of posters under the peek (a panel scrolls only past its last row)
     panel = lines(
         f'<control type="panel" id="400"><left>{X - PAD}</left><top>440</top><width>{1920 - X + PAD}</width><height>612</height>',
         '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>',
-        f'<onleft>100</onleft><onup condition="{GENRES_SHOWN}">411</onup>',
-        # pages without films or shows (Search, Genres, My TorBox) have no peek: the grid moves up
-        f'<animation effect="slide" start="0,0" end="0,-290" time="0" condition="{neg(peek_on)}">Conditional</animation>',
-        # Genres: four wide picture tiles across (a panel takes one cell size, so the layout is chosen by page)
-        f'<itemlayout width="{gw + 22}" height="{gh + 28}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, False, cid=400),
-        "</itemlayout>",
-        f'<focusedlayout width="{gw + 22}" height="{gh + 28}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, True, cid=400),
-        "</focusedlayout>",
-        # Search: four wide tiles across, four rows of 153 px in the 612 px grid
-        f'<itemlayout width="422" height="153" condition="{WIDE_TILES}">', wide_tile(400, 125, False, cid=400),
-        "</itemlayout>",
-        f'<focusedlayout width="422" height="153" condition="{WIDE_TILES}">', wide_tile(400, 125, True, cid=400),
-        "</focusedlayout>",
+        "<onleft>100</onleft>",
         f'<itemlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, False, cid=400), "</itemlayout>",
         f'<focusedlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, True, cid=400), "</focusedlayout>",
-        "</control>")
+        f"{_visible(neg(tiles_on))}</control>")
+    # tile pages (Search, Genres, My TorBox): the full height under the heading, 150 to 1050
+    gw, gh = 400, 152
+    tiles = lines(
+        f'<control type="panel" id="401"><left>{X - PAD}</left><top>150</top><width>{1920 - X + PAD}</width><height>900</height>',
+        '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>',
+        f'<onleft>100</onleft><onup condition="{GENRES_SHOWN}">411</onup>',
+        # Genres: four picture tiles across, five rows of 180 px
+        f'<itemlayout width="{gw + 22}" height="180" condition="{GENRES_SHOWN}">', genre_card(gw, gh, False, cid=401),
+        "</itemlayout>",
+        f'<focusedlayout width="{gw + 22}" height="180" condition="{GENRES_SHOWN}">', genre_card(gw, gh, True, cid=401),
+        "</focusedlayout>",
+        # Search: four wide tiles across, six rows of 150 px
+        f'<itemlayout width="422" height="150" condition="{WIDE_TILES}">', wide_tile(400, 120, False, cid=401),
+        "</itemlayout>",
+        f'<focusedlayout width="422" height="150" condition="{WIDE_TILES}">', wide_tile(400, 120, True, cid=401),
+        "</focusedlayout>",
+        # My TorBox and other tiles: posters, three rows of 300 px
+        f'<itemlayout width="{cw + 22}" height="300">', poster_card(cw, ch, False, cid=401), "</itemlayout>",
+        f'<focusedlayout width="{cw + 22}" height="300">', poster_card(cw, ch, True, cid=401), "</focusedlayout>",
+        f"{_visible(tiles_on)}</control>")
     empty = group(0, 0, 1920, 1080, lines(
         img(902, 330, 116, 116, "av-dot.png", S2),
         img(934, 362, 52, 52, "$INFO[Window.Property(grid_empty_icon)]", INK3),
@@ -569,6 +579,7 @@ def grid():
         lbl(X, 52, 1500, 64, "font45_title", INK, "$INFO[Window.Property(grid_title)]"),
         genre_tabs(),
         panel,
+        tiles,
         empty,
         group(0, 0, 1920, 1080, skeleton, visible="!String.IsEmpty(Window.Property(loading)) + "
                                                   "!Integer.IsGreater(Container(400).NumItems,0)"),

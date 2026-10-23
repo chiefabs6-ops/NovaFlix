@@ -156,9 +156,10 @@ def _app_root():
     return ET.parse(os.path.join(LAYOUTS, "novaflix-app.xml")).getroot()
 
 
-def test_grid_panel_fits_on_screen():
+@pytest.mark.parametrize("grid_id", ids.GRIDS)
+def test_grid_panel_fits_on_screen(grid_id):
     """A panel scrolls only past its last row: rows below the screen would hide the focused card."""
-    panel = next(c for c in _app_root().iter("control") if c.get("id") == str(ids.GRID))
+    panel = next(c for c in _app_root().iter("control") if c.get("id") == str(grid_id))
     top, height = int(panel.findtext("top")), int(panel.findtext("height"))
     assert top + height <= 1080
 
@@ -216,8 +217,9 @@ def test_card_focus_rings_only_show_while_their_list_has_focus():
                     assert f"Control.HasFocus({cid})" in (image.findtext("visible") or ""), cid
 
 
-def test_genre_tiles_fill_whole_rows_of_the_grid():
-    panel = next(c for c in _app_root().iter("control") if c.get("id") == str(ids.GRID))
+@pytest.mark.parametrize("grid_id", ids.GRIDS)
+def test_genre_tiles_fill_whole_rows_of_the_grid(grid_id):
+    panel = next(c for c in _app_root().iter("control") if c.get("id") == str(grid_id))
     height = int(panel.findtext("height"))
     for layout in panel.findall("itemlayout"):
         assert height % int(layout.get("height")) == 0, layout.get("height")
@@ -257,3 +259,8 @@ def test_peek_pictures_fill_the_screen_and_fade_out():
         tex = image.find("texture")
         if image.get("type") == "image" and tex is not None and ".ListItem.Art(fanart)" in (tex.text or ""):
             assert int(image.findtext("height")) == 1080
+
+
+def test_tile_pages_use_the_full_height_grid():
+    tiles = next(c for c in _app_root().iter("control") if c.get("id") == str(ids.GRID_TILES))
+    assert int(tiles.findtext("top")) <= 160 and int(tiles.findtext("height")) >= 880

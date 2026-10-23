@@ -522,10 +522,11 @@ def test_genre_tab_switches_without_growing_the_stack(app, monkeypatch):
     select_sidebar(app, "genres")
     w = app.window
     assert w.properties["grid_genre_tab"] == "movie" and len(app.stack) == 1
-    assert w.getControl(ids.GRID).getListItem(0).art.get("fanart") == "pic.jpg"
+    assert w.properties["grid_panel"] == "tiles" and app.grid.cid == ids.GRID_TILES
+    assert w.getControl(ids.GRID_TILES).getListItem(0).art.get("fanart") == "pic.jpg"
     w.onClick(ids.GENRE_TAB_SHOWS)
     assert w.properties["grid_genre_tab"] == "tv" and app.stack == ["genres:tv"]
-    assert w.getControl(ids.GRID).getListItem(0).getLabel() == "tv 0"
+    assert w.getControl(ids.GRID_TILES).getListItem(0).getLabel() == "tv 0"
     w.onAction(xbmcgui.Action(92))
     assert app.view == "home"
 

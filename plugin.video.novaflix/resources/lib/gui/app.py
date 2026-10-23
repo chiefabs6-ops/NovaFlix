@@ -40,6 +40,12 @@ EMPTY_OFFERS = {"continue", "mylist"}  # empty personal lists offer "Browse Tren
 EMPTY_ICONS = {"continue": "av-icon-play_circle.png", "mylist": "av-icon-bookmark.png"}
 
 
+def tiles_page(key):
+    """Pages of tiles (Search, Genres, My TorBox) use the full-height grid without the title peek."""
+    name, _, arg = key.partition(":")
+    return (name == "search" and not arg) or name == "genres" or (name == "torbox" and not arg)
+
+
 def genre_tab(key):
     """"movie" or "tv" on a Genres page (its open tab), else ""."""
     name, _, arg = key.partition(":")
@@ -67,6 +73,7 @@ class AppWindow(xbmcgui.WindowXML):
 class GridView:
     def __init__(self, app):
         self.app = app
+        self.cid = ids.GRID
         self.key = None
         self.cards = []
         self.page = 1
@@ -77,7 +84,10 @@ class GridView:
         self.key, self.cards, self.page, self.more = key, [], 1, False
         self.app.checks.reset()
         w = self.app.window
-        w.getControl(ids.GRID).reset()
+        self.cid = ids.GRID_TILES if tiles_page(key) else ids.GRID  # tile pages: the full-height grid
+        w.setProperty("grid_panel", "tiles" if self.cid == ids.GRID_TILES else "")
+        for control_id in ids.GRIDS:
+            w.getControl(control_id).reset()
         for prop in ("grid_title", "grid_empty", "grid_empty_hint", "grid_empty_action", "grid_empty_icon", "grid_peek"):
             w.setProperty(prop, "")
         w.setProperty("grid_genre_tab", genre_tab(key))
@@ -108,7 +118,7 @@ class GridView:
         self.more = page.more
         w = self.app.window
         w.setProperty("grid_title", page.title)
-        control = w.getControl(ids.GRID)
+        control = w.getControl(self.cid)
         position = control.getSelectedPosition()
         if new:
             control.addItems(items.to_listitems(new))
@@ -117,12 +127,12 @@ class GridView:
                 # card is selected again in the same GUI pass, so the grid stays where it was.
                 control.selectItem(position)
         position = control.getSelectedPosition()
-        self.app.checks.follow_grid(ids.GRID, self.cards, max(position, 0))  # next-episode availability
+        self.app.checks.follow_grid(self.cid, self.cards, max(position, 0))  # next-episode availability
         if first:
             # the focused-title peek above the grid, only on pages of films and shows
             w.setProperty("grid_peek", "true" if any(c.kind_label for c in page.cards) else "")
             if page.cards:
-                w.setFocusId(ids.GRID)
+                w.setFocusId(self.cid)
             else:
                 self._show_empty(page)
             if genre_tab(key) and page.cards:
@@ -132,7 +142,7 @@ class GridView:
     def _pictures(self, name, pictures, error):
         if error or name.partition(":")[2] != self.key:
             return  # the tiles keep their names on the plain surface
-        control = self.app.window.getControl(ids.GRID)
+        control = self.app.window.getControl(self.cid)
         for index, url in pictures.items():
             if index < control.size():
                 control.getListItem(index).setArt({"fanart": url, "thumb": url})
@@ -158,13 +168,13 @@ class GridView:
     def maybe_more(self):
         if not self.more or self.loading:
             return
-        position = self.app.window.getControl(ids.GRID).getSelectedPosition()
+        position = self.app.window.getControl(self.cid).getSelectedPosition()
         if position >= len(self.cards) - GRID_MORE_MARGIN:
             self.page += 1
             self._fetch(self.page)
 
     def selected(self):
-        position = self.app.window.getControl(ids.GRID).getSelectedPosition()
+        position = self.app.window.getControl(self.cid).getSelectedPosition()
         return self.cards[position] if 0 <= position < len(self.cards) else None
 
     def refresh(self):
@@ -303,7 +313,7 @@ class App:
         """Focus the shown view, as Right from the menu does."""
         if self.view == "grid":
             if self.grid.cards:
-                self.window.setFocusId(ids.GRID)
+                self.window.setFocusId(self.grid.cid)
             elif self.window.getProperty("grid_empty_action"):
                 self.window.setFocusId(ids.GRID_EMPTY_ACTION)
             # an empty grid cannot take focus (Kodi refuses an empty container)
@@ -330,8 +340,9 @@ class App:
             self.back()
         elif action_id in ids.ACTION_CONTEXT:
             self._context_menu()
-        elif action_id in ids.ACTION_MOVES and self.window.getFocusId() == ids.GRID:
-            self.checks.follow_grid(ids.GRID, self.grid.cards, self.window.getControl(ids.GRID).getSelectedPosition())
+        elif action_id in ids.ACTION_MOVES and self.window.getFocusId() in ids.GRIDS:
+            cid = self.grid.cid
+            self.checks.follow_grid(cid, self.grid.cards, self.window.getControl(cid).getSelectedPosition())
             if action_id in (ids.ACTION_MOVE_RIGHT, ids.ACTION_MOVE_DOWN):
                 self.grid.maybe_more()
 
@@ -358,7 +369,7 @@ class App:
             self.open_grid("trending")
         elif control_id in (ids.GENRE_TAB_FILMS, ids.GENRE_TAB_SHOWS):
             self.grid.switch_genres(media.MOVIE if control_id == ids.GENRE_TAB_FILMS else media.TV)
-        elif control_id == ids.GRID:
+        elif control_id in ids.GRIDS:
             card = self.grid.selected()
             if card:
                 self.run(card.action)
@@ -448,7 +459,7 @@ class App:
 
     def _focused_card(self):
         focus = self.window.getFocusId()
-        if focus == ids.GRID:
+        if focus in ids.GRIDS:
             return self.grid.selected()
         if focus in ids.HOME_ROWS:
             return self.home.selected(focus)

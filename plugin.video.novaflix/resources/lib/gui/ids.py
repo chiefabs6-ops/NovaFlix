@@ -9,7 +9,9 @@ HERO_PLAY = 201
 HERO_INFO = 202
 HOME_ROWS = (300, 310, 320, 330)
 HOME_RETRY = 340
-GRID = 400
+GRID = 400               # title pages: two rows under the focused-title peek
+GRID_TILES = 401         # tile pages (Search, Genres, My TorBox): the full-height grid
+GRIDS = (GRID, GRID_TILES)
 GRID_EMPTY_ACTION = 410  # "Browse Trending Now" on an empty personal list
 GENRE_TAB_FILMS = 411    # Genres: Films / Shows tabs
 GENRE_TAB_SHOWS = 412
@@ -42,7 +44,7 @@ WINDOW_IDS = {
     "novaflix-sources.xml": [SOURCES_LIST],
     "novaflix-menu.xml": [MENU_LIST],
     "novaflix-show.xml": [SHOW_PLAY, SHOW_FAVOURITE, SHOW_RELATED, SHOW_SEASON, SHOW_EPISODES],
-    "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, GRID_EMPTY_ACTION,
+    "novaflix-app.xml": [SIDEBAR, SIDEBAR_SETTINGS, MENU_GROUP, HERO_PLAY, HERO_INFO, *HOME_ROWS, HOME_RETRY, GRID, GRID_TILES, GRID_EMPTY_ACTION,
                          GENRE_TAB_FILMS, GENRE_TAB_SHOWS,
                          *RELATED_ROWS],
 }
