@@ -34,7 +34,7 @@
 </control>
 </control>
 <control type="grouplist"><left>576</left><top>690</top><width>400</width><height>78</height><orientation>horizontal</orientation>
-<control type="button" id="711"><width>240</width><height>78</height><font>font30_title</font><align>center</align><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="39">av-btn-secondary-focus.png</texturefocus><texturenofocus border="39">av-btn-secondary.png</texturenofocus><label>$INFO[Window.Property(cancel)]</label><animation effect="zoom" start="100" end="105" time="150" center="auto">Focus</animation></control>
+<control type="button" id="711"><width min="200" max="300">auto</width><height>78</height><font>font30_title</font><align>center</align><aligny>center</aligny><textoffsetx>44</textoffsetx><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="39">av-btn-secondary-focus.png</texturefocus><texturenofocus border="39">av-btn-secondary.png</texturenofocus><label>$INFO[Window.Property(cancel)]</label><animation effect="zoom" start="100" end="105" time="150" center="auto">Focus</animation></control>
 </control>
 <control type="label"><left>0</left><top>1000</top><width>1920</width><height>40</height><font>font12</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>center</aligny><label>$ADDON[plugin.video.novaflix 30526]</label></control>
     <!-- /gen:progress -->

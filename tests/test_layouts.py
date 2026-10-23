@@ -102,15 +102,13 @@ def test_conditions_do_not_embed_infolabels(name):
             assert "$INFO[" not in text, f"{name}: infolabel inside condition {text}"
 
 
-def test_title_page_buttons_fit_and_my_list_label_has_room():
-    # "Remove from My List" needs ~400 px at font30_title; the four buttons share one 1500 px row.
-    import re
-    xml = open(os.path.join(os.path.dirname(__file__), "..", "plugin.video.novaflix", "resources", "skins", "Default",
-                            "1080i", "novaflix-show.xml"), encoding="utf-8").read()
-    widths = {i: int(re.search(r'<control type="button" id="%d">\s*<width>(\d+)</width>' % i, xml).group(1))
-              for i in (500, 501, 502, 503)}
-    assert widths[501] >= 400
-    assert sum(widths.values()) + 3 * 24 <= 1500
+def test_title_page_buttons_size_to_their_words():
+    # Fixed widths left "Play S1 E1" in a 420 px pill; Kodi sizes a grouplist button to its label.
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-show.xml")).getroot()
+    buttons = {int(c.get("id")): c.find("width") for c in root.iter("control") if c.get("id") in ("500", "501", "502", "503")}
+    for control_id, width in buttons.items():
+        assert width.text == "auto" and int(width.get("min")) <= 220, control_id
+    assert int(buttons[501].get("max")) >= 400  # "Remove from My List" needs ~400 px at font30_title
 
 
 def test_rail_returns_focus_to_each_view():
@@ -304,3 +302,16 @@ def test_source_rows_span_the_drawer():
     for layout in ("itemlayout", "focusedlayout"):
         row = sources.find(layout).find("control")
         assert int(row.findtext("width")) >= 880, layout
+
+
+def test_hero_buttons_fit_their_words_with_a_gap():
+    groups = {}
+    for g in _app_root().iter("control"):
+        if g.get("type") == "group":
+            for child in g.findall("control"):
+                if child.get("id") in ("201", "202"):
+                    groups[child.get("id")] = (int(g.findtext("left")), int(g.findtext("width")))
+                    assert not (child.findtext("label") or "").strip(), "the words are a separate label"
+    (play_left, play_width), (info_left, info_width) = groups["201"], groups["202"]
+    assert info_left - (play_left + play_width) >= 20
+    assert play_width <= 260 and info_width <= 290

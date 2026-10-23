@@ -190,24 +190,25 @@ def zoom_when(condition, percent, center):
             f'condition="{condition}" reversible="true">Conditional</animation>')
 
 
-def pill_button(control_id, left, top, width, label, primary, nav, icon=None, label_left=None):
+def pill_button(control_id, left, top, width, label, primary, nav, icon=None):
     """A 66 px pill. primary: white fill and dark text; else a translucent white fill. Focus: a cyan
-    ring and 105 % zoom (both in the group, so they move together)."""
+    ring and 105 % zoom (both in the group, so they move together). The words are their own label:
+    a button's text inset counts on both sides, which made the pills far wider than their words."""
     fill, text = ("FFFFFFFF", GROUND) if primary else ("24FFFFFF", INK)
-    offset = 70 if icon else 34
     parts = [
         img(-6, -6, width + 12, 78, "av-pill78-ring.png", CYAN, border=39, visible=f"Control.HasFocus({control_id})"),
         f'<control type="button" id="{control_id}"><left>0</left><top>0</top><width>{width}</width><height>66</height>'
-        f'<font>font30_title</font><aligny>center</aligny><textoffsetx>{offset}</textoffsetx>'
-        f'<textcolor>{text}</textcolor><focusedcolor>{text}</focusedcolor>'
         f'<texturefocus border="33" colordiffuse="{fill}">av-pill66.png</texturefocus>'
         f'<texturenofocus border="33" colordiffuse="{fill}">av-pill66.png</texturenofocus>'
-        f"<label>{label}</label>{nav}</control>",
+        f"<label></label>{nav}</control>",
     ]
     if icon:
-        parts.append(img(30, 18, 30, 30, icon, CYAN if primary else INK))
+        parts += [img(28, 18, 30, 30, icon, CYAN if primary else INK),
+                  lbl(70, 0, width - 84, 66, "font30_title", text, label)]
+    else:
+        parts.append(lbl(16, 0, width - 32, 66, "font30_title", text, label, align="center"))
     return group(left, top, width, 66, "\n".join(parts),
-                 extra=zoom_when(f"Control.HasFocus({control_id})", 105, f"{width // 2},33"))
+                 extra=zoom_when(f"Control.HasFocus({control_id})", 105, "auto"))
 
 
 def labelled_fields(top, fields, source="Window.Property({})"):
@@ -372,10 +373,10 @@ def home():
                               ("$ADDON[plugin.video.novaflix 30513]", "hero_genres", 420)]),
         f'<control type="textbox"><left>{X}</left><top>424</top><width>640</width><height>102</height>'
         f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(hero_plot)]</label></control>',
-        pill_button(201, X, 562, 300, "$INFO[Window.Property(play_label)]", True,
+        pill_button(201, X, 562, 250, "$INFO[Window.Property(play_label)]", True,
                     _nav(left=100, right=202, down=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]),
                     icon="av-icon-play_arrow.png"),
-        pill_button(202, X + 318, 562, 340, "$INFO[Window.Property(info_label)]", False,
+        pill_button(202, X + 274, 562, 280, "$INFO[Window.Property(info_label)]", False,
                     _nav(left=201, down=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]), icon="av-icon-info.png"),
         _hero_dots(),
     )
@@ -617,12 +618,14 @@ def related():
 
 # -- Title page (novaflix-show.xml) -----------------------------------------------------------------
 
-def row_button(control_id, width, label, primary, visible=None):
-    """A pill button for a grouplist row: fill and focus ring are one full-colour texture each."""
+def row_button(control_id, width, label, primary, visible=None, auto=False):
+    """A pill button for a grouplist row: fill and focus ring are one full-colour texture each.
+    auto: the pill fits its words (Kodi sizes grouplist buttons), between 200 px and `width`."""
     name = "primary" if primary else "secondary"
     text = GROUND if primary else INK
-    return (f'<control type="button" id="{control_id}"><width>{width}</width><height>78</height>'
-            f'<font>font30_title</font><align>center</align><aligny>center</aligny>'
+    size = f'<width min="200" max="{width}">auto</width>' if auto else f"<width>{width}</width>"
+    return (f'<control type="button" id="{control_id}">{size}<height>78</height>'
+            f'<font>font30_title</font><align>center</align><aligny>center</aligny><textoffsetx>44</textoffsetx>'
             f'<textcolor>{text}</textcolor><focusedcolor>{text}</focusedcolor>'
             f'<texturefocus border="39">av-btn-{name}-focus.png</texturefocus>'
             f'<texturenofocus border="39">av-btn-{name}.png</texturenofocus>'
@@ -666,11 +669,11 @@ def show():
             f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(plot)]</label></control>',
             f'<control type="grouplist"><left>{X - 6}</left><top>554</top><width>1650</width><height>78</height>'
             '<orientation>horizontal</orientation><itemgap>8</itemgap><ondown>510</ondown>',
-            row_button(500, 420, "$INFO[Window.Property(play_label)]", True),
-            row_button(503, 260, "$INFO[Window.Property(season_label)]", False,
+            row_button(500, 520, "$INFO[Window.Property(play_label)]", True, auto=True),
+            row_button(503, 360, "$INFO[Window.Property(season_label)]", False, auto=True,
                        visible="!String.IsEmpty(Window.Property(season_label))"),
-            row_button(501, 400, "$INFO[Window.Property(favourite_label)]", False),
-            row_button(502, 330, "$INFO[Window.Property(related_label)]", False,
+            row_button(501, 460, "$INFO[Window.Property(favourite_label)]", False, auto=True),
+            row_button(502, 400, "$INFO[Window.Property(related_label)]", False, auto=True,
                        visible="!String.IsEmpty(Window.Property(has_related))"),
             "</control>",
             "\n".join(avail),
@@ -807,9 +810,9 @@ def confirm():
         f'<font>font12</font><textcolor>{INK3}</textcolor><label>$INFO[Window.Property(note)]</label></control>',
         '<control type="grouplist"><left>576</left><top>644</top><width>800</width><height>78</height>'
         '<orientation>horizontal</orientation><itemgap>8</itemgap>',
-        row_button(700, 340, "$INFO[Window.Property(yes)]", True).replace(
+        row_button(700, 420, "$INFO[Window.Property(yes)]", True, auto=True).replace(
             "</label>", "</label><onleft>701</onleft><onright>701</onright>", 1),
-        row_button(701, 260, "$INFO[Window.Property(no)]", False, visible=neg(single)).replace(
+        row_button(701, 360, "$INFO[Window.Property(no)]", False, visible=neg(single), auto=True).replace(
             "</label>", "</label><onleft>700</onleft><onright>700</onright>", 1),
         "</control>",
         lbl(0, 1000, 1920, 40, "font12", INK3, _addon(30525), align="center"),
@@ -873,7 +876,7 @@ def progress():
         "\n".join(stats), "</control>",
         '<control type="grouplist"><left>576</left><top>690</top><width>400</width><height>78</height>'
         '<orientation>horizontal</orientation>',
-        row_button(711, 240, "$INFO[Window.Property(cancel)]", False),
+        row_button(711, 300, "$INFO[Window.Property(cancel)]", False, auto=True),
         "</control>",
         lbl(0, 1000, 1920, 40, "font12", INK3, _addon(30526), align="center"),
     )
