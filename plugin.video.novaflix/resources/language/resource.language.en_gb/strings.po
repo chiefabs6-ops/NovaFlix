@@ -981,3 +981,7 @@ msgstr ""
 msgctxt "#30526"
 msgid "Back to stop waiting"
 msgstr ""
+
+msgctxt "#30527"
+msgid "Or open this address"
+msgstr ""

@@ -788,6 +788,51 @@ def progress():
     )
 
 
+# -- Over the video and the phone QR screen --------------------------------------------------------
+
+def _placed(button_xml, left, top):
+    return button_xml.replace("<width>", f"<left>{left}</left><top>{top}</top><width>", 1)
+
+
+def prompt():
+    """Up next (text and two buttons, bottom right over a shade) or a lone Skip pill at the top right."""
+    two = "!String.IsEmpty(Window.Property(button2))"
+    skip_only = "String.IsEmpty(Window.Property(button2)) + String.IsEmpty(Window.Property(text))"
+    main = _placed(row_button(9000, 320, "$INFO[Window.Property(button)]", True), 1504, 930).replace(
+        "</label>", "</label><onleft>9001</onleft>", 1).replace(
+        "</control>", '<animation effect="slide" start="0,0" end="0,-858" time="0" condition="'
+        + skip_only + '">Conditional</animation></control>', 1)
+    second = _placed(row_button(9001, 300, "$INFO[Window.Property(button2)]", False, visible=two), 1196, 930).replace(
+        "</label>", "</label><onright>9000</onright>", 1)
+    return lines(
+        img(0, 560, 1920, 520, "av-shade-bottom.png", visible="!String.IsEmpty(Window.Property(text))"),
+        lbl(1196, 850, 628, 60, "font30_title", INK, "$INFO[Window.Property(text)]", align="right",
+            visible="!String.IsEmpty(Window.Property(text))"),
+        second,
+        main,
+    )
+
+
+def login():
+    """Phone search: the steps, the address and the QR code on a white card."""
+    return lines(
+        img(0, 0, 1920, 1080, "av-white.png", "F205070A"),
+        img(0, 0, 1920, 1080, "av-vignette.png"),
+        lbl(X, 150, 900, 40, "font12", CYAN_HI, f"[B]{_addon(30002)}[/B]"),
+        lbl(X, 190, 960, 100, "font52_title", INK, "$INFO[Window.Property(heading)]"),
+        f'<control type="textbox"><left>{X}</left><top>300</top><width>800</width><height>160</height>'
+        f'<font>font13</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(text)]</label></control>',
+        lbl(X, 478, 800, 30, "font10", INK3, _addon(30527), visible="!String.IsEmpty(Window.Property(url))"),
+        lbl(X, 508, 900, 64, "font45_title", INK, "$INFO[Window.Property(url)]"),
+        lbl(X, 574, 900, 44, "font13", INK2, "$INFO[Window.Property(code)]"),
+        img(X, 645, 12, 12, "av-dot.png", CYAN, visible="!String.IsEmpty(Window.Property(status))"),
+        lbl(X + 24, 630, 900, 42, "font12", INK2, "$INFO[Window.Property(status)]"),
+        _placed(row_button(9000, 300, _addon(30122), False), X - 6, 700),
+        img(1240, 200, 460, 460, "av-r22.png", INK, border=22),
+        img(1270, 230, 400, 400, "$INFO[Window.Property(qr)]", extra="<aspectratio>keep</aspectratio>"),
+    )
+
+
 def loading():
     """The small spinner while something loads (grid pages, the next page of a grid)."""
     return group(1600, 990, 280, 60, lines(
@@ -810,6 +855,8 @@ SECTIONS = {
     ("novaflix-confirm.xml", "confirm"): confirm,
     ("novaflix-menu.xml", "menu"): menu,
     ("novaflix-progress.xml", "progress"): progress,
+    ("novaflix-prompt.xml", "prompt"): prompt,
+    ("novaflix-login.xml", "login"): login,
     ("novaflix-app.xml", "push-related"): menu_push,
     ("novaflix-app.xml", "related"): related,
 }
