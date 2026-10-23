@@ -288,3 +288,10 @@ def test_pills_are_drawn_at_the_height_they_were_made_for(name):
             size = int(found.group(1))
             assert int(image.findtext("height")) == size, f"{name}: {tex.text} at {image.findtext('height')}"
             assert tex.get("border") == str(size // 2), f"{name}: {tex.text} border {tex.get('border')}"
+
+
+def test_language_chips_have_room_for_long_counts():
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-sources.xml")).getroot()
+    wide = [c for c in root.iter("control") if c.get("type") == "label"
+            and "chip_wide" in (c.findtext("visible") or "") and "!String.IsEmpty(ListItem.Property(chip_wide))" in c.findtext("visible")]
+    assert wide and min(int(c.findtext("width")) for c in wide) >= 160

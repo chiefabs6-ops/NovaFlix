@@ -215,7 +215,7 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
         _drawer_header(len(listed), len(playable) if rd is not None else None, sort, heading[len(heading_base):])
         tabs = [_language_chips(lang, lang_counts) if kind == "languages" else _tier_chips(tier, counts)
                 for kind, _ in top]
-        ui.set_window_property("novaflix.source_tabs", json.dumps([{k: t[k] for k in ("title", "chips", "open")}
+        ui.set_window_property("novaflix.source_tabs", json.dumps([{k: t[k] for k in ("title", "chips", "open", "wide")}
                                                                     for t in tabs]))
         ui.clear_window_property("novaflix.source_chip")
         choice = ui.select_details(heading, [(label, "") for _, label in top] + rows
@@ -277,14 +277,16 @@ def _tier_chips(tier, counts):
     keys = [ALL_TIERS] + list(counts)
     chips = [f"{ui.string(30460)} {sum(counts.values())}"]
     chips += [cards.short_tab(f"{ui.string(TIER_STRINGS[t])} {n}") for t, n in counts.items()]
-    return {"title": ui.string(30531), "chips": chips, "keys": keys, "open": keys.index(tier) if tier in keys else 0}
+    return {"title": ui.string(30531), "chips": chips, "keys": keys, "open": keys.index(tier) if tier in keys else 0,
+            "wide": False}
 
 
 def _language_chips(lang, counts):
     """The language tabs that have sources, as chips for the drawer."""
     keys = [t for t, n in counts.items() if n]
     chips = [f"{media.language_name(t)} {counts[t]}" for t in keys]
-    return {"title": ui.string(30532), "chips": chips, "keys": keys, "open": keys.index(lang) if lang in keys else 0}
+    return {"title": ui.string(30532), "chips": chips, "keys": keys, "open": keys.index(lang) if lang in keys else 0,
+            "wide": True}  # few languages, long counts: room for "English 177"
 
 
 def _drawer_header(shown, ready, sort, extras):

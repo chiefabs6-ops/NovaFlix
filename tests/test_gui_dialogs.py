@@ -170,3 +170,15 @@ def test_tab_chips_are_chosen_on_the_row():
     xbmcgui.modal_scripts.append(script)
     assert ui.select_details("x", [("Quality: All (3) — 4K / UHD 1 · 1080p 2", ""), ("a 2160p", "Ready to play")]) == 0
     assert ui.get_window_property("novaflix.source_chip") == "1"
+
+
+def test_language_chips_are_wide():
+    import json
+    ui.set_window_property("novaflix.source_tabs", json.dumps(
+        [{"title": "Language", "chips": ["English 77", "Polish 10"], "open": 0, "wide": True},
+         {"title": "Quality", "chips": ["All 3", "4K 1"], "open": 0}]))
+    xbmcgui.modal_scripts.append(back)
+    ui.select_details("x", [("Language: English (77) — Polish 10", ""), ("Quality: All (3) — 4K / UHD 1", ""),
+                            ("a 2160p", "Ready to play")])
+    rows = xbmcgui.xml_dialogs[-1].getControl(ids.SOURCES_LIST).items
+    assert rows[0].properties["chip_wide"] == "true" and rows[1].properties["chip_wide"] == ""

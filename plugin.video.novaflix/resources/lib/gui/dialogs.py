@@ -134,6 +134,7 @@ def pick_source(heading, rows, focus=0):
     for item, tab in zip(window.entries, tabs):
         item.setProperty("chip_open", str(tab["open"]))
         item.setProperty("chip_focus", str(tab["open"]))
+        item.setProperty("chip_wide", "true" if tab.get("wide") else "")
     window.focus = focus
     window.doModal()
     return -1 if window.result is None else window.result

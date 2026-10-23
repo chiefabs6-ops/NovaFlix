@@ -27,6 +27,7 @@ def to_listitem(card):
     item.setProperty("has_wide", "true" if card.wide and not icon else "")
     for key in ("plot", "year", "rating", "genres", "kind_label", "badge", "details"):
         item.setProperty(key, getattr(card, key))
+    item.setProperty("chip_wide", "")
     for n in range(CHIPS):
         item.setProperty(f"chip{n}", card.chips[n] if n < len(card.chips) else "")
     if card.position > 0 and card.duration > 0:
