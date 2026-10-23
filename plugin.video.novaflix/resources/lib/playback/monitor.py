@@ -95,6 +95,23 @@ def _chapter():
     return current, count, xbmc.getInfoLabel("Player.ChapterName")
 
 
+def _saved_episode(tmdb_id, season, episode):
+    """The next episode's picture, title and plot from the saved season (the title page saved it); no
+    network during playback. {} when the season is not saved."""
+    from resources.lib import media
+    from resources.lib.metadata.library import Library
+    try:
+        stub = media.Title(media_type=media.TV, tmdb_id=int(tmdb_id), title="")
+        found = next((e for e in Library().cached_season_episodes(stub, season) or [] if e.number == episode), None)
+    except Exception as exc:  # noqa: BLE001 - details are decoration; Up next still works
+        log.warning(f"up next details: {type(exc).__name__}")
+        return {}
+    if found is None:
+        return {}
+    from resources.lib.gui import cards
+    return {"art": found.still or "", "title": found.title or "", "plot": cards.cut(found.overview, 140)}
+
+
 def _title_url(session, season, episode):
     from resources.lib.views import watch
     if session.media_type == "movie":
@@ -219,9 +236,9 @@ class PlaybackMonitor(xbmc.Player):
         WatchHistory(self._dir).save_position(session.media_type, session.tmdb_id, session.season, session.episode,
                                               session.position if position is None else position, session.duration)
 
-    def _show(self, text, button, action, close_at, interval=None, button2=None, action2=None):
+    def _show(self, text, button, action, close_at, interval=None, button2=None, action2=None, details=None):
         from resources.lib.kodi.prompt import Prompt
-        prompt = Prompt(text, button, action, button2, action2)
+        prompt = Prompt(text, button, action, button2, action2, details=details)
         prompt.show()
         self._prompts.append((prompt, close_at, interval))
 
@@ -241,7 +258,8 @@ class PlaybackMonitor(xbmc.Player):
         url = _title_url(session, season, episode)
         self._show(ui.string(30407) % (ui.string(30404) % (season, episode)), ui.string(30219),
                    lambda: self._begin_transition("choose", session, url), now + UPNEXT_SHOW_S,
-                   button2=ui.string(30316), action2=lambda: self._begin_transition("end", session))
+                   button2=ui.string(30316), action2=lambda: self._begin_transition("end", session),
+                   details=_saved_episode(session.tmdb_id, season, episode))
 
     # -- transitions (Up next buttons) -------------------------------------------
 

@@ -53,13 +53,16 @@ class _PromptWindow(xbmcgui.WindowXMLDialog):
 class Prompt:
     """Prompt(text, button, on_click[, button2, on_click2]).show(); .close(); .is_open."""
 
-    def __init__(self, text, button, on_click, button2=None, on_click2=None):
+    def __init__(self, text, button, on_click, button2=None, on_click2=None, details=None):
         self._window = _PromptWindow("novaflix-prompt.xml", ui.addon().getAddonInfo("path"), "Default", "1080i")
         self._window.on_click = on_click
         self._window.on_click2 = on_click2 if button2 else None
         self._window.setProperty("text", text or "")
         self._window.setProperty("button", button)
         self._window.setProperty("button2", button2 or "")
+        # Up next: the next episode's picture, title and plot when they are saved (playback/monitor.py)
+        for key in ("art", "title", "plot"):
+            self._window.setProperty(key, (details or {}).get(key) or "")
 
     def show(self):
         self._window.show()

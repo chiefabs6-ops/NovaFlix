@@ -933,10 +933,27 @@ def prompt():
         + skip_only + '">Conditional</animation></control>', 1)
     second = _placed(row_button(9001, 300, "$INFO[Window.Property(button2)]", False, visible=two), 1196, 930).replace(
         "</label>", "</label><onright>9000</onright>", 1)
+    has_text = "!String.IsEmpty(Window.Property(text))"
+    has_title = "!String.IsEmpty(Window.Property(title))"
+    has_art = "!String.IsEmpty(Window.Property(art))"
+    # Up next with the saved episode (concept 6-up-next): picture, "Next: S1 E2", title, two lines of plot
+    details = lambda left, width: lines(  # noqa: E731 - the column sits beside the picture or in its place
+        lbl(left, 728, width, 36, "font12", INK3, "$INFO[Window.Property(text)]"),
+        lbl(left, 762, width, 60, "font30_title", INK, "[B]$INFO[Window.Property(title)][/B]"),
+        f'<control type="textbox"><left>{left}</left><top>822</top><width>{width}</width><height>68</height>'
+        f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(plot)]</label></control>')
     return lines(
-        img(0, 560, 1920, 520, "av-shade-bottom.png", visible="!String.IsEmpty(Window.Property(text))"),
+        img(0, 400, 1920, 680, "av-shade-bottom.png", visible=has_text),
+        img(900, 560, 1020, 520, "av-white.png", "8C05070A", visible=has_title),
+        lbl(1064, 672, 760, 40, "font12", CYAN_HI, f"[B]{_addon(30533)}[/B]", visible=has_title),
+        group(0, 0, 1920, 1080, lines(
+            img(1064, 722, 300, 169, "$INFO[Window.Property(art)]", extra="<aspectratio>scale</aspectratio>").replace(
+                "<texture>", '<texture diffuse="av-mask-wide10.png" background="true">'),
+            details(1388, 436)), visible=f"{has_title} + {has_art}"),
+        group(0, 0, 1920, 1080, details(1064, 760), visible=f"{has_title} + {neg(has_art)}"),
+        # only the number: the line on its own, right-aligned above the buttons
         lbl(1196, 850, 628, 60, "font30_title", INK, "$INFO[Window.Property(text)]", align="right",
-            visible="!String.IsEmpty(Window.Property(text))"),
+            visible=f"{has_text} + {neg(has_title)}"),
         second,
         main,
     )

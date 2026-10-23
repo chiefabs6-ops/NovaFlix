@@ -315,3 +315,27 @@ def test_monitor_offers_up_next_when_kodi_enters_the_credits_chapter(mon):
     xbmc.info_labels.update({"Player.Chapter": "7", "Player.ChapterCount": "8", "Player.ChapterName": "Credits"})
     play_to(mon, 2450, 0)
     assert xbmcgui.xml_dialogs and xbmcgui.xml_dialogs[-1].properties["text"] == "Next: S2 E1"
+
+
+def test_up_next_shows_the_saved_next_episode(mon):
+    from resources.lib.storage.cache import Cache
+    Cache(paths.profile_dir()).set("tmdb:season:1396:2", [
+        {"tmdb_id": 1396, "season": 2, "number": 1, "title": "Seven Thirty-Seven", "overview": "Walt and Jesse.",
+         "air_date": "2009-03-08", "still": "https://image.tmdb.org/t/p/w300/s.jpg", "runtime_min": 47, "rating": 8.4}],
+        3600)
+    xbmc.info_labels.update({"Player.Chapter": "7", "Player.ChapterCount": "8", "Player.ChapterName": "Credits"})
+    start(mon)
+    play_to(mon, 2450, 0)
+    props = xbmcgui.xml_dialogs[-1].properties
+    assert props["text"] == "Next: S2 E1" and props["title"] == "Seven Thirty-Seven"
+    assert props["plot"] == "Walt and Jesse." and props["art"].endswith("/s.jpg")
+
+
+def test_up_next_without_saved_details_shows_the_number_only(mon, monkeypatch):
+    from resources.lib.metadata.library import Library
+    monkeypatch.setattr(Library, "cached_season_episodes", lambda self, title, season: None)
+    xbmc.info_labels.update({"Player.Chapter": "7", "Player.ChapterCount": "8", "Player.ChapterName": "Credits"})
+    start(mon)
+    play_to(mon, 2450, 0)
+    props = xbmcgui.xml_dialogs[-1].properties
+    assert props["text"] == "Next: S2 E1" and (props["title"], props["plot"], props["art"]) == ("", "", "")
