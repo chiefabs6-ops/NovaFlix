@@ -3,6 +3,7 @@
 The owner always picks. Unknown details are left out, never guessed.
 """
 
+import json
 import re
 
 from resources.lib import media, router
@@ -212,6 +213,11 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
         if not listed:
             heading = f"{heading_base} · {ui.string(30199)}"
         _drawer_header(len(listed), len(playable) if rd is not None else None, sort, heading[len(heading_base):])
+        tabs = [_language_chips(lang, lang_counts) if kind == "languages" else _tier_chips(tier, counts)
+                for kind, _ in top]
+        ui.set_window_property("novaflix.source_tabs", json.dumps([{k: t[k] for k in ("title", "chips", "open")}
+                                                                    for t in tabs]))
+        ui.clear_window_property("novaflix.source_chip")
         choice = ui.select_details(heading, [(label, "") for _, label in top] + rows
                                    + [(label, "") for _, label in actions], focus=len(top) if rows else 0)
         if choice < 0:
@@ -222,6 +228,16 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
                 lang = first_lang  # back from the other language: the first tab again
                 continue
             return False
+        chip = ui.get_window_property("novaflix.source_chip")
+        ui.clear_window_property("novaflix.source_chip")
+        if choice < len(top) and chip.isdigit() and int(chip) < len(tabs[choice]["keys"]):
+            # a chip chosen on the row itself (the drawer): open that tab, no menu
+            key = tabs[choice]["keys"][int(chip)]
+            if top[choice][0] == "languages":
+                lang, tier = key, ALL_TIERS
+            else:
+                tier = key
+            continue
         if choice < len(top):
             if top[choice][0] == "languages":
                 lang, tier = _next_language(lang, lang_counts), ALL_TIERS
@@ -253,6 +269,22 @@ def pick_source(request, rd, wanted, candidates, filters, dub_only, last_group, 
         if outcome == play.STOP:
             return False
         # BACK: same list again; the owner picks another source (never automatic).
+
+
+def _tier_chips(tier, counts):
+    """The quality tabs as chips for the drawer: All, then each quality with its count."""
+    from resources.lib.gui import cards
+    keys = [ALL_TIERS] + list(counts)
+    chips = [f"{ui.string(30460)} {sum(counts.values())}"]
+    chips += [cards.short_tab(f"{ui.string(TIER_STRINGS[t])} {n}") for t, n in counts.items()]
+    return {"title": ui.string(30531), "chips": chips, "keys": keys, "open": keys.index(tier) if tier in keys else 0}
+
+
+def _language_chips(lang, counts):
+    """The language tabs that have sources, as chips for the drawer."""
+    keys = [t for t, n in counts.items() if n]
+    chips = [f"{media.language_name(t)} {counts[t]}" for t in keys]
+    return {"title": ui.string(30532), "chips": chips, "keys": keys, "open": keys.index(lang) if lang in keys else 0}
 
 
 def _drawer_header(shown, ready, sort, extras):

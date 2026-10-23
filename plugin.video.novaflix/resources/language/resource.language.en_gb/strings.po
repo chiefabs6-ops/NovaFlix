@@ -997,3 +997,11 @@ msgstr ""
 msgctxt "#30530"
 msgid "1 source"
 msgstr ""
+
+msgctxt "#30531"
+msgid "Quality"
+msgstr ""
+
+msgctxt "#30532"
+msgid "Language"
+msgstr ""

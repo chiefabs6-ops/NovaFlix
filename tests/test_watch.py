@@ -304,3 +304,29 @@ def test_source_drawer_counts_and_title_details(monkeypatch):
     assert seen.get("count") == "1 source"
     assert seen.get("sub", "").startswith("Best quality")
     assert seen.get("meta") and "Movie" in seen["meta"]
+
+
+def test_quality_chip_chosen_on_the_row_needs_no_menu(monkeypatch):
+    uhd, fhd = "c" * 40, "d" * 40
+    xbmcaddon.settings["novaflix_look"] = True
+    Net(FakeTorBox(cached=(uhd, fhd)), [
+        stream(fhd, "Dune.2021.1080p.BluRay.x264-GRP", "Dune.2021.1080p.BluRay.x264-GRP.mkv"),
+        stream(uhd, "Dune.2021.2160p.WEB-DL.DV.x265-GRP", "Dune.2021.2160p.WEB-DL.DV.x265-GRP.mkv")])
+    shown = []
+
+    def pick_1080p(window):
+        shown.append([i.getLabel() for i in window.entries])
+        window.getControl(600).selectItem(0)  # up to the Quality row (the list opens on the first source)
+        window.onAction(xbmcgui.Action(2))  # All -> 4K
+        window.onAction(xbmcgui.Action(2))  # 4K -> 1080p
+        window.getControl(600).selectItem(0)
+        window.onClick(600)
+
+    def look_and_leave(window):
+        shown.append([i.getLabel() for i in window.entries])
+        window.onAction(xbmcgui.Action(92))
+    xbmcgui.modal_scripts.extend([pick_1080p, look_and_leave, look_and_leave])
+    router.dispatch([BASE + "watch", "5", "?type=movie&id=438631"])
+    assert not any(d.xml_file == "novaflix-menu.xml" for d in xbmcgui.xml_dialogs)  # no quality pop-up
+    assert "Dune.2021.1080p.BluRay.x264-GRP.mkv" in shown[1]
+    assert "Dune.2021.2160p.WEB-DL.DV.x265-GRP.mkv" not in shown[1]

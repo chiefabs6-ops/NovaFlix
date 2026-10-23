@@ -149,3 +149,24 @@ def test_look_off_ok_and_select_stay_kodi():
     assert ui.select("h", ["a", "b"]) == 1
     ui.ok("h", "m")
     assert not any(d.xml_file in ("novaflix-confirm.xml", "novaflix-menu.xml") for d in xbmcgui.xml_dialogs)
+
+
+def test_tab_chips_are_chosen_on_the_row():
+    import json
+    ui.set_window_property("novaflix.source_tabs", json.dumps(
+        [{"title": "Quality", "chips": ["All 3", "4K 1", "1080p 2"], "open": 0}]))
+
+    def script(window):
+        row = window.getControl(ids.SOURCES_LIST).items[0]
+        assert row.properties["kind"] == "tabs" and row.properties["chip_focus"] == "0"
+        assert row.properties["chip_open"] == "0" and row.properties["chip2"] == "1080p 2"
+        window.onAction(xbmcgui.Action(2))  # right
+        window.onAction(xbmcgui.Action(2))
+        assert row.properties["chip_focus"] == "2"
+        window.onAction(xbmcgui.Action(2))  # stays on the last chip
+        window.onAction(xbmcgui.Action(1))  # left
+        window.getControl(ids.SOURCES_LIST).selectItem(0)
+        window.onClick(ids.SOURCES_LIST)
+    xbmcgui.modal_scripts.append(script)
+    assert ui.select_details("x", [("Quality: All (3) — 4K / UHD 1 · 1080p 2", ""), ("a 2160p", "Ready to play")]) == 0
+    assert ui.get_window_property("novaflix.source_chip") == "1"

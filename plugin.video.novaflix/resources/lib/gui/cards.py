@@ -77,7 +77,7 @@ _TAB_ROW = re.compile(r"^(?P<title>[^:]+): (?P<open>.+?) \((?P<count>\d+)\) — 
 _SHORT_TABS = (("4K / UHD", "4K"), ("Other / unknown", "Other"))
 
 
-def _short_tab(chip):
+def short_tab(chip):
     """Chips are small: the long tab names shortened (the quality picker still shows them in full)."""
     for long_name, short in _SHORT_TABS:
         chip = chip.replace(long_name, short)
@@ -88,7 +88,7 @@ def source_row(line1, line2, text):
     if not line2:
         tabs = _TAB_ROW.match(line1)
         if tabs:  # drawn as a grey title and one chip per tab, the open one first
-            chips = tuple(_short_tab(c) for c in (f"{tabs['open']} {tabs['count']}",) + tuple(tabs["rest"].split(" · ")))
+            chips = tuple(short_tab(c) for c in (f"{tabs['open']} {tabs['count']}",) + tuple(tabs["rest"].split(" · ")))
             return Card(label=tabs["title"], kind="tabs", status="action", chips=chips)
         return Card(label=line1, kind="source", status="action")
     last = line2.rsplit(" · ", 1)[-1]

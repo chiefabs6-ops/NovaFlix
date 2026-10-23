@@ -2,6 +2,8 @@
 """Styled popups (M12) with the same contracts as the Kodi dialogs they replace:
 confirm -> bool, pick_source/menu -> index or -1, Progress -> cancelled/update/wait/close."""
 
+import json
+
 import xbmc
 import xbmcgui
 
@@ -81,7 +83,30 @@ class _ListWindow(_Modal):
 
 
 class _SourcesWindow(_ListWindow):
+    """Tab rows (language, quality) hold one chip per tab: Left / Right move between them, OK opens one."""
     list_id = ids.SOURCES_LIST
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tabs = []      # [{"title", "chips", "open"}] for the first rows
+        self.cursor = []    # the chip each tab row's cursor is on
+
+    def onAction(self, action):
+        action_id = action.getId()
+        position = self.getControl(self.list_id).getSelectedPosition()
+        if action_id in (ids.ACTION_MOVE_LEFT, ids.ACTION_MOVE_RIGHT) and 0 <= position < len(self.tabs):
+            step = 1 if action_id == ids.ACTION_MOVE_RIGHT else -1
+            last = len(self.tabs[position]["chips"]) - 1
+            self.cursor[position] = max(0, min(last, self.cursor[position] + step))
+            self.entries[position].setProperty("chip_focus", str(self.cursor[position]))
+            return
+        super().onAction(action)
+
+    def onClick(self, control_id):
+        position = self.getControl(self.list_id).getSelectedPosition()
+        if control_id == self.list_id and 0 <= position < len(self.tabs):
+            ui.set_window_property("novaflix.source_chip", str(self.cursor[position]))
+        super().onClick(control_id)
 
 
 class _MenuWindow(_ListWindow):
@@ -96,7 +121,19 @@ def pick_source(heading, rows, focus=0):
     window.setProperty("title", ui.get_window_property("novaflix.source_title"))
     for key in ("meta", "count", "sub"):  # header counts from views/sources.py, details from views/watch.py
         window.setProperty(key, ui.get_window_property(f"novaflix.source_{key}"))
-    window.entries = items.to_listitems([cards.source_row(a, b, ui.string) for a, b in rows])
+    rows_cards = [cards.source_row(a, b, ui.string) for a, b in rows]
+    try:  # the tab rows' chips, set by views/sources.py for the rows on top
+        tabs = json.loads(ui.get_window_property("novaflix.source_tabs") or "[]")
+    except ValueError:
+        tabs = []
+    tabs = tabs[:len(rows_cards)]
+    for card, tab in zip(rows_cards, tabs):
+        card.kind, card.label, card.chips = "tabs", tab["title"], tuple(tab["chips"])
+    window.entries = items.to_listitems(rows_cards)
+    window.tabs, window.cursor = tabs, [tab["open"] for tab in tabs]
+    for item, tab in zip(window.entries, tabs):
+        item.setProperty("chip_open", str(tab["open"]))
+        item.setProperty("chip_focus", str(tab["open"]))
     window.focus = focus
     window.doModal()
     return -1 if window.result is None else window.result

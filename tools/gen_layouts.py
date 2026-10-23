@@ -697,7 +697,7 @@ STATUS_COLOURS = (("ready", OK), ("download", WARN), ("blocked", BAD), ("uncheck
 
 
 def _source_row(focused):
-    width, height = 912, 100
+    width, height = 900, 100  # drawn 6 px in from the list's edges, so the focus ring is not cut
     tabs = "String.IsEqual(ListItem.Property(kind),tabs)"
     action = "String.IsEqual(ListItem.Property(status),action)"
     source = f"!{action}"
@@ -708,15 +708,24 @@ def _source_row(focused):
         img(0, 4, width, height - 8, "av-r10.png", S3 if focused else S2, border=10, visible=f"!{tabs}"),
         img(0, 4, width, height - 8, "av-r10.png", S2, border=10, visible=tabs) if focused else "",
         # tab rows (language, quality): a grey title, then one chip per tab with the open one in white
-        lbl(0 if not focused else 20, 4, 110, height - 8, "font12", INK3, "$INFO[ListItem.Label]", visible=tabs),
+        lbl(20, 4, 140, height - 8, "font12", INK3, "$INFO[ListItem.Label]", visible=tabs),
     ]
+    # chips: the open tab white; on the focused row a cyan ring marks the chip Left / Right is on
     for n in range(6):
         chip = f"ListItem.Property(chip{n})"
-        left = (110 if not focused else 130) + n * 130
-        fill, text = (INK, GROUND) if n == 0 else (S2 if not focused else S3, INK2)
-        body += [img(left, 28, 122, 44, "av-pill44.png", fill, border=22, visible=f"{tabs} + !String.IsEmpty({chip})"),
-                 lbl(left, 28, 122, 44, "font10", text, f"[B]$INFO[{chip}][/B]", align="center",
-                     visible=f"{tabs} + !String.IsEmpty({chip})")]
+        shown = f"{tabs} + !String.IsEmpty({chip})"
+        is_open = f"String.IsEqual(ListItem.Property(chip_open),{n})"
+        left = 160 + n * 122
+        if focused:
+            body.append(img(left - 5, 23, 124, 54, "av-pill66-ring.png", CYAN, border=27,
+                            visible=f"{shown} + String.IsEqual(ListItem.Property(chip_focus),{n})"))
+        body += [img(left, 28, 114, 44, "av-pill44.png", INK, border=22, visible=f"{shown} + {is_open}"),
+                 img(left, 28, 114, 44, "av-pill44.png", S3 if focused else S2, border=22,
+                     visible=f"{shown} + !{is_open}"),
+                 lbl(left, 28, 114, 44, "font10", GROUND, f"[B]$INFO[{chip}][/B]", align="center",
+                     visible=f"{shown} + {is_open}"),
+                 lbl(left, 28, 114, 44, "font10", INK2, f"[B]$INFO[{chip}][/B]", align="center",
+                     visible=f"{shown} + !{is_open}")]
     body += [
         # other actions (check more sources, sort): a plain row of words
         lbl(28, 4, width - 56, height - 8, "font13", INK if focused else INK2, "[B]$INFO[ListItem.Label][/B]",
@@ -741,7 +750,7 @@ def _source_row(focused):
                      visible=here)]
     if focused:
         body.insert(2, img(-3, 1, width + 6, height - 2, "av-r10-ring.png", CYAN, border=10))
-    return "\n".join(b for b in body if b)
+    return group(6, 0, width, height, "\n".join(b for b in body if b))
 
 
 def sources():

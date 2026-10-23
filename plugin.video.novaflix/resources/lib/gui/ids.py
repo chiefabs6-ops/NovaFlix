@@ -31,6 +31,7 @@ PROMPT_BUTTON = 9000
 
 ACTION_BACK = {9, 10, 92}        # parent dir, previous menu, back
 ACTION_CONTEXT = {117}           # context menu / hold OK
+ACTION_MOVE_LEFT = 1
 ACTION_MOVE_RIGHT = 2
 ACTION_MOVE_DOWN = 4
 ACTION_MOVES = {1, 2, 3, 4, 5, 6}  # left, right, up, down, page up, page down

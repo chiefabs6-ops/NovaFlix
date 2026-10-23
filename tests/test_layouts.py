@@ -264,3 +264,11 @@ def test_peek_pictures_fill_the_screen_and_fade_out():
 def test_tile_pages_use_the_full_height_grid():
     tiles = next(c for c in _app_root().iter("control") if c.get("id") == str(ids.GRID_TILES))
     assert int(tiles.findtext("top")) <= 160 and int(tiles.findtext("height")) >= 880
+
+
+def test_source_rows_leave_room_for_the_focus_ring():
+    root = ET.parse(os.path.join(LAYOUTS, "novaflix-sources.xml")).getroot()
+    sources = next(c for c in root.iter("control") if c.get("id") == str(ids.SOURCES_LIST))
+    row = sources.find("focusedlayout").find("control")
+    assert row.get("type") == "group" and int(row.findtext("left")) >= 4
+    assert int(row.findtext("left")) + int(row.findtext("width")) + 3 <= int(sources.findtext("width"))
