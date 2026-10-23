@@ -36,7 +36,7 @@
 <control type="label"><left>0</left><top>26</top><width>420</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Window.Property(genres)]</label></control>
 </control>
 </control>
-<control type="textbox"><left>184</left><top>400</top><width>660</width><height>114</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Window.Property(plot)]</label></control>
+<control type="textbox"><left>184</left><top>400</top><width>660</width><height>102</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Window.Property(plot)]</label></control>
 <control type="grouplist"><left>178</left><top>554</top><width>1650</width><height>78</height><orientation>horizontal</orientation><itemgap>8</itemgap><ondown>510</ondown>
 <control type="button" id="500"><width>420</width><height>78</height><font>font30_title</font><align>center</align><aligny>center</aligny><textcolor>FF05070A</textcolor><focusedcolor>FF05070A</focusedcolor><texturefocus border="39">av-btn-primary-focus.png</texturefocus><texturenofocus border="39">av-btn-primary.png</texturenofocus><label>$INFO[Window.Property(play_label)]</label><animation effect="zoom" start="100" end="105" time="150" center="auto">Focus</animation></control>
 <control type="button" id="503"><width>260</width><height>78</height><font>font30_title</font><align>center</align><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="39">av-btn-secondary-focus.png</texturefocus><texturenofocus border="39">av-btn-secondary.png</texturenofocus><label>$INFO[Window.Property(season_label)]</label><animation effect="zoom" start="100" end="105" time="150" center="auto">Focus</animation><visible>!String.IsEmpty(Window.Property(season_label))</visible></control>
@@ -75,8 +75,8 @@
 </control>
 </itemlayout>
 <focusedlayout width="400" height="250">
-<control type="group"><left>0</left><top>12</top><width>380</width><height>214</height><animation effect="zoom" start="100" end="104" time="150" center="190,107">Focus</animation>
-<control type="image"><left>-6</left><top>-6</top><width>392</width><height>226</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture></control>
+<control type="group"><left>0</left><top>12</top><width>380</width><height>214</height><animation effect="zoom" start="100" end="104" time="150" center="auto" condition="Control.HasFocus(510)" reversible="true">Conditional</animation>
+<control type="image"><left>-6</left><top>-6</top><width>392</width><height>226</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture><visible>Control.HasFocus(510)</visible></control>
 <control type="image"><left>0</left><top>0</top><width>380</width><height>214</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
 <control type="image"><left>0</left><top>0</top><width>380</width><height>214</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(thumb)]</texture><aspectratio>scale</aspectratio><visible>!String.IsEmpty(ListItem.Property(has_wide))</visible></control>
 <control type="image"><left>0</left><top>0</top><width>380</width><height>214</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>String.IsEmpty(ListItem.Property(has_wide))</visible></control>

@@ -244,3 +244,13 @@ def test_filtered_list_comes_from_discover():
 def test_home_rows_have_no_filter_tile():
     net()
     assert all(c.action[0] != "filter" for c in lists.home_row("popular_movies").cards)
+
+
+def test_genre_pictures_do_not_repeat(monkeypatch):
+    class Same:
+        def by_genre(self, media_type, genre_id, page=1):
+            return [media.Title(media_type=media_type, tmdb_id=1, title="A", backdrop="same.jpg"),
+                    media.Title(media_type=media_type, tmdb_id=2, title="B", backdrop=f"b{genre_id}.jpg")], False
+    monkeypatch.setattr(lists, "_library", lambda: Same())
+    tiles = [lists.cards.Card(label=n, kind="genre", action=("grid", f"genre:movie:{i}")) for i, n in ((28, "A"), (12, "B"))]
+    assert lists.genre_pictures(tiles) == {0: "same.jpg", 1: "b12.jpg"}

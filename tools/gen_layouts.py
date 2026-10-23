@@ -21,7 +21,8 @@ INK, INK2, INK3 = "FFFFFFFF", "FFD3D8DF", "FF8F98A4"
 CYAN, CYAN_HI, CYAN_INK = "FF00A6D6", "FF35CDF5", "FF001820"
 OK, WARN, BAD = "FF3FD28F", "FFF5B04F", "FFFF6B7A"
 
-MENU_OPEN = "ControlGroup(9100).HasFocus"
+# ControlGroup(9100).HasFocus without an id never turned true on Kodi 21: test the two controls
+MENU_OPEN = "[Control.HasFocus(100) | Control.HasFocus(101)]"
 VIEW_TARGETS = [  # (condition, control) the sidebar and Settings hand focus to on Right
     ("String.IsEqual(Window.Property(view),home) + String.IsEmpty(Window.Property(offline))", 201),
     ("String.IsEqual(Window.Property(view),home) + !String.IsEmpty(Window.Property(offline))", 340),
@@ -183,7 +184,7 @@ def group(left, top, width, height, children, visible=None, extra="", control_id
 
 
 def zoom_when(condition, percent, center):
-    return (f'<animation effect="zoom" start="100" end="{percent}" time="150" center="{center}" '
+    return (f'<animation effect="zoom" start="100" end="{percent}" time="150" center="auto" '
             f'condition="{condition}" reversible="true">Conditional</animation>')
 
 
@@ -193,7 +194,7 @@ def pill_button(control_id, left, top, width, label, primary, nav, icon=None, la
     fill, text = ("FFFFFFFF", GROUND) if primary else ("24FFFFFF", INK)
     offset = 70 if icon else 34
     parts = [
-        img(-6, -6, width + 12, 78, "av-pill66-ring.png", CYAN, border=33, visible=f"Control.HasFocus({control_id})"),
+        img(-6, -6, width + 12, 78, "av-pill78-ring.png", CYAN, border=39, visible=f"Control.HasFocus({control_id})"),
         f'<control type="button" id="{control_id}"><left>0</left><top>0</top><width>{width}</width><height>66</height>'
         f'<font>font30_title</font><aligny>center</aligny><textoffsetx>{offset}</textoffsetx>'
         f'<textcolor>{text}</textcolor><focusedcolor>{text}</focusedcolor>'
@@ -240,7 +241,7 @@ AVAIL_DOTS = (("available", OK), ("upcoming", WARN), ("sub_only", INK2), ("unava
               ("unknown", INK3), ("checking", INK3))
 
 
-def wide_card(width, height, focused, episode=False):
+def wide_card(width, height, focused, episode=False, cid=None):
     """Continue Watching / episodes: the picture with its title, details and progress over it."""
     body = [
         _wide_art(width, height),
@@ -268,14 +269,13 @@ def wide_card(width, height, focused, episode=False):
                  img(width - 42, 18, 24, 24, "av-icon-check_circle.png", OK,
                      visible="String.IsEqual(ListItem.Property(watched),true)")]
     if focused:
-        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10))
-        return group(0, 12, width, height, "\n".join(body),
-                     extra=f'<animation effect="zoom" start="100" end="104" time="150" center="{width // 2},{height // 2}">'
-                           'Focus</animation>')
+        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10,
+                           visible=f"Control.HasFocus({cid})"))
+        return group(0, 12, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
     return group(0, 12, width, height, "\n".join(body))
 
 
-def poster_card(width, height, focused):
+def poster_card(width, height, focused, cid=None):
     """A poster; tiles (search, filter, genres before pictures) and View All are drawn on a surface."""
     mask = "av-mask-poster10.png"
     tile = "[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]"
@@ -298,10 +298,9 @@ def poster_card(width, height, focused):
             visible="!String.IsEmpty(ListItem.Property(dub))"),
     ]
     if focused:
-        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10))
-        return group(0, 14, width, height, "\n".join(body),
-                     extra=f'<animation effect="zoom" start="100" end="104" time="150" center="{width // 2},{height // 2}">'
-                           'Focus</animation>')
+        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10,
+                           visible=f"Control.HasFocus({cid})"))
+        return group(0, 14, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
     return group(0, 14, width, height, "\n".join(body))
 
 
@@ -314,8 +313,8 @@ def card_list(control_id, left, top, width, kind, nav, item_gap=20):
         f'<control type="list" id="{control_id}"><left>{left}</left><top>{top}</top><width>{width}</width>'
         f'<height>{height}</height><orientation>horizontal</orientation>'
         f'<scrolltime tween="quadratic" easing="out">200</scrolltime>{nav}',
-        f'<itemlayout width="{cw + item_gap}" height="{height}">', build(cw, ch, False), "</itemlayout>",
-        f'<focusedlayout width="{cw + item_gap}" height="{height}">', build(cw, ch, True), "</focusedlayout>",
+        f'<itemlayout width="{cw + item_gap}" height="{height}">', build(cw, ch, False, cid=control_id), "</itemlayout>",
+        f'<focusedlayout width="{cw + item_gap}" height="{height}">', build(cw, ch, True, cid=control_id), "</focusedlayout>",
         "</control>")
 
 
@@ -369,12 +368,12 @@ def home():
                               ("$ADDON[plugin.video.novaflix 30511]", "hero_year", 100),
                               ("$ADDON[plugin.video.novaflix 30512]", "hero_kind", 140),
                               ("$ADDON[plugin.video.novaflix 30513]", "hero_genres", 420)]),
-        f'<control type="textbox"><left>{X}</left><top>424</top><width>640</width><height>114</height>'
+        f'<control type="textbox"><left>{X}</left><top>424</top><width>640</width><height>102</height>'
         f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(hero_plot)]</label></control>',
-        pill_button(201, X, 562, 250, "$INFO[Window.Property(play_label)]", True,
+        pill_button(201, X, 562, 300, "$INFO[Window.Property(play_label)]", True,
                     _nav(left=100, right=202, down=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]),
                     icon="av-icon-play_arrow.png"),
-        pill_button(202, X + 268, 562, 270, "$INFO[Window.Property(info_label)]", False,
+        pill_button(202, X + 318, 562, 340, "$INFO[Window.Property(info_label)]", False,
                     _nav(left=201, down=[(HAS_CONTINUE, 300), ("!" + HAS_CONTINUE, 310)]), icon="av-icon-info.png"),
         _hero_dots(),
     )
@@ -451,7 +450,7 @@ def peek(container, top=150):
     )
 
 
-def genre_card(width, height, focused):
+def genre_card(width, height, focused, cid=None):
     """A genre: a picture from its own list under a left-to-right shade, the name large at the bottom left."""
     mask = "av-mask-wide10.png"
     body = [
@@ -463,10 +462,9 @@ def genre_card(width, height, focused):
         lbl(22, height - 74, width - 44, 60, "font45_title", INK, "$INFO[ListItem.Label]"),
     ]
     if focused:
-        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10))
-        return group(0, 14, width, height, "\n".join(body),
-                     extra=f'<animation effect="zoom" start="100" end="104" time="150" center="{width // 2},{height // 2}">'
-                           'Focus</animation>')
+        body.insert(0, img(-6, -6, width + 12, height + 12, "av-r10-ring.png", INK, border=10,
+                           visible=f"Control.HasFocus({cid})"))
+        return group(0, 14, width, height, "\n".join(body), extra=zoom_when(f"Control.HasFocus({cid})", 104, "auto"))
     return group(0, 14, width, height, "\n".join(body))
 
 
@@ -499,7 +497,7 @@ def genre_tabs():
 def grid():
     peek_on = "!String.IsEmpty(Window.Property(grid_peek))"
     cw, ch = 180, 270
-    gw, gh = 400, 200
+    gw, gh = 400, 180
     panel = lines(
         '<control type="panel" id="400"><left>178</left><top>440</top><width>1742</width><height>612</height>',
         '<orientation>vertical</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime>',
@@ -507,12 +505,12 @@ def grid():
         # pages without films or shows (Search, Genres, My TorBox) have no peek: the grid moves up
         f'<animation effect="slide" start="0,0" end="0,-290" time="0" condition="{neg(peek_on)}">Conditional</animation>',
         # Genres: four wide picture tiles across (a panel takes one cell size, so the layout is chosen by page)
-        f'<itemlayout width="{gw + 22}" height="{gh + 26}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, False),
+        f'<itemlayout width="{gw + 22}" height="{gh + 24}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, False, cid=400),
         "</itemlayout>",
-        f'<focusedlayout width="{gw + 22}" height="{gh + 26}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, True),
+        f'<focusedlayout width="{gw + 22}" height="{gh + 24}" condition="{GENRES_SHOWN}">', genre_card(gw, gh, True, cid=400),
         "</focusedlayout>",
-        f'<itemlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, False), "</itemlayout>",
-        f'<focusedlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, True), "</focusedlayout>",
+        f'<itemlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, False, cid=400), "</itemlayout>",
+        f'<focusedlayout width="{cw + 22}" height="{ch + 36}">', poster_card(cw, ch, True, cid=400), "</focusedlayout>",
         "</control>")
     empty = group(0, 0, 1920, 1080, lines(
         img(902, 330, 116, 116, "av-dot.png", S2),
@@ -613,7 +611,7 @@ def show():
             lbl(X, 160, 1300, 140, "font52_title", INK, "$INFO[Window.Property(title)]", aligny="bottom",
                 visible=neg(logo)),
             labelled_fields(320, TITLE_FIELDS),
-            f'<control type="textbox"><left>{X}</left><top>400</top><width>660</width><height>114</height>'
+            f'<control type="textbox"><left>{X}</left><top>400</top><width>660</width><height>102</height>'
             f'<font>font12</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(plot)]</label></control>',
             f'<control type="grouplist"><left>{X - 6}</left><top>554</top><width>1650</width><height>78</height>'
             '<orientation>horizontal</orientation><itemgap>8</itemgap><ondown>510</ondown>',
@@ -632,8 +630,8 @@ def show():
                 f'<control type="list" id="510"><left>{X - 6}</left><top>758</top><width>{1920 - X + 6}</width>'
                 '<height>250</height><orientation>horizontal</orientation><onup>500</onup>'
                 '<scrolltime tween="quadratic" easing="out">200</scrolltime>',
-                '<itemlayout width="400" height="250">', wide_card(380, 214, False, episode=True), "</itemlayout>",
-                '<focusedlayout width="400" height="250">', wide_card(380, 214, True, episode=True), "</focusedlayout>",
+                '<itemlayout width="400" height="250">', wide_card(380, 214, False, episode=True, cid=510), "</itemlayout>",
+                '<focusedlayout width="400" height="250">', wide_card(380, 214, True, episode=True, cid=510), "</focusedlayout>",
                 "</control>"),
         ), visible="!String.IsEmpty(Window.Property(title))"),
         # first load: the page's shapes; a season switch only shows the spinner
@@ -831,7 +829,7 @@ def login():
         f'<control type="textbox"><left>{X}</left><top>300</top><width>800</width><height>160</height>'
         f'<font>font13</font><textcolor>{INK2}</textcolor><label>$INFO[Window.Property(text)]</label></control>',
         lbl(X, 478, 800, 30, "font10", INK3, _addon(30527), visible="!String.IsEmpty(Window.Property(url))"),
-        lbl(X, 508, 900, 64, "font45_title", INK, "$INFO[Window.Property(url)]"),
+        lbl(X, 508, 960, 64, "font30_title", INK, "$INFO[Window.Property(url)]"),
         lbl(X, 574, 900, 44, "font13", INK2, "$INFO[Window.Property(code)]"),
         img(X, 645, 12, 12, "av-dot.png", CYAN, visible="!String.IsEmpty(Window.Property(status))"),
         lbl(X + 24, 630, 900, 42, "font12", INK2, "$INFO[Window.Property(status)]"),

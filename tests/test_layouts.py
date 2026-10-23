@@ -124,7 +124,7 @@ def test_rail_returns_focus_to_each_view():
     assert targets["String.IsEqual(Window.Property(view),grid)"] == str(ids.GRID)
     assert targets["String.IsEqual(Window.Property(view),related)"] == str(ids.RELATED_ROWS[0])
     text = open(os.path.join(LAYOUTS, "novaflix-app.xml"), encoding="utf-8").read()
-    assert "ControlGroup(9100).HasFocus" in text
+    assert "[Control.HasFocus(100) | Control.HasFocus(101)]" in text
 
 
 def test_generated_sections_are_current():
@@ -184,3 +184,47 @@ def test_remote_images_load_in_the_background(name):
         if any(k in text for k in ("Property(hero_logo)", "Property(logo)", "Property(art)", "Property(hero_art)",
                                    "Art(")):
             assert texture.get("background") == "true", f"{name}: {text}"
+
+
+# -- PC look-through fixes (owner screenshots, 2026-10-23) --------------------------------------------
+
+@pytest.mark.parametrize("name", XMLS)
+def test_menu_condition_does_not_use_controlgroup_without_an_id(name):
+    """ControlGroup(9100).HasFocus without "(id)" never turned true on the PC: the menu never opened."""
+    assert "ControlGroup(" not in open(os.path.join(LAYOUTS, name), encoding="utf-8").read()
+
+
+@pytest.mark.parametrize("name", XMLS)
+def test_zoom_animations_centre_on_the_control(name):
+    """An explicit centre is in screen coordinates: the focused Play button slid down and right."""
+    root = ET.parse(os.path.join(LAYOUTS, name)).getroot()
+    for anim in root.iter("animation"):
+        if anim.get("effect") == "zoom":
+            assert anim.get("center") == "auto", f"{name}: zoom centre {anim.get('center')}"
+
+
+def test_card_focus_rings_only_show_while_their_list_has_focus():
+    root = _app_root()
+    for container in root.iter("control"):
+        if container.get("type") not in ("list", "panel") or container.get("id") in ("100",):
+            continue
+        cid = container.get("id")
+        for layout in container.findall("focusedlayout"):
+            for image in layout.iter("control"):
+                tex = image.find("texture")
+                if tex is not None and tex.text == "av-r10-ring.png":
+                    assert f"Control.HasFocus({cid})" in (image.findtext("visible") or ""), cid
+
+
+def test_genre_tiles_fill_whole_rows_of_the_grid():
+    panel = next(c for c in _app_root().iter("control") if c.get("id") == str(ids.GRID))
+    height = int(panel.findtext("height"))
+    for layout in panel.findall("itemlayout"):
+        assert height % int(layout.get("height")) == 0, layout.get("height")
+
+
+def test_hero_plot_shows_whole_lines_only():
+    root = _app_root()
+    box = next(c for c in root.iter("control") if c.get("type") == "textbox"
+               and "hero_plot" in (c.findtext("label") or ""))
+    assert int(box.findtext("height")) == 102  # three font12 lines

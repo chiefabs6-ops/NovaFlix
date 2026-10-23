@@ -36,16 +36,23 @@ def save(img, name):
     img.save(os.path.join(MEDIA, name), optimize=True)
 
 
+AA = 4  # shapes are drawn this many times larger, then scaled down: smooth edges on the TV
+
+
+def smooth(size, draw):
+    """An anti-aliased image: draw(ImageDraw, scale) paints at AA x size; the result is scaled down."""
+    big = Image.new("RGBA", (size[0] * AA, size[1] * AA), (0, 0, 0, 0))
+    draw(ImageDraw.Draw(big), AA)
+    return big.resize(size, Image.LANCZOS)
+
+
 def rounded(size, radius, fill=WHITE + (255,)):
-    img = Image.new("RGBA", size, (0, 0, 0, 0))
-    ImageDraw.Draw(img).rounded_rectangle((0, 0, size[0] - 1, size[1] - 1), radius, fill=fill)
-    return img
+    return smooth(size, lambda d, k: d.rounded_rectangle((0, 0, size[0] * k - 1, size[1] * k - 1), radius * k, fill=fill))
 
 
 def outline(size, radius, width):
-    img = Image.new("RGBA", size, (0, 0, 0, 0))
-    ImageDraw.Draw(img).rounded_rectangle((0, 0, size[0] - 1, size[1] - 1), radius, outline=WHITE + (255,), width=width)
-    return img
+    return smooth(size, lambda d, k: d.rounded_rectangle((0, 0, size[0] * k - 1, size[1] * k - 1), radius * k,
+                                                        outline=WHITE + (255,), width=width * k))
 
 
 def stops(size, horizontal, colour, points):
@@ -185,6 +192,7 @@ def main():
     save(outline((64, 64), 10, 3), "av-r10-ring.png")
     save(rounded((132, 66), 33), "av-pill66.png")
     save(outline((132, 66), 33, 3), "av-pill66-ring.png")
+    save(outline((156, 78), 39, 3), "av-pill78-ring.png")  # focus ring 6 px outside a 66 px pill
     save(rounded((96, 96), 22), "av-r22.png")
     save(rounded((32, 6), 3), "av-bar.png")
     save(stops((1920, 8), True, BG, [(0, .92), (.28, .70), (.58, 0), (1, 0)]), "av-shade-hero.png")
@@ -199,17 +207,16 @@ def main():
     # the fill inset 6 px, and on focus a 3 px cyan ring at the edge with a 3 px gap.
     for name, fill in (("primary", WHITE + (255,)), ("secondary", WHITE + (36,))):
         for focused in (False, True):
-            tex = Image.new("RGBA", (156, 78), (0, 0, 0, 0))
-            draw = ImageDraw.Draw(tex)
-            draw.rounded_rectangle((6, 6, 149, 71), 33, fill=fill)
-            if focused:
-                draw.rounded_rectangle((0, 0, 155, 77), 39, outline=CYAN + (255,), width=3)
+            def paint(d, k, fill=fill, focused=focused):
+                d.rounded_rectangle((6 * k, 6 * k, 150 * k - 1, 72 * k - 1), 33 * k, fill=fill)
+                if focused:
+                    d.rounded_rectangle((0, 0, 156 * k - 1, 78 * k - 1), 39 * k, outline=CYAN + (255,), width=3 * k)
+            tex = smooth((156, 78), paint)
             save(tex, f"av-btn-{name}{'-focus' if focused else ''}.png")
-    spinner = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    ImageDraw.Draw(spinner).arc((6, 6, 57, 57), 300, 210, fill=WHITE + (255,), width=5)
+    spinner = smooth((64, 64), lambda d, k: d.arc((6 * k, 6 * k, 58 * k - 1, 58 * k - 1), 300, 210,
+                                                  fill=WHITE + (255,), width=5 * k))
     save(spinner, "av-spinner.png")
-    dot = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    ImageDraw.Draw(dot).ellipse((0, 0, 15, 15), fill=WHITE + (255,))
+    dot = smooth((16, 16), lambda d, k: d.ellipse((0, 0, 16 * k - 1, 16 * k - 1), fill=WHITE + (255,)))
     save(dot, "av-dot.png")
     icons()
     logo()

@@ -188,7 +188,8 @@ def genre_pictures(tiles):
         except Exception as exc:  # noqa: BLE001 - a picture is decoration, never an error
             log.warning(f"genre picture {media_type}:{genre_id}: {type(exc).__name__}")
             continue
-        backdrop = next((t.backdrop for t in titles if t.backdrop), None)
+        used = set(pictures.values())  # one film tops several genres: give each tile its own picture
+        backdrop = next((t.backdrop for t in titles if t.backdrop and t.backdrop not in used), None)
         if backdrop:
             pictures[index] = backdrop
     return pictures
