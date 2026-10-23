@@ -472,6 +472,35 @@ def grid():
     )
 
 
+def related():
+    """More like this: the focused row's title in the peek, a collection row of wide cards, then posters."""
+    rows_ids = (800, 810, 820, 830, 840, 850)
+    peeks = [group(0, 0, 1920, 640, peek(rid, top=140), visible=f"Control.HasFocus({rid})") for rid in rows_ids]
+    rows = []
+    for n, rid in enumerate(rows_ids):
+        kind = "wide" if n == 0 else "poster"
+        moves = {"left": 100}
+        if n > 0:
+            moves["up"] = rows_ids[n - 1]
+        if n < len(rows_ids) - 1:
+            moves["down"] = rows_ids[n + 1]
+        rows.append(group(0, 0, 1920, 380, lines(
+            lbl(X, 0, 1200, 44, "font30_title", INK2, f"$INFO[Window.Property(rel{n}_title)]"),
+            card_list(rid, X - 6, 44, 1920 - X + 6, kind, _nav(**moves))),
+            visible=f"Integer.IsGreater(Container({rid}).NumItems,0)"))
+    return lines(
+        "\n".join(peeks),
+        lbl(X, 52, 1500, 64, "font45_title", INK, "$INFO[Window.Property(related_title)]"),
+        lbl(X, 116, 1500, 36, "font12", INK3, "$INFO[Window.Property(related_notice)]"),
+        lbl(X, 480, 1920 - 2 * X, 60, "font13", INK2, "$INFO[Window.Property(related_status)]", align="center",
+            visible="!String.IsEmpty(Window.Property(related_status))"),
+        '<control type="grouplist"><left>0</left><top>500</top><width>1920</width><height>580</height>'
+        '<orientation>vertical</orientation><itemgap>0</itemgap><scrolltime tween="quadratic" easing="out">260</scrolltime>',
+        "\n".join(rows),
+        "</control>",
+    )
+
+
 def loading():
     """The small spinner while something loads (grid pages, the next page of a grid)."""
     return group(1600, 990, 280, 60, lines(
@@ -490,6 +519,7 @@ SECTIONS = {
     ("novaflix-app.xml", "grid"): grid,
     ("novaflix-app.xml", "loading"): loading,
     ("novaflix-app.xml", "push-related"): menu_push,
+    ("novaflix-app.xml", "related"): related,
 }
 
 

@@ -9,7 +9,7 @@
   <controls>
     <control type="image">
       <left>0</left><top>0</top><width>1920</width><height>1080</height>
-      <texture colordiffuse="FF02050D">av-white.png</texture>
+      <texture colordiffuse="FF05070A">av-white.png</texture>
     </control>
 
     <!-- ================= HOME VIEW ================= -->
@@ -344,744 +344,371 @@
       <!-- gen:push-related -->
 <animation type="Conditional" condition="ControlGroup(9100).HasFocus" reversible="true"><effect type="fade" start="100" end="45" time="250"/><effect type="slide" start="0,0" end="40,0" time="250" tween="cubic" easing="out"/></animation>
       <!-- /gen:push-related -->
-      <control type="label">
-        <left>440</left><top>36</top><width>1400</width><height>64</height>
-        <font>font45_title</font><textcolor>FFF5F7FF</textcolor>
-        <label>$INFO[Window.Property(related_title)]</label>
-      </control>
-      <control type="label">
-        <left>440</left><top>100</top><width>1400</width><height>40</height>
-        <font>font12</font><textcolor>FFA8B5D1</textcolor>
-        <label>$INFO[Window.Property(related_notice)]</label>
-      </control>
-      <control type="label">
-        <left>440</left><top>140</top><width>1400</width><height>50</height>
-        <font>font13</font><textcolor>FFA8B5D1</textcolor>
-        <label>$INFO[Window.Property(related_status)]</label>
-      </control>
-      <control type="grouplist">
-        <left>380</left><top>130</top><width>1540</width><height>950</height>
-        <orientation>vertical</orientation><itemgap>0</itemgap>
-        <scrolltime tween="quadratic" easing="out">260</scrolltime>
-        <control type="group">
-          <width>1540</width><height>500</height>
-          <visible>Integer.IsGreater(Container(800).NumItems,0)</visible>
-          <control type="label">
-            <left>70</left><top>16</top><width>900</width><height>50</height>
-            <font>font30_title</font><textcolor>FFF5F7FF</textcolor>
-            <label>$INFO[Window.Property(rel0_title)]</label>
-          </control>
-          <control type="list" id="800">
-            <left>50</left><top>66</top><width>1490</width><height>430</height>
-            <orientation>horizontal</orientation>
-            <scrolltime tween="quadratic" easing="out">200</scrolltime>
-            <onleft>100</onleft>
-            <ondown>810</ondown>
-            <itemlayout width="250" height="430">
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <aspectratio>scale</aspectratio>
-                <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="404A58D9">av-round-border.png</texture>
-              </control>
-              <control type="image">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-              </control>
-              <control type="label">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <align>center</align><aligny>center</aligny>
-                <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                <label>$INFO[ListItem.Property(dub)]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFF5F7FF</textcolor>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFA8B5D1</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </itemlayout>
-            <focusedlayout width="250" height="430">
-              <control type="group">
-                <animation effect="zoom" start="100" end="108" time="120" center="125,185">Focus</animation>
-                <control type="image">
-                  <left>-5</left><top>0</top><width>260</width><height>370</height>
-                  <texture border="40" colordiffuse="FF00A6D6">av-glow.png</texture>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <aspectratio>scale</aspectratio>
-                  <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                  <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF00A6D6">av-round-border.png</texture>
-                </control>
-                <control type="image">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                  <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-                </control>
-                <control type="label">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <align>center</align><aligny>center</aligny>
-                  <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                  <label>$INFO[ListItem.Property(dub)]</label>
-                </control>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFD6DEF5</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </focusedlayout>
-          </control>
-        </control>
-        <control type="group">
-          <width>1540</width><height>500</height>
-          <visible>Integer.IsGreater(Container(810).NumItems,0)</visible>
-          <control type="label">
-            <left>70</left><top>16</top><width>900</width><height>50</height>
-            <font>font30_title</font><textcolor>FFF5F7FF</textcolor>
-            <label>$INFO[Window.Property(rel1_title)]</label>
-          </control>
-          <control type="list" id="810">
-            <left>50</left><top>66</top><width>1490</width><height>430</height>
-            <orientation>horizontal</orientation>
-            <scrolltime tween="quadratic" easing="out">200</scrolltime>
-            <onleft>100</onleft>
-            <onup>800</onup>
-            <ondown>820</ondown>
-            <itemlayout width="250" height="430">
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <aspectratio>scale</aspectratio>
-                <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="404A58D9">av-round-border.png</texture>
-              </control>
-              <control type="image">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-              </control>
-              <control type="label">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <align>center</align><aligny>center</aligny>
-                <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                <label>$INFO[ListItem.Property(dub)]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFF5F7FF</textcolor>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFA8B5D1</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </itemlayout>
-            <focusedlayout width="250" height="430">
-              <control type="group">
-                <animation effect="zoom" start="100" end="108" time="120" center="125,185">Focus</animation>
-                <control type="image">
-                  <left>-5</left><top>0</top><width>260</width><height>370</height>
-                  <texture border="40" colordiffuse="FF00A6D6">av-glow.png</texture>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <aspectratio>scale</aspectratio>
-                  <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                  <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF00A6D6">av-round-border.png</texture>
-                </control>
-                <control type="image">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                  <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-                </control>
-                <control type="label">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <align>center</align><aligny>center</aligny>
-                  <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                  <label>$INFO[ListItem.Property(dub)]</label>
-                </control>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFD6DEF5</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </focusedlayout>
-          </control>
-        </control>
-        <control type="group">
-          <width>1540</width><height>500</height>
-          <visible>Integer.IsGreater(Container(820).NumItems,0)</visible>
-          <control type="label">
-            <left>70</left><top>16</top><width>900</width><height>50</height>
-            <font>font30_title</font><textcolor>FFF5F7FF</textcolor>
-            <label>$INFO[Window.Property(rel2_title)]</label>
-          </control>
-          <control type="list" id="820">
-            <left>50</left><top>66</top><width>1490</width><height>430</height>
-            <orientation>horizontal</orientation>
-            <scrolltime tween="quadratic" easing="out">200</scrolltime>
-            <onleft>100</onleft>
-            <onup>810</onup>
-            <ondown>830</ondown>
-            <itemlayout width="250" height="430">
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <aspectratio>scale</aspectratio>
-                <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="404A58D9">av-round-border.png</texture>
-              </control>
-              <control type="image">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-              </control>
-              <control type="label">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <align>center</align><aligny>center</aligny>
-                <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                <label>$INFO[ListItem.Property(dub)]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFF5F7FF</textcolor>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFA8B5D1</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </itemlayout>
-            <focusedlayout width="250" height="430">
-              <control type="group">
-                <animation effect="zoom" start="100" end="108" time="120" center="125,185">Focus</animation>
-                <control type="image">
-                  <left>-5</left><top>0</top><width>260</width><height>370</height>
-                  <texture border="40" colordiffuse="FF00A6D6">av-glow.png</texture>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <aspectratio>scale</aspectratio>
-                  <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                  <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF00A6D6">av-round-border.png</texture>
-                </control>
-                <control type="image">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                  <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-                </control>
-                <control type="label">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <align>center</align><aligny>center</aligny>
-                  <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                  <label>$INFO[ListItem.Property(dub)]</label>
-                </control>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFD6DEF5</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </focusedlayout>
-          </control>
-        </control>
-        <control type="group">
-          <width>1540</width><height>500</height>
-          <visible>Integer.IsGreater(Container(830).NumItems,0)</visible>
-          <control type="label">
-            <left>70</left><top>16</top><width>900</width><height>50</height>
-            <font>font30_title</font><textcolor>FFF5F7FF</textcolor>
-            <label>$INFO[Window.Property(rel3_title)]</label>
-          </control>
-          <control type="list" id="830">
-            <left>50</left><top>66</top><width>1490</width><height>430</height>
-            <orientation>horizontal</orientation>
-            <scrolltime tween="quadratic" easing="out">200</scrolltime>
-            <onleft>100</onleft>
-            <onup>820</onup>
-            <ondown>840</ondown>
-            <itemlayout width="250" height="430">
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <aspectratio>scale</aspectratio>
-                <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="404A58D9">av-round-border.png</texture>
-              </control>
-              <control type="image">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-              </control>
-              <control type="label">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <align>center</align><aligny>center</aligny>
-                <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                <label>$INFO[ListItem.Property(dub)]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFF5F7FF</textcolor>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFA8B5D1</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </itemlayout>
-            <focusedlayout width="250" height="430">
-              <control type="group">
-                <animation effect="zoom" start="100" end="108" time="120" center="125,185">Focus</animation>
-                <control type="image">
-                  <left>-5</left><top>0</top><width>260</width><height>370</height>
-                  <texture border="40" colordiffuse="FF00A6D6">av-glow.png</texture>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <aspectratio>scale</aspectratio>
-                  <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                  <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF00A6D6">av-round-border.png</texture>
-                </control>
-                <control type="image">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                  <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-                </control>
-                <control type="label">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <align>center</align><aligny>center</aligny>
-                  <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                  <label>$INFO[ListItem.Property(dub)]</label>
-                </control>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFD6DEF5</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </focusedlayout>
-          </control>
-        </control>
-        <control type="group">
-          <width>1540</width><height>500</height>
-          <visible>Integer.IsGreater(Container(840).NumItems,0)</visible>
-          <control type="label">
-            <left>70</left><top>16</top><width>900</width><height>50</height>
-            <font>font30_title</font><textcolor>FFF5F7FF</textcolor>
-            <label>$INFO[Window.Property(rel4_title)]</label>
-          </control>
-          <control type="list" id="840">
-            <left>50</left><top>66</top><width>1490</width><height>430</height>
-            <orientation>horizontal</orientation>
-            <scrolltime tween="quadratic" easing="out">200</scrolltime>
-            <onleft>100</onleft>
-            <onup>830</onup>
-            <ondown>850</ondown>
-            <itemlayout width="250" height="430">
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <aspectratio>scale</aspectratio>
-                <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="404A58D9">av-round-border.png</texture>
-              </control>
-              <control type="image">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-              </control>
-              <control type="label">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <align>center</align><aligny>center</aligny>
-                <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                <label>$INFO[ListItem.Property(dub)]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFF5F7FF</textcolor>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFA8B5D1</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </itemlayout>
-            <focusedlayout width="250" height="430">
-              <control type="group">
-                <animation effect="zoom" start="100" end="108" time="120" center="125,185">Focus</animation>
-                <control type="image">
-                  <left>-5</left><top>0</top><width>260</width><height>370</height>
-                  <texture border="40" colordiffuse="FF00A6D6">av-glow.png</texture>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <aspectratio>scale</aspectratio>
-                  <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                  <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF00A6D6">av-round-border.png</texture>
-                </control>
-                <control type="image">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                  <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-                </control>
-                <control type="label">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <align>center</align><aligny>center</aligny>
-                  <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                  <label>$INFO[ListItem.Property(dub)]</label>
-                </control>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFD6DEF5</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </focusedlayout>
-          </control>
-        </control>
-        <control type="group">
-          <width>1540</width><height>500</height>
-          <visible>Integer.IsGreater(Container(850).NumItems,0)</visible>
-          <control type="label">
-            <left>70</left><top>16</top><width>900</width><height>50</height>
-            <font>font30_title</font><textcolor>FFF5F7FF</textcolor>
-            <label>$INFO[Window.Property(rel5_title)]</label>
-          </control>
-          <control type="list" id="850">
-            <left>50</left><top>66</top><width>1490</width><height>430</height>
-            <orientation>horizontal</orientation>
-            <scrolltime tween="quadratic" easing="out">200</scrolltime>
-            <onleft>100</onleft>
-            <onup>840</onup>
-            <itemlayout width="250" height="430">
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <aspectratio>scale</aspectratio>
-                <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-              </control>
-              <control type="image">
-                <left>93</left><top>140</top><width>64</width><height>64</height>
-                <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-              </control>
-              <control type="image">
-                <left>15</left><top>20</top><width>220</width><height>330</height>
-                <texture border="14" colordiffuse="404A58D9">av-round-border.png</texture>
-              </control>
-              <control type="image">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-              </control>
-              <control type="label">
-                <left>27</left><top>32</top><width>120</width><height>32</height>
-                <align>center</align><aligny>center</aligny>
-                <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                <label>$INFO[ListItem.Property(dub)]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFF5F7FF</textcolor>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFA8B5D1</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </itemlayout>
-            <focusedlayout width="250" height="430">
-              <control type="group">
-                <animation effect="zoom" start="100" end="108" time="120" center="125,185">Focus</animation>
-                <control type="image">
-                  <left>-5</left><top>0</top><width>260</width><height>370</height>
-                  <texture border="40" colordiffuse="FF00A6D6">av-glow.png</texture>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <aspectratio>scale</aspectratio>
-                  <texture diffuse="av-mask-poster.png" fallback="av-placeholder.png" background="true">$INFO[ListItem.Art(poster)]</texture>
-                  <visible>!String.IsEqual(ListItem.Property(kind),tile) + !String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF070F1F">av-round.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF8B3FE0">$INFO[ListItem.Property(icon)]</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),tile)</visible>
-                </control>
-                <control type="image">
-                  <left>93</left><top>140</top><width>64</width><height>64</height>
-                  <texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture>
-                  <visible>String.IsEqual(ListItem.Property(kind),more)</visible>
-                </control>
-                <control type="image">
-                  <left>15</left><top>20</top><width>220</width><height>330</height>
-                  <texture border="14" colordiffuse="FF00A6D6">av-round-border.png</texture>
-                </control>
-                <control type="image">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <texture border="16" colordiffuse="E65B1FD6">av-pill.png</texture>
-                  <visible>!String.IsEmpty(ListItem.Property(dub))</visible>
-                </control>
-                <control type="label">
-                  <left>27</left><top>32</top><width>120</width><height>32</height>
-                  <align>center</align><aligny>center</aligny>
-                  <font>font_flag</font><textcolor>FFFFFFFF</textcolor>
-                  <label>$INFO[ListItem.Property(dub)]</label>
-                </control>
-              </control>
-              <control type="label">
-                <left>15</left><top>360</top><width>220</width><height>36</height>
-                <font>font12</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll>
-                <label>$INFO[ListItem.Label]</label>
-              </control>
-              <control type="label">
-                <left>15</left><top>392</top><width>220</width><height>32</height>
-                <font>font10</font><textcolor>FFD6DEF5</textcolor>
-                <label>$INFO[ListItem.Label2]</label>
-              </control>
-            </focusedlayout>
-          </control>
-        </control>
-      </control>
+      <!-- gen:related -->
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>640</height><visible>Control.HasFocus(800)</visible>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture background="true">$INFO[Container(800).ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio><fadetime>300</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-hero.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-bottom.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture colordiffuse="4005070A">av-white.png</texture></control>
+<control type="label"><left>184</left><top>140</top><width>1300</width><height>90</height><font>font52_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Container(800).ListItem.Label]</label></control>
+<control type="grouplist"><left>184</left><top>240</top><width>1200</width><height>64</height><orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>
+<control type="group"><left>0</left><top>0</top><width>110</width><height>64</height><visible>!String.IsEmpty(Container(800).ListItem.Property(rating))</visible>
+<control type="label"><left>0</left><top>0</top><width>110</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30510]</label></control>
+<control type="label"><left>0</left><top>26</top><width>110</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(800).ListItem.Property(rating)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>100</width><height>64</height><visible>!String.IsEmpty(Container(800).ListItem.Property(year))</visible>
+<control type="label"><left>0</left><top>0</top><width>100</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30511]</label></control>
+<control type="label"><left>0</left><top>26</top><width>100</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(800).ListItem.Property(year)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>140</width><height>64</height><visible>!String.IsEmpty(Container(800).ListItem.Property(kind_label))</visible>
+<control type="label"><left>0</left><top>0</top><width>140</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30512]</label></control>
+<control type="label"><left>0</left><top>26</top><width>140</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(800).ListItem.Property(kind_label)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>420</width><height>64</height><visible>!String.IsEmpty(Container(800).ListItem.Property(genres))</visible>
+<control type="label"><left>0</left><top>0</top><width>420</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30513]</label></control>
+<control type="label"><left>0</left><top>26</top><width>420</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(800).ListItem.Property(genres)]</label></control>
+</control>
+</control>
+<control type="textbox"><left>184</left><top>318</top><width>720</width><height>76</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Container(800).ListItem.Property(plot)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>640</height><visible>Control.HasFocus(810)</visible>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture background="true">$INFO[Container(810).ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio><fadetime>300</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-hero.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-bottom.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture colordiffuse="4005070A">av-white.png</texture></control>
+<control type="label"><left>184</left><top>140</top><width>1300</width><height>90</height><font>font52_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Container(810).ListItem.Label]</label></control>
+<control type="grouplist"><left>184</left><top>240</top><width>1200</width><height>64</height><orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>
+<control type="group"><left>0</left><top>0</top><width>110</width><height>64</height><visible>!String.IsEmpty(Container(810).ListItem.Property(rating))</visible>
+<control type="label"><left>0</left><top>0</top><width>110</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30510]</label></control>
+<control type="label"><left>0</left><top>26</top><width>110</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(810).ListItem.Property(rating)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>100</width><height>64</height><visible>!String.IsEmpty(Container(810).ListItem.Property(year))</visible>
+<control type="label"><left>0</left><top>0</top><width>100</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30511]</label></control>
+<control type="label"><left>0</left><top>26</top><width>100</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(810).ListItem.Property(year)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>140</width><height>64</height><visible>!String.IsEmpty(Container(810).ListItem.Property(kind_label))</visible>
+<control type="label"><left>0</left><top>0</top><width>140</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30512]</label></control>
+<control type="label"><left>0</left><top>26</top><width>140</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(810).ListItem.Property(kind_label)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>420</width><height>64</height><visible>!String.IsEmpty(Container(810).ListItem.Property(genres))</visible>
+<control type="label"><left>0</left><top>0</top><width>420</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30513]</label></control>
+<control type="label"><left>0</left><top>26</top><width>420</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(810).ListItem.Property(genres)]</label></control>
+</control>
+</control>
+<control type="textbox"><left>184</left><top>318</top><width>720</width><height>76</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Container(810).ListItem.Property(plot)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>640</height><visible>Control.HasFocus(820)</visible>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture background="true">$INFO[Container(820).ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio><fadetime>300</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-hero.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-bottom.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture colordiffuse="4005070A">av-white.png</texture></control>
+<control type="label"><left>184</left><top>140</top><width>1300</width><height>90</height><font>font52_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Container(820).ListItem.Label]</label></control>
+<control type="grouplist"><left>184</left><top>240</top><width>1200</width><height>64</height><orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>
+<control type="group"><left>0</left><top>0</top><width>110</width><height>64</height><visible>!String.IsEmpty(Container(820).ListItem.Property(rating))</visible>
+<control type="label"><left>0</left><top>0</top><width>110</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30510]</label></control>
+<control type="label"><left>0</left><top>26</top><width>110</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(820).ListItem.Property(rating)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>100</width><height>64</height><visible>!String.IsEmpty(Container(820).ListItem.Property(year))</visible>
+<control type="label"><left>0</left><top>0</top><width>100</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30511]</label></control>
+<control type="label"><left>0</left><top>26</top><width>100</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(820).ListItem.Property(year)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>140</width><height>64</height><visible>!String.IsEmpty(Container(820).ListItem.Property(kind_label))</visible>
+<control type="label"><left>0</left><top>0</top><width>140</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30512]</label></control>
+<control type="label"><left>0</left><top>26</top><width>140</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(820).ListItem.Property(kind_label)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>420</width><height>64</height><visible>!String.IsEmpty(Container(820).ListItem.Property(genres))</visible>
+<control type="label"><left>0</left><top>0</top><width>420</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30513]</label></control>
+<control type="label"><left>0</left><top>26</top><width>420</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(820).ListItem.Property(genres)]</label></control>
+</control>
+</control>
+<control type="textbox"><left>184</left><top>318</top><width>720</width><height>76</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Container(820).ListItem.Property(plot)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>640</height><visible>Control.HasFocus(830)</visible>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture background="true">$INFO[Container(830).ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio><fadetime>300</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-hero.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-bottom.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture colordiffuse="4005070A">av-white.png</texture></control>
+<control type="label"><left>184</left><top>140</top><width>1300</width><height>90</height><font>font52_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Container(830).ListItem.Label]</label></control>
+<control type="grouplist"><left>184</left><top>240</top><width>1200</width><height>64</height><orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>
+<control type="group"><left>0</left><top>0</top><width>110</width><height>64</height><visible>!String.IsEmpty(Container(830).ListItem.Property(rating))</visible>
+<control type="label"><left>0</left><top>0</top><width>110</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30510]</label></control>
+<control type="label"><left>0</left><top>26</top><width>110</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(830).ListItem.Property(rating)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>100</width><height>64</height><visible>!String.IsEmpty(Container(830).ListItem.Property(year))</visible>
+<control type="label"><left>0</left><top>0</top><width>100</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30511]</label></control>
+<control type="label"><left>0</left><top>26</top><width>100</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(830).ListItem.Property(year)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>140</width><height>64</height><visible>!String.IsEmpty(Container(830).ListItem.Property(kind_label))</visible>
+<control type="label"><left>0</left><top>0</top><width>140</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30512]</label></control>
+<control type="label"><left>0</left><top>26</top><width>140</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(830).ListItem.Property(kind_label)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>420</width><height>64</height><visible>!String.IsEmpty(Container(830).ListItem.Property(genres))</visible>
+<control type="label"><left>0</left><top>0</top><width>420</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30513]</label></control>
+<control type="label"><left>0</left><top>26</top><width>420</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(830).ListItem.Property(genres)]</label></control>
+</control>
+</control>
+<control type="textbox"><left>184</left><top>318</top><width>720</width><height>76</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Container(830).ListItem.Property(plot)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>640</height><visible>Control.HasFocus(840)</visible>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture background="true">$INFO[Container(840).ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio><fadetime>300</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-hero.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-bottom.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture colordiffuse="4005070A">av-white.png</texture></control>
+<control type="label"><left>184</left><top>140</top><width>1300</width><height>90</height><font>font52_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Container(840).ListItem.Label]</label></control>
+<control type="grouplist"><left>184</left><top>240</top><width>1200</width><height>64</height><orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>
+<control type="group"><left>0</left><top>0</top><width>110</width><height>64</height><visible>!String.IsEmpty(Container(840).ListItem.Property(rating))</visible>
+<control type="label"><left>0</left><top>0</top><width>110</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30510]</label></control>
+<control type="label"><left>0</left><top>26</top><width>110</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(840).ListItem.Property(rating)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>100</width><height>64</height><visible>!String.IsEmpty(Container(840).ListItem.Property(year))</visible>
+<control type="label"><left>0</left><top>0</top><width>100</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30511]</label></control>
+<control type="label"><left>0</left><top>26</top><width>100</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(840).ListItem.Property(year)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>140</width><height>64</height><visible>!String.IsEmpty(Container(840).ListItem.Property(kind_label))</visible>
+<control type="label"><left>0</left><top>0</top><width>140</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30512]</label></control>
+<control type="label"><left>0</left><top>26</top><width>140</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(840).ListItem.Property(kind_label)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>420</width><height>64</height><visible>!String.IsEmpty(Container(840).ListItem.Property(genres))</visible>
+<control type="label"><left>0</left><top>0</top><width>420</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30513]</label></control>
+<control type="label"><left>0</left><top>26</top><width>420</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(840).ListItem.Property(genres)]</label></control>
+</control>
+</control>
+<control type="textbox"><left>184</left><top>318</top><width>720</width><height>76</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Container(840).ListItem.Property(plot)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>640</height><visible>Control.HasFocus(850)</visible>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture background="true">$INFO[Container(850).ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio><fadetime>300</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-hero.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture>av-shade-bottom.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>640</height><texture colordiffuse="4005070A">av-white.png</texture></control>
+<control type="label"><left>184</left><top>140</top><width>1300</width><height>90</height><font>font52_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Container(850).ListItem.Label]</label></control>
+<control type="grouplist"><left>184</left><top>240</top><width>1200</width><height>64</height><orientation>horizontal</orientation><itemgap>30</itemgap><usecontrolwidth>true</usecontrolwidth>
+<control type="group"><left>0</left><top>0</top><width>110</width><height>64</height><visible>!String.IsEmpty(Container(850).ListItem.Property(rating))</visible>
+<control type="label"><left>0</left><top>0</top><width>110</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30510]</label></control>
+<control type="label"><left>0</left><top>26</top><width>110</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(850).ListItem.Property(rating)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>100</width><height>64</height><visible>!String.IsEmpty(Container(850).ListItem.Property(year))</visible>
+<control type="label"><left>0</left><top>0</top><width>100</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30511]</label></control>
+<control type="label"><left>0</left><top>26</top><width>100</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(850).ListItem.Property(year)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>140</width><height>64</height><visible>!String.IsEmpty(Container(850).ListItem.Property(kind_label))</visible>
+<control type="label"><left>0</left><top>0</top><width>140</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30512]</label></control>
+<control type="label"><left>0</left><top>26</top><width>140</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(850).ListItem.Property(kind_label)]</label></control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>420</width><height>64</height><visible>!String.IsEmpty(Container(850).ListItem.Property(genres))</visible>
+<control type="label"><left>0</left><top>0</top><width>420</width><height>24</height><font>font10</font><textcolor>FF8F98A4</textcolor><aligny>top</aligny><label>$ADDON[plugin.video.novaflix 30513]</label></control>
+<control type="label"><left>0</left><top>26</top><width>420</width><height>38</height><font>font13</font><textcolor>FFD3D8DF</textcolor><aligny>top</aligny><label>$INFO[Container(850).ListItem.Property(genres)]</label></control>
+</control>
+</control>
+<control type="textbox"><left>184</left><top>318</top><width>720</width><height>76</height><font>font12</font><textcolor>FFD3D8DF</textcolor><label>$INFO[Container(850).ListItem.Property(plot)]</label></control>
+</control>
+<control type="label"><left>184</left><top>52</top><width>1500</width><height>64</height><font>font45_title</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(related_title)]</label></control>
+<control type="label"><left>184</left><top>116</top><width>1500</width><height>36</height><font>font12</font><textcolor>FF8F98A4</textcolor><aligny>center</aligny><label>$INFO[Window.Property(related_notice)]</label></control>
+<control type="label"><left>184</left><top>480</top><width>1552</width><height>60</height><font>font13</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[Window.Property(related_status)]</label><visible>!String.IsEmpty(Window.Property(related_status))</visible></control>
+<control type="grouplist"><left>0</left><top>500</top><width>1920</width><height>580</height><orientation>vertical</orientation><itemgap>0</itemgap><scrolltime tween="quadratic" easing="out">260</scrolltime>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>380</height><visible>Integer.IsGreater(Container(800).NumItems,0)</visible>
+<control type="label"><left>184</left><top>0</top><width>1200</width><height>44</height><font>font30_title</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(rel0_title)]</label></control>
+<control type="list" id="800"><left>178</left><top>44</top><width>1742</width><height>266</height><orientation>horizontal</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime><onleft>100</onleft><ondown>810</ondown>
+<itemlayout width="440" height="266">
+<control type="group"><left>0</left><top>12</top><width>420</width><height>236</height>
+<control type="image"><left>0</left><top>0</top><width>420</width><height>236</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>420</width><height>236</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(thumb)]</texture><aspectratio>scale</aspectratio><visible>!String.IsEmpty(ListItem.Property(has_wide))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>420</width><height>236</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>String.IsEmpty(ListItem.Property(has_wide))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>420</width><height>236</height><texture diffuse="av-mask-wide10.png">av-shade-card.png</texture></control>
+<control type="label"><left>20</left><top>144</top><width>380</width><height>40</height><font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>[B]$INFO[ListItem.Label][/B]</label></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FF3FD28F">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),available)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FFF5B04F">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),upcoming)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FFD3D8DF">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),sub_only)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FFFF6B7A">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),unavailable)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FF8F98A4">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),unknown)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FF8F98A4">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),checking)</visible></control>
+<control type="label"><left>20</left><top>180</top><width>380</width><height>36</height><font>font12</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label2]</label><visible>String.IsEmpty(ListItem.Property(avail))</visible></control>
+<control type="label"><left>38</left><top>180</top><width>362</width><height>36</height><font>font12</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label2]</label><visible>!String.IsEmpty(ListItem.Property(avail))</visible></control>
+<control type="progress"><left>20</left><top>220</top><width>380</width><height>4</height><info>ListItem.PercentPlayed</info><texturebg border="2" colordiffuse="40FFFFFF">av-bar.png</texturebg><midtexture border="2" colordiffuse="FF00A6D6">av-bar.png</midtexture><visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible></control>
+</control>
+</itemlayout>
+<focusedlayout width="440" height="266">
+<control type="group"><left>0</left><top>12</top><width>420</width><height>236</height><animation effect="zoom" start="100" end="104" time="150" center="210,118">Focus</animation>
+<control type="image"><left>-6</left><top>-6</top><width>432</width><height>248</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>420</width><height>236</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>420</width><height>236</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(thumb)]</texture><aspectratio>scale</aspectratio><visible>!String.IsEmpty(ListItem.Property(has_wide))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>420</width><height>236</height><texture diffuse="av-mask-wide10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>String.IsEmpty(ListItem.Property(has_wide))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>420</width><height>236</height><texture diffuse="av-mask-wide10.png">av-shade-card.png</texture></control>
+<control type="label"><left>20</left><top>144</top><width>380</width><height>40</height><font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>[B]$INFO[ListItem.Label][/B]</label><scroll>true</scroll></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FF3FD28F">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),available)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FFF5B04F">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),upcoming)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FFD3D8DF">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),sub_only)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FFFF6B7A">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),unavailable)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FF8F98A4">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),unknown)</visible></control>
+<control type="image"><left>20</left><top>194</top><width>10</width><height>10</height><texture colordiffuse="FF8F98A4">av-dot.png</texture><visible>String.IsEqual(ListItem.Property(avail),checking)</visible></control>
+<control type="label"><left>20</left><top>180</top><width>380</width><height>36</height><font>font12</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label2]</label><visible>String.IsEmpty(ListItem.Property(avail))</visible></control>
+<control type="label"><left>38</left><top>180</top><width>362</width><height>36</height><font>font12</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label2]</label><visible>!String.IsEmpty(ListItem.Property(avail))</visible></control>
+<control type="progress"><left>20</left><top>220</top><width>380</width><height>4</height><info>ListItem.PercentPlayed</info><texturebg border="2" colordiffuse="40FFFFFF">av-bar.png</texturebg><midtexture border="2" colordiffuse="FF00A6D6">av-bar.png</midtexture><visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible></control>
+</control>
+</focusedlayout>
+</control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>380</height><visible>Integer.IsGreater(Container(810).NumItems,0)</visible>
+<control type="label"><left>184</left><top>0</top><width>1200</width><height>44</height><font>font30_title</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(rel1_title)]</label></control>
+<control type="list" id="810"><left>178</left><top>44</top><width>1742</width><height>330</height><orientation>horizontal</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime><onleft>100</onleft><onup>800</onup><ondown>820</ondown>
+<itemlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</itemlayout>
+<focusedlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height><animation effect="zoom" start="100" end="104" time="150" center="100,150">Focus</animation>
+<control type="image"><left>-6</left><top>-6</top><width>212</width><height>312</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</focusedlayout>
+</control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>380</height><visible>Integer.IsGreater(Container(820).NumItems,0)</visible>
+<control type="label"><left>184</left><top>0</top><width>1200</width><height>44</height><font>font30_title</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(rel2_title)]</label></control>
+<control type="list" id="820"><left>178</left><top>44</top><width>1742</width><height>330</height><orientation>horizontal</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime><onleft>100</onleft><onup>810</onup><ondown>830</ondown>
+<itemlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</itemlayout>
+<focusedlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height><animation effect="zoom" start="100" end="104" time="150" center="100,150">Focus</animation>
+<control type="image"><left>-6</left><top>-6</top><width>212</width><height>312</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</focusedlayout>
+</control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>380</height><visible>Integer.IsGreater(Container(830).NumItems,0)</visible>
+<control type="label"><left>184</left><top>0</top><width>1200</width><height>44</height><font>font30_title</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(rel3_title)]</label></control>
+<control type="list" id="830"><left>178</left><top>44</top><width>1742</width><height>330</height><orientation>horizontal</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime><onleft>100</onleft><onup>820</onup><ondown>840</ondown>
+<itemlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</itemlayout>
+<focusedlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height><animation effect="zoom" start="100" end="104" time="150" center="100,150">Focus</animation>
+<control type="image"><left>-6</left><top>-6</top><width>212</width><height>312</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</focusedlayout>
+</control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>380</height><visible>Integer.IsGreater(Container(840).NumItems,0)</visible>
+<control type="label"><left>184</left><top>0</top><width>1200</width><height>44</height><font>font30_title</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(rel4_title)]</label></control>
+<control type="list" id="840"><left>178</left><top>44</top><width>1742</width><height>330</height><orientation>horizontal</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime><onleft>100</onleft><onup>830</onup><ondown>850</ondown>
+<itemlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</itemlayout>
+<focusedlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height><animation effect="zoom" start="100" end="104" time="150" center="100,150">Focus</animation>
+<control type="image"><left>-6</left><top>-6</top><width>212</width><height>312</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</focusedlayout>
+</control>
+</control>
+<control type="group"><left>0</left><top>0</top><width>1920</width><height>380</height><visible>Integer.IsGreater(Container(850).NumItems,0)</visible>
+<control type="label"><left>184</left><top>0</top><width>1200</width><height>44</height><font>font30_title</font><textcolor>FFD3D8DF</textcolor><aligny>center</aligny><label>$INFO[Window.Property(rel5_title)]</label></control>
+<control type="list" id="850"><left>178</left><top>44</top><width>1742</width><height>330</height><orientation>horizontal</orientation><scrolltime tween="quadratic" easing="out">200</scrolltime><onleft>100</onleft><onup>840</onup>
+<itemlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</itemlayout>
+<focusedlayout width="220" height="330">
+<control type="group"><left>0</left><top>14</top><width>200</width><height>300</height><animation effect="zoom" start="100" end="104" time="150" center="100,150">Focus</animation>
+<control type="image"><left>-6</left><top>-6</top><width>212</width><height>312</height><texture border="10" colordiffuse="FFFFFFFF">av-r10-ring.png</texture></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture border="10" colordiffuse="FF141A21">av-r10.png</texture></control>
+<control type="label"><left>16</left><top>16</top><width>168</width><height>268</height><font>font12</font><textcolor>FFD3D8DF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)] + String.IsEmpty(ListItem.Art(poster))</visible></control>
+<control type="image"><left>0</left><top>0</top><width>200</width><height>300</height><texture diffuse="av-mask-poster10.png" background="true">$INFO[ListItem.Art(poster)]</texture><aspectratio>scale</aspectratio><visible>![String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FFD3D8DF">$INFO[ListItem.Property(icon)]</texture><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>68</left><top>80</top><width>64</width><height>64</height><texture colordiffuse="FF00A6D6">av-icon-chevron_right.png</texture><visible>String.IsEqual(ListItem.Property(kind),more)</visible></control>
+<control type="label"><left>14</left><top>156</top><width>172</width><height>70</height><font>font12</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label]</label><wrapmultiline>true</wrapmultiline><visible>[String.IsEqual(ListItem.Property(kind),tile) | String.IsEqual(ListItem.Property(kind),more)]</visible></control>
+<control type="label"><left>14</left><top>226</top><width>172</width><height>60</height><font>font10</font><textcolor>FF8F98A4</textcolor><align>center</align><aligny>top</aligny><label>$INFO[ListItem.Label2]</label><wrapmultiline>true</wrapmultiline><visible>String.IsEqual(ListItem.Property(kind),tile)</visible></control>
+<control type="image"><left>12</left><top>12</top><width>130</width><height>32</height><texture border="16" colordiffuse="D9000000">av-pill66.png</texture><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+<control type="label"><left>12</left><top>12</top><width>130</width><height>32</height><font>font10</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny><label>$INFO[ListItem.Property(dub)]</label><visible>!String.IsEmpty(ListItem.Property(dub))</visible></control>
+</control>
+</focusedlayout>
+</control>
+</control>
+</control>
+      <!-- /gen:related -->
     </control>
 
     <!-- ================= SIDEBAR / MENU (generated: tools/gen_layouts.py) ================= -->
