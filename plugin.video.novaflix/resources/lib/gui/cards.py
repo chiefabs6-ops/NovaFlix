@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 PLOT_MAX = 300
+PEEK_PLOT_MAX = 160  # the grid / More like this peek: two lines
 AVAIL_TEXT = {"available": 30443, "sub_only": 30444, "unavailable": 30447, "unknown": 30448}
 # Title page status line: room for the longer wording; unknown is never shown as "no streams".
 TITLE_PAGE_TEXT = dict(AVAIL_TEXT, unavailable=30449, unknown=30450)
@@ -31,6 +32,12 @@ class Card:
     action: tuple = ()
     avail: str = ""        # availability state shown by the layouts (sources/availability.py)
     check: tuple = ()      # (media_type, tmdb_id, season, episode) whose availability is still to be checked
+    # Focused-card details for the peek above grids and More like this rows (Cinematic UI)
+    plot: str = ""
+    year: str = ""
+    rating: str = ""
+    genres: str = ""
+    kind_label: str = ""
 
 
 def clock(seconds):
@@ -78,9 +85,25 @@ def next_episode(numbers, states):
 
 # -- TV shows and movies (TMDB, Plan 4) ------------------------------------------------------------
 
-def title_card(title):
-    return Card(label=title.title, label2=str(title.year) if title.year else "", poster=title.poster,
+def cut(text, limit):
+    text = (text or "").replace("\n", " ").strip()
+    return text if len(text) <= limit else text[:limit - 1].rsplit(" ", 1)[0] + "…"
+
+
+def rating_text(rating):
+    return f"★ {rating:.1f}" if rating else ""
+
+
+def title_card(title, text=None):
+    """A poster card. With `text` it also carries the details the peek above the grid shows."""
+    year = str(title.year) if title.year else ""
+    card = Card(label=title.title, label2=year, poster=title.poster,
                 wide=title.backdrop, action=("title", title.media_type, title.tmdb_id))
+    card.plot, card.year, card.rating = cut(title.overview, PEEK_PLOT_MAX), year, rating_text(title.rating)
+    card.genres = ", ".join(title.genres[:2])
+    if text:
+        card.kind_label = text(30429) if title.is_movie else text(30430)
+    return card
 
 
 def title_continue_card(row, next_ref, text, upcoming=None):

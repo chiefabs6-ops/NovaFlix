@@ -72,3 +72,28 @@ def test_title_meta_and_hero():
     assert cards.title_meta(t, _text).endswith("Korean")
     hero = cards.title_hero(t, _text)
     assert hero["title"] == "Breaking Bad" and hero["art"] == t.backdrop and hero["dark"] is False
+
+
+# -- Cinematic UI: focused-card details (0.4.0) ---------------------------------------------------
+
+def _title(**fields):
+    from resources.lib import media
+    return media.Title(media_type=fields.pop("media_type", "movie"), tmdb_id=1, title="Charade", **fields)
+
+
+def test_card_details_from_title():
+    card = cards.title_card(_title(overview="Widowed in Paris.", year=1963, rating=7.94,
+                                   genres=["Thriller", "Romance", "Comedy"]), T)
+    assert (card.rating, card.genres, card.year) == ("★ 7.9", "Thriller, Romance", "1963")
+    assert card.plot == "Widowed in Paris." and card.kind_label == "Movie"
+
+
+def test_card_details_cut_long_plots():
+    card = cards.title_card(_title(overview="word " * 80), T)
+    assert len(card.plot) <= cards.PEEK_PLOT_MAX and card.plot.endswith("…")
+
+
+def test_card_details_leave_missing_fields_empty():
+    card = cards.title_card(_title(), T)
+    assert (card.plot, card.year, card.rating, card.genres) == ("", "", "", "")
+    assert cards.title_card(_title()).kind_label == ""  # without text: nothing worded

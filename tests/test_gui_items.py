@@ -17,3 +17,11 @@ def test_tile_icon_and_missing_art():
     item = items.to_listitem(cards.tile("Comedy", ("grid", "genre:Comedy"), icon="grid_view"))
     assert item.properties["icon"] == "av-icon-grid_view.png" and item.art == {}
     assert "ResumePoint" not in item.tag.values
+
+
+def test_listitem_carries_card_details():
+    card = cards.Card(label="Charade", plot="Widowed in Paris.", year="1963", rating="★ 7.9",
+                      genres="Thriller, Romance", kind_label="Movie")
+    props = items.to_listitem(card).properties
+    assert (props["plot"], props["year"], props["rating"]) == ("Widowed in Paris.", "1963", "★ 7.9")
+    assert (props["genres"], props["kind_label"]) == ("Thriller, Romance", "Movie")

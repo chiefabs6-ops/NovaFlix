@@ -23,6 +23,8 @@ def to_listitem(card):
     item.setProperty("avail", card.avail)
     item.setProperty("icon", icon)
     item.setProperty("has_wide", "true" if card.wide and not icon else "")
+    for key in ("plot", "year", "rating", "genres", "kind_label"):
+        item.setProperty(key, getattr(card, key))
     if card.position > 0 and card.duration > 0:
         item.getVideoInfoTag().setResumePoint(card.position, card.duration)
     return item

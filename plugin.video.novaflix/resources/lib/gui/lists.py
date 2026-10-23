@@ -55,7 +55,7 @@ def _library():
 
 
 def _titles_page(title, titles, more):
-    return Page(title, [cards.title_card(t) for t in titles], more, ui.string(30039), titles)
+    return Page(title, [cards.title_card(t, ui.string) for t in titles], more, ui.string(30039), titles)
 
 
 def load(key, page=1):
@@ -69,7 +69,7 @@ def load(key, page=1):
     if name == "continue":
         return Page(text(30001), _continue_cards(network=arg != "local"), False, text(30226))
     if name == "mylist":
-        return Page(text(30415), [cards.title_card(t) for t in MyList(paths.profile_dir()).all()], False,
+        return Page(text(30415), [cards.title_card(t, text) for t in MyList(paths.profile_dir()).all()], False,
                     text(30428))
     if name == "genres":
         library = _library()
@@ -198,10 +198,10 @@ def more_like_this(media_type, tmdb_id):
     if title.collection:
         collection = library.collection(title.collection[0])
         if collection.parts:
-            rows.append((collection.name, [cards.title_card(t) for t in collection.parts]))
+            rows.append((collection.name, [cards.title_card(t, ui.string) for t in collection.parts]))
     recommended = library.more_like_this(media_type, tmdb_id)
     if recommended:
-        rows.append((ui.string(30418), [cards.title_card(t) for t in recommended]))
+        rows.append((ui.string(30418), [cards.title_card(t, ui.string) for t in recommended]))
     return RelatedPage(title.title, rows, "", "" if rows else ui.string(30039))
 
 
