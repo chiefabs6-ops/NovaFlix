@@ -254,7 +254,7 @@
       <!-- /gen:push-grid -->
       <!-- gen:grid -->
 <control type="group"><left>0</left><top>0</top><width>1920</width><height>1080</height><visible>String.IsEqual(Window.Property(grid_tiles),wide)</visible>
-<control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture background="true">$INFO[Window(Home).Property(novaflix.search_art)]</texture><aspectratio>scale</aspectratio><fadetime>400</fadetime></control>
+<control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture background="true">av-search-backdrop.jpg</texture><aspectratio>scale</aspectratio><fadetime>400</fadetime></control>
 <control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture colordiffuse="4005070A">av-white.png</texture></control>
 <control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture>av-vignette.png</texture></control>
 <control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture>av-shade-hero.png</texture></control>

@@ -254,20 +254,3 @@ def test_genre_pictures_do_not_repeat(monkeypatch):
     monkeypatch.setattr(lists, "_library", lambda: Same())
     tiles = [lists.cards.Card(label=n, kind="genre", action=("grid", f"genre:movie:{i}")) for i, n in ((28, "A"), (12, "B"))]
     assert lists.genre_pictures(tiles) == {0: "same.jpg", 1: "b12.jpg"}
-
-
-def test_search_art_is_the_first_trending_backdrop(monkeypatch):
-    class Shelf:
-        def list(self, name, page=1):
-            assert name == "trending"
-            return [media.Title(media_type="movie", tmdb_id=1, title="A"),
-                    media.Title(media_type="movie", tmdb_id=2, title="B", backdrop="b.jpg")], False
-    monkeypatch.setattr(lists, "_library", lambda: Shelf())
-    assert lists.search_art() == "b.jpg"
-
-
-def test_search_art_failure_is_quiet(monkeypatch):
-    def broken():
-        raise OSError("offline")
-    monkeypatch.setattr(lists, "_library", broken)
-    assert lists.search_art() == ""

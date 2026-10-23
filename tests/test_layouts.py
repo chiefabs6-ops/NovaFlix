@@ -243,3 +243,9 @@ def test_focused_cards_have_room_for_their_ring_and_zoom():
                     continue
                 assert int(card.findtext("left")) >= 16 and int(card.findtext("top")) >= 14, \
                     f"{name} {container.get('id')}"
+
+
+@pytest.mark.parametrize("name", ["novaflix-app.xml", "novaflix-login.xml"])
+def test_search_screens_use_the_shipped_backdrop(name):
+    text = open(os.path.join(LAYOUTS, name), encoding="utf-8").read()
+    assert "av-search-backdrop.jpg" in text and "search_art" not in text

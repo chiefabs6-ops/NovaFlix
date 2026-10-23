@@ -471,7 +471,7 @@ def genre_card(width, height, focused, cid=None):
 
 GENRES_SHOWN = "!String.IsEmpty(Window.Property(grid_genre_tab))"
 WIDE_TILES = "String.IsEqual(Window.Property(grid_tiles),wide)"
-SEARCH_ART = "$INFO[Window(Home).Property(novaflix.search_art)]"
+SEARCH_ART = "av-search-backdrop.jpg"  # the concept's Shinjuku street (CC BY-SA 4.0, media/LICENSE-backdrop.txt)
 
 
 def wide_tile(width, height, focused, cid=None):

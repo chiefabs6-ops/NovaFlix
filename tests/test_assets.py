@@ -150,3 +150,11 @@ def test_layouts_use_only_the_cinematic_palette():
         text = open(os.path.join(layouts, name), encoding="utf-8").read()
         for colour in re.findall(r"\bFF[0-9A-Fa-f]{6}\b", text):
             assert colour.upper() in allowed, f"{name}: {colour}"
+
+
+def test_search_backdrop_is_shipped_with_its_credit():
+    from PIL import Image
+    image = Image.open(os.path.join(MEDIA, "av-search-backdrop.jpg"))
+    assert image.size == (1920, 1080)
+    text = open(os.path.join(MEDIA, "LICENSE-backdrop.txt"), encoding="utf-8").read()
+    assert "Basile Morin" in text and "CC BY-SA 4.0" in text and "creativecommons.org/licenses/by-sa/4.0" in text

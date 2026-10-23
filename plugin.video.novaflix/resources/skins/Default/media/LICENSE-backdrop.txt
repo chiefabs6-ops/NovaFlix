@@ -1,0 +1,6 @@
+av-search-backdrop.jpg (behind the Search page and the phone search screen) is cropped from
+"Buildings with colorful neon street signs at blue hour, Shinjuku, Tokyo" by Basile Morin,
+https://commons.wikimedia.org/wiki/File:Buildings_with_colorful_neon_street_signs_at_blue_hour,_Shinjuku,_Tokyo.jpg
+
+Licence: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/
+Changes: cropped to 1920 x 1080 and recompressed. The cropped image is shared under the same licence.
